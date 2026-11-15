@@ -1,0 +1,25 @@
+
+# Build directories
+build/
+cmake-build-*/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Compiled files
+*.o
+*.obj
+*.a
+*.so
+*.out
+
+# Executables
+netuno.exe
+
+# Operating system files
+.DS_Store
+Thumbs.db
