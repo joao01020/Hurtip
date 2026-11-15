@@ -73,7 +73,8 @@ namespace netuno
             if (variable == variables.end())
             {
                 throw std::runtime_error(
-                    "Undefined variable: " + identifier->name);
+                    "Line " + std::to_string(identifier->line) +
+                    ": Undefined variable: " + identifier->name);
             }
 
             return variable->second;

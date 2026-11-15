@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+MimeType=text/x-netuno;
+Name=Netuno
+Comment=Netuno Programming Language
+Exec=/home/joao/Documentos/PlatformIO/Projects/Netuno/build/netuno
+Icon=/home/joao/Documentos/PlatformIO/Projects/Netuno/assets/icon.png
+Terminal=true
+Categories=Development;IDE;

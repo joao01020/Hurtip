@@ -1,0 +1,27 @@
+{
+    "scopeName": "source.netuno",
+    "patterns": [
+        {
+            "name": "keyword.control.netuno",
+            "match": "\\bcreate\\b"
+        },
+        {
+            "name": "entity.name.function.netuno",
+            "match": "\\bview(?=\\s*\\()"
+        },
+        {
+            "name": "string.quoted.double.netuno",
+            "begin": "\"",
+            "end": "\""
+        },
+        {
+            "name": "constant.numeric.netuno",
+            "match": "\\b[0-9]+\\b"
+        },
+        {
+            "name": "keyword.operator.assignment.netuno",
+            "match": "="
+        }
+    ]
+}
+

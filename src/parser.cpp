@@ -2,9 +2,18 @@
 #include "netuno/parser.hpp"
 
 #include <stdexcept>
+#include <string>
 
 namespace netuno
 {
+
+    static std::runtime_error parserError(
+        const Token &token,
+        const std::string &message)
+    {
+        return std::runtime_error(
+            "Line " + std::to_string(token.line) + ": " + message);
+    }
 
     Parser::Parser(const std::vector<Token> &tokens)
         : tokens(tokens)
@@ -60,7 +69,8 @@ namespace netuno
             if (!check(TokenType::NewLine) &&
                 !check(TokenType::EndOfFile))
             {
-                throw std::runtime_error(
+                throw parserError(
+                    currentToken(),
                     "Expected a new line after statement");
             }
         }
@@ -80,27 +90,31 @@ namespace netuno
             return parseExpression();
         }
 
-        throw std::runtime_error(
+        throw parserError(
+            currentToken(),
             "Unexpected token: " + currentToken().lexeme);
     }
 
     std::unique_ptr<CreateStatement> Parser::parseCreateStatement()
     {
-        advance();
+        const Token &createToken = advance();
 
         if (!check(TokenType::Identifier))
         {
-            throw std::runtime_error(
+            throw parserError(
+                currentToken(),
                 "Expected a variable name after 'create'");
         }
 
         auto statement = std::make_unique<CreateStatement>();
 
+        statement->line = createToken.line;
         statement->name = advance().lexeme;
 
         if (!match(TokenType::Equal))
         {
-            throw std::runtime_error(
+            throw parserError(
+                currentToken(),
                 "Expected '=' after variable name");
         }
 
@@ -122,6 +136,7 @@ namespace netuno
 
             const Token &token = advance();
 
+            expression->line = token.line;
             expression->type = token.type;
             expression->value = token.lexeme;
 
@@ -141,12 +156,16 @@ namespace netuno
 
             auto expression = std::make_unique<IdentifierExpression>();
 
-            expression->name = advance().lexeme;
+            const Token &token = advance();
+
+            expression->line = token.line;
+            expression->name = token.lexeme;
 
             return expression;
         }
 
-        throw std::runtime_error(
+        throw parserError(
+            currentToken(),
             "Expected an expression, got: " + currentToken().lexeme);
     }
 
@@ -154,11 +173,15 @@ namespace netuno
     {
         auto expression = std::make_unique<CallExpression>();
 
-        expression->name = advance().lexeme;
+        const Token &nameToken = advance();
+
+        expression->line = nameToken.line;
+        expression->name = nameToken.lexeme;
 
         if (!match(TokenType::LeftParen))
         {
-            throw std::runtime_error(
+            throw parserError(
+                currentToken(),
                 "Expected '(' after function name");
         }
 
@@ -169,7 +192,8 @@ namespace netuno
 
         if (!match(TokenType::RightParen))
         {
-            throw std::runtime_error(
+            throw parserError(
+                currentToken(),
                 "Expected ')' after function arguments");
         }
 

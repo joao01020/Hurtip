@@ -1,0 +1,42 @@
+{
+    "name": "netuno-language",
+    "displayName": "Netuno Language Support",
+    "description": "Language support for the Netuno programming language",
+    "version": "0.1.0",
+    "publisher": "netuno",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "netuno",
+                "aliases": [
+                    "Netuno",
+                    "netuno"
+                ],
+                "extensions": [
+                    ".nt"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "netuno",
+                "scopeName": "source.netuno",
+                "path": "./syntaxes/netuno.tmLanguage.json"
+            }
+        ],
+        "iconThemes": [
+            {
+                "id": "seti-netuno",
+                "label": "Seti + Netuno",
+                "path": "./icons/seti/vs-seti-icon-theme.json"
+            }
+        ]
+    }
+}

@@ -13,6 +13,8 @@ namespace netuno
     // Base class for all syntax tree nodes
     struct ASTNode
     {
+        int line = 1;
+
         virtual ~ASTNode() = default;
     };
 

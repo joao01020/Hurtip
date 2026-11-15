@@ -1,0 +1,13 @@
+{
+    "iconDefinitions": {
+        "_netuno": {
+            "iconPath": "./netuno-file.svg"
+        }
+    },
+    "fileExtensions": {
+        "nt": "_netuno"
+    },
+    "languageIds": {
+        "netuno": "_netuno"
+    }
+}

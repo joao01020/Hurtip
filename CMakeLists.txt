@@ -28,3 +28,10 @@ if(MSVC)
 else()
     target_compile_options(netuno PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+
+# Netuno visual assets
+install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/assets/
+    DESTINATION share/netuno/assets
+)
