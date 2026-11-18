@@ -18,12 +18,10 @@ namespace netuno
 
     void Interpreter::execute(const ASTNode &statement)
     {
-
         // Variable declaration
         if (const auto *create =
                 dynamic_cast<const CreateStatement *>(&statement))
         {
-
             RuntimeValue value = evaluate(*create->value);
 
             variables[create->name] = value;
@@ -35,7 +33,6 @@ namespace netuno
         if (const auto *call =
                 dynamic_cast<const CallExpression *>(&statement))
         {
-
             executeCall(*call);
 
             return;
@@ -46,12 +43,10 @@ namespace netuno
 
     RuntimeValue Interpreter::evaluate(const Expression &expression)
     {
-
         // Literal value
         if (const auto *literal =
                 dynamic_cast<const LiteralExpression *>(&expression))
         {
-
             if (literal->type == TokenType::String)
             {
                 return literal->value;
@@ -67,7 +62,6 @@ namespace netuno
         if (const auto *identifier =
                 dynamic_cast<const IdentifierExpression *>(&expression))
         {
-
             auto variable = variables.find(identifier->name);
 
             if (variable == variables.end())
@@ -84,7 +78,6 @@ namespace netuno
         if (const auto *call =
                 dynamic_cast<const CallExpression *>(&expression))
         {
-
             if (call->name == "view")
             {
                 executeCall(*call);
@@ -97,23 +90,30 @@ namespace netuno
 
     void Interpreter::executeCall(const CallExpression &expression)
     {
-
         if (expression.name != "view")
         {
             throw std::runtime_error(
                 "Unknown function: " + expression.name);
         }
 
-        if (expression.arguments.size() != 1)
+        for (std::size_t i = 0; i < expression.arguments.size(); i++)
         {
-            throw std::runtime_error(
-                "Function 'view' expects exactly one argument");
+            RuntimeValue value = evaluate(*expression.arguments[i]);
+
+            std::visit(
+                [](const auto &result)
+                {
+                    std::cout << result;
+                },
+                value);
+
+            if (i + 1 < expression.arguments.size())
+            {
+                std::cout << " ";
+            }
         }
 
-        RuntimeValue value = evaluate(*expression.arguments[0]);
-
-        std::visit([](const auto &result)
-                   { std::cout << result << '\n'; }, value);
+        std::cout << '\n';
     }
 
 }
