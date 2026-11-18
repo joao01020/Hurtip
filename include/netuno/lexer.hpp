@@ -1,32 +1,14 @@
 
 #pragma once
 
+#include "netuno/token.hpp"
+
 #include <cstddef>
 #include <string>
 #include <vector>
 
 namespace netuno
 {
-
-    enum class TokenType
-    {
-        Create,
-        Identifier,
-        String,
-        Number,
-        Equal,
-        LeftParen,
-        RightParen,
-        NewLine,
-        EndOfFile
-    };
-
-    struct Token
-    {
-        TokenType type;
-        std::string lexeme;
-        int line;
-    };
 
     class Lexer
     {
