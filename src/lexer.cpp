@@ -129,6 +129,11 @@ namespace netuno
             tokens.push_back({TokenType::RightParen, ")", line});
             break;
 
+        case ',':
+            advance();
+            tokens.push_back({TokenType::Comma, ",", line});
+            break;
+
         case '\n':
             advance();
             tokens.push_back({TokenType::NewLine, "\\n", line});
