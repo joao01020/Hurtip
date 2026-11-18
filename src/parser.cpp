@@ -188,6 +188,11 @@ namespace netuno
         if (!check(TokenType::RightParen))
         {
             expression->arguments.push_back(parseExpression());
+
+            while (match(TokenType::Comma))
+            {
+                expression->arguments.push_back(parseExpression());
+            }
         }
 
         if (!match(TokenType::RightParen))
