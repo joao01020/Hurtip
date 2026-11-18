@@ -12,7 +12,8 @@ A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
 sem abandonar a possibilidade de evoluir para recursos mais avançados.
 
 > O Netuno está em desenvolvimento. Atualmente, possui um interpretador básico
-> capaz de executar arquivos `.nt`.
+> capaz de executar arquivos `.nt`, além de suporte inicial ao Visual Studio
+> Code.
 
 ---
 
@@ -100,6 +101,8 @@ create language = "Netuno"
 view(language)
 ```
 
+Atualmente, `view()` aceita exatamente um argumento.
+
 ### Tipos atualmente suportados
 
 | Tipo           | Exemplo    |
@@ -123,22 +126,22 @@ O fluxo atual de execução é:
 Arquivo .nt
     |
     v
-Lexer
+  Lexer
     |
     v
-Tokens
+  Tokens
     |
     v
-Parser
+  Parser
     |
     v
-AST
+   AST
     |
     v
 Interpreter
     |
     v
-Execução
+ Execução
 ```
 
 ### Lexer — Análise léxica
@@ -158,6 +161,8 @@ create name = "Netuno"
 - `Equal`
 - `String`
 
+O Lexer também mantém informações sobre as linhas do código-fonte.
+
 ### Parser — Análise sintática
 
 O Parser recebe os tokens e verifica se eles seguem as regras gramaticais da
@@ -165,6 +170,12 @@ linguagem.
 
 Ele também constrói a AST (_Abstract Syntax Tree_), uma representação
 estruturada do programa.
+
+Atualmente, o Parser reconhece declarações, expressões, valores literais,
+referências a variáveis e chamadas de funções.
+
+Também possui um mecanismo inicial de diagnóstico de erros sintáticos com
+identificação de linha.
 
 ### AST — Árvore sintática abstrata
 
@@ -178,6 +189,9 @@ Atualmente, existem estruturas para representar:
 - Valores literais.
 - Referências a variáveis.
 
+Os nós da AST também armazenam informações sobre a linha de origem, permitindo
+localizar determinados erros durante a execução.
+
 ### Interpreter — Interpretador
 
 O interpretador percorre as estruturas produzidas pelo Parser e executa as
@@ -189,18 +203,113 @@ Atualmente, ele consegue:
 - Armazenar valores.
 - Recuperar valores armazenados.
 - Executar a função nativa `view()`.
+- Identificar variáveis não declaradas.
+- Informar a linha de determinados erros de execução.
+
+### Sistema de diagnóstico
+
+O Netuno já possui uma implementação inicial de mensagens de erro com
+identificação de linha.
+
+Exemplo de erro de sintaxe:
+
+```netuno
+create name "Netuno"
+```
+
+Resultado:
+
+```text
+Netuno Error: Line 1: Expected '=' after variable name
+```
+
+Exemplo de erro durante a execução:
+
+```netuno
+create name = "Netuno"
+
+view(unknown)
+```
+
+Resultado:
+
+```text
+Netuno
+Netuno Error: Line 3: Undefined variable: unknown
+```
+
+O sistema ainda está em desenvolvimento. A identificação de linha já funciona em
+alguns erros do Parser e do Interpreter, mas a localização por arquivo e a
+padronização completa das mensagens ainda precisam ser implementadas.
 
 ---
 
-## 5. Tecnologias utilizadas
+## 5. Suporte ao Visual Studio Code
 
-| Tecnologia | Utilização                                 |
-| ---------- | ------------------------------------------ |
-| C++        | Implementação da linguagem                 |
-| C++17      | Padrão da linguagem utilizada              |
-| CMake      | Configuração e gerenciamento da compilação |
-| GCC / G++  | Compilação do projeto                      |
-| VS Code    | Ambiente de desenvolvimento                |
+O Netuno possui uma extensão inicial para o Visual Studio Code, criada para
+reconhecer a linguagem e facilitar a edição de arquivos `.nt`.
+
+### Recursos disponíveis
+
+- Reconhecimento da extensão `.nt`.
+- Identificação da linguagem Netuno.
+- Realce de sintaxe.
+- Destaque da palavra-chave `create`.
+- Destaque da função `view()`.
+- Destaque de strings e números.
+- Destaque do operador de atribuição `=`.
+- Fechamento automático de parênteses e aspas.
+- Tema de ícones personalizado.
+
+### Identidade visual
+
+O projeto possui uma identidade visual própria, incluindo ícone para o Netuno e
+variações em diferentes resoluções.
+
+O ícone dos arquivos `.nt` foi integrado ao tema Seti do VS Code, preservando os
+ícones existentes para os demais tipos de arquivos.
+
+O tema personalizado é identificado como **Seti + Netuno**.
+
+### Estrutura da extensão
+
+```text
+vscode-extension/
+├── package.json
+├── language-configuration.json
+│
+├── syntaxes/
+│   └── netuno.tmLanguage.json
+│
+└── icons/
+    ├── netuno-file.png
+    ├── netuno-file.svg
+    ├── netuno-icon-theme.json
+    │
+    └── seti/
+        ├── seti-circular-128x128.png
+        ├── seti.woff
+        ├── vs-seti-icon-theme.json
+        └── vs-seti-icon-theme.backup.json
+```
+
+A extensão ainda é experimental e está em desenvolvimento local. Sua publicação
+em um marketplace ainda não foi realizada.
+
+---
+
+## 6. Tecnologias utilizadas
+
+| Tecnologia       | Utilização                                     |
+| ---------------- | ---------------------------------------------- |
+| C++              | Implementação da linguagem                     |
+| C++17            | Padrão da linguagem utilizada                  |
+| CMake            | Configuração e gerenciamento da compilação     |
+| GCC / G++        | Compilação do projeto                          |
+| VS Code          | Ambiente de desenvolvimento                    |
+| TextMate Grammar | Realce de sintaxe no VS Code                   |
+| JSON             | Configuração da extensão e dos temas de ícones |
+| Git              | Controle de versão                             |
 
 A escolha do C++ permite explorar estruturas de dados, gerenciamento de memória
 e desempenho, além de oferecer uma base interessante para futuras experiências
@@ -208,7 +317,7 @@ com compiladores e sistemas embarcados.
 
 ---
 
-## 6. Estrutura do projeto
+## 7. Estrutura do projeto
 
 A organização atual do repositório é:
 
@@ -217,6 +326,21 @@ Netuno/
 ├── CMakeLists.txt
 ├── README.md
 ├── .gitignore
+│
+├── assets/
+│   ├── icon.png
+│   ├── logo.png
+│   │
+│   ├── icons/
+│   │   ├── icon-16.png
+│   │   ├── icon-32.png
+│   │   ├── icon-48.png
+│   │   ├── icon-64.png
+│   │   ├── icon-128.png
+│   │   └── icon-256.png
+│   │
+│   └── linux/
+│       └── netuno.desktop
 │
 ├── include/
 │   └── netuno/
@@ -233,204 +357,11 @@ Netuno/
 ├── examples/
 │   └── program.nt
 │
-└── tests/
-    └── CMakeLists.txt
+├── tests/
+│   └── CMakeLists.txt
+│
+└── vscode-extension/
+    ├── package.json
+    ├── language-configuration.json
+    ├──
 ```
-
-### Organização dos diretórios
-
-- `include/netuno/`: declarações das estruturas e classes.
-- `src/`: implementação dos componentes da linguagem.
-- `examples/`: programas de exemplo escritos em Netuno.
-- `tests/`: espaço reservado para testes automatizados.
-
----
-
-## 7. Como executar
-
-### Requisitos
-
-- Compilador C++ com suporte a C++17.
-- CMake 3.16 ou superior.
-- Sistema operacional Linux, Windows ou macOS com ambiente de compilação
-  configurado.
-
-### Clonar o projeto
-
-```bash
-git clone <repository-url>
-cd Netuno
-```
-
-### Configurar a compilação
-
-```bash
-cmake -S . -B build
-```
-
-### Compilar
-
-```bash
-cmake --build build
-```
-
-### Executar um programa
-
-Crie um arquivo com a extensão `.nt`.
-
-Exemplo: `examples/program.nt`
-
-```netuno
-create name = "Netuno"
-
-view("Minha primeira execução!")
-view(name)
-```
-
-Execute:
-
-```bash
-./build/netuno examples/program.nt
-```
-
-Saída esperada:
-
-```text
-Minha primeira execução!
-Netuno
-```
-
----
-
-## 8. Interpretação e compilação
-
-O primeiro estágio do Netuno utiliza um interpretador.
-
-Essa escolha permite desenvolver e testar a linguagem de maneira gradual, sem
-precisar implementar imediatamente um compilador completo.
-
-Entretanto, a arquitetura está sendo pensada para permitir futuras experiências
-com compilação.
-
-Uma possível evolução seria:
-
-```text
-        Código .nt
-             |
-             v
-       Lexer / Parser
-             |
-             v
-            AST
-             |
-             v
-    Representação interna
-          (IR)
-         /    \
-        /      \
-       v        v
-Interpreter   Compiler
-       |        |
-       v        v
-  Execução    Código nativo
-```
-
-A representação intermediária (IR) ainda não está implementada. Ela é uma
-possibilidade arquitetural para compartilhar a análise do código entre
-diferentes formas de execução.
-
----
-
-## 9. Direção futura: sistemas embarcados
-
-Um dos objetivos de longo prazo é investigar como o Netuno poderia simplificar o
-desenvolvimento para microcontroladores e outros dispositivos embarcados.
-
-A proposta é estudar uma linguagem que permita escrever instruções de maneira
-mais simples, mantendo a possibilidade de gerar código eficiente.
-
-Algumas áreas que poderão ser exploradas:
-
-- Controle de GPIO.
-- Leitura de sensores.
-- Comunicação serial.
-- Wi-Fi e Bluetooth.
-- Controle de periféricos.
-- Desenvolvimento para microcontroladores como ESP32.
-- Geração de código nativo para arquiteturas específicas.
-
-Esses recursos ainda não fazem parte da implementação atual.
-
-A ideia é investigar como uma sintaxe mais simples poderia ser traduzida para
-operações eficientes, sem comprometer o controle necessário em sistemas com
-recursos limitados.
-
----
-
-## 10. Roadmap
-
-O desenvolvimento será realizado por etapas.
-
-### Etapa 1 — Fundamentos
-
-- [x] Criar a estrutura inicial do projeto.
-- [x] Configurar CMake.
-- [x] Implementar o Lexer.
-- [x] Implementar o Parser.
-- [x] Criar estruturas básicas da AST.
-- [x] Implementar o interpretador inicial.
-- [x] Executar arquivos externos `.nt`.
-- [x] Implementar declaração de variáveis com `create`.
-- [x] Implementar a função nativa `view()`.
-
-### Etapa 2 — Melhorias da linguagem
-
-- [ ] Sistema de erros com identificação de arquivo e linha.
-- [ ] Suporte a números decimais.
-- [ ] Operações matemáticas.
-- [ ] Comparações e operadores lógicos.
-- [ ] Condicionais.
-- [ ] Estruturas de repetição.
-- [ ] Mais funções nativas.
-- [ ] Sistema de testes automatizados.
-
-### Etapa 3 — Evolução da arquitetura
-
-- [ ] Melhorar a estrutura da AST.
-- [ ] Desenvolver um sistema de tipos mais completo.
-- [ ] Implementar uma representação intermediária (IR).
-- [ ] Estudar otimizações.
-- [ ] Investigar a criação de um compilador.
-
-### Etapa 4 — Exploração de sistemas embarcados
-
-- [ ] Projetar uma interface para recursos de hardware.
-- [ ] Estudar geração de código para microcontroladores.
-- [ ] Explorar integração com ESP32.
-- [ ] Desenvolver exemplos de automação e controle.
-- [ ] Avaliar desempenho e consumo de recursos.
-
-_O roadmap representa possibilidades e objetivos de desenvolvimento, não
-funcionalidades já disponíveis._
-
----
-
-## 11. Estado atual
-
-**Versão:** 0.1.0 — Experimental
-
-O Netuno já consegue ler arquivos `.nt`, analisar sua estrutura e executar
-instruções básicas por meio de um interpretador desenvolvido em C++.
-
-O projeto ainda está em sua fase inicial. Sua prioridade é consolidar os
-fundamentos da linguagem antes de avançar para recursos mais complexos.
-
----
-
-## 12. Licença
-
-A licença do projeto ainda não foi definida.
-
----
-
-**Netuno — Simplicidade para programar. Liberdade para evoluir.**

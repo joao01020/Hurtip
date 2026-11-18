@@ -1,6 +1,6 @@
 create name = "Netuno"
 create age = 1
 
-view("Minha primeira execução externa!")
+view("Hello, World!")
 view(name)
 view(age)
