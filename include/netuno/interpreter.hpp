@@ -3,16 +3,16 @@
 
 #include "netuno/parser.hpp"
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <variant>
 #include <vector>
-#include <memory>
 
 namespace netuno
 {
 
-    using RuntimeValue = std::variant<std::string, double>;
+    using RuntimeValue = std::variant<std::string, double, bool>;
 
     class Interpreter
     {
@@ -26,6 +26,10 @@ namespace netuno
         void execute(const ASTNode &statement);
 
         RuntimeValue evaluate(const Expression &expression);
+
+        RuntimeValue evaluateBinary(const BinaryExpression &expression);
+
+        RuntimeValue evaluateUnary(const UnaryExpression &expression);
 
         void executeCall(const CallExpression &expression);
     };
