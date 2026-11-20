@@ -22,15 +22,47 @@ namespace netuno
         return source[position];
     }
 
+    char Lexer::peekChar() const
+    {
+        if (position + 1 >= source.length())
+        {
+            return '\0';
+        }
+
+        return source[position + 1];
+    }
+
     char Lexer::advance()
     {
-        return source[position++];
+        char character = source[position++];
+
+        if (character == '\n')
+        {
+            line++;
+            column = 1;
+        }
+        else
+        {
+            column++;
+        }
+
+        return character;
     }
 
     void Lexer::skipWhitespace()
     {
-        while (currentChar() == ' ' || currentChar() == '\t' ||
+        while (currentChar() == ' ' ||
+               currentChar() == '\t' ||
                currentChar() == '\r')
+        {
+            advance();
+        }
+    }
+
+    void Lexer::skipComment()
+    {
+        while (currentChar() != '\n' &&
+               currentChar() != '\0')
         {
             advance();
         }
@@ -38,6 +70,9 @@ namespace netuno
 
     void Lexer::scanIdentifier()
     {
+        int tokenLine = line;
+        int tokenColumn = column;
+
         std::string value;
 
         while (std::isalnum(static_cast<unsigned char>(currentChar())) ||
@@ -46,15 +81,49 @@ namespace netuno
             value += advance();
         }
 
-        TokenType type = (value == "create")
-                             ? TokenType::Create
-                             : TokenType::Identifier;
+        TokenType type = TokenType::Identifier;
 
-        tokens.push_back({type, value, line});
+        if (value == "create")
+        {
+            type = TokenType::Create;
+        }
+        else if (value == "true")
+        {
+            type = TokenType::True;
+        }
+        else if (value == "false")
+        {
+            type = TokenType::False;
+        }
+        else if (value == "if")
+        {
+            type = TokenType::If;
+        }
+        else if (value == "else")
+        {
+            type = TokenType::Else;
+        }
+        else if (value == "and")
+        {
+            type = TokenType::And;
+        }
+        else if (value == "or")
+        {
+            type = TokenType::Or;
+        }
+        else if (value == "not")
+        {
+            type = TokenType::Not;
+        }
+
+        tokens.push_back({type, value, tokenLine, tokenColumn});
     }
 
     void Lexer::scanString()
     {
+        int tokenLine = line;
+        int tokenColumn = column;
+
         advance();
 
         std::string value;
@@ -63,7 +132,11 @@ namespace netuno
         {
             if (currentChar() == '\n')
             {
-                throw std::runtime_error("Unterminated string");
+                throw std::runtime_error(
+                    "Unterminated string at line " +
+                    std::to_string(tokenLine) +
+                    ", column " +
+                    std::to_string(tokenColumn));
             }
 
             value += advance();
@@ -71,16 +144,26 @@ namespace netuno
 
         if (currentChar() == '\0')
         {
-            throw std::runtime_error("Unterminated string");
+            throw std::runtime_error(
+                "Unterminated string at line " +
+                std::to_string(tokenLine) +
+                ", column " +
+                std::to_string(tokenColumn));
         }
 
         advance();
 
-        tokens.push_back({TokenType::String, value, line});
+        tokens.push_back({TokenType::String,
+                          value,
+                          tokenLine,
+                          tokenColumn});
     }
 
     void Lexer::scanNumber()
     {
+        int tokenLine = line;
+        int tokenColumn = column;
+
         std::string value;
 
         while (std::isdigit(static_cast<unsigned char>(currentChar())))
@@ -88,7 +171,10 @@ namespace netuno
             value += advance();
         }
 
-        tokens.push_back({TokenType::Number, value, line});
+        tokens.push_back({TokenType::Number,
+                          value,
+                          tokenLine,
+                          tokenColumn});
     }
 
     void Lexer::scanToken()
@@ -108,6 +194,9 @@ namespace netuno
             return;
         }
 
+        int tokenLine = line;
+        int tokenColumn = column;
+
         switch (character)
         {
         case '"':
@@ -116,28 +205,187 @@ namespace netuno
 
         case '=':
             advance();
-            tokens.push_back({TokenType::Equal, "=", line});
+
+            if (currentChar() == '=')
+            {
+                advance();
+
+                tokens.push_back({TokenType::EqualEqual,
+                                  "==",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            else
+            {
+                tokens.push_back({TokenType::Equal,
+                                  "=",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            break;
+
+        case '!':
+            advance();
+
+            if (currentChar() == '=')
+            {
+                advance();
+
+                tokens.push_back({TokenType::BangEqual,
+                                  "!=",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            else
+            {
+                throw std::runtime_error(
+                    "Unexpected character '!' at line " +
+                    std::to_string(tokenLine) +
+                    ", column " +
+                    std::to_string(tokenColumn));
+            }
+            break;
+
+        case '>':
+            advance();
+
+            if (currentChar() == '=')
+            {
+                advance();
+
+                tokens.push_back({TokenType::GreaterEqual,
+                                  ">=",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            else
+            {
+                tokens.push_back({TokenType::Greater,
+                                  ">",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            break;
+
+        case '<':
+            advance();
+
+            if (currentChar() == '=')
+            {
+                advance();
+
+                tokens.push_back({TokenType::LessEqual,
+                                  "<=",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            else
+            {
+                tokens.push_back({TokenType::Less,
+                                  "<",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            break;
+
+        case '+':
+            advance();
+
+            tokens.push_back({TokenType::Plus,
+                              "+",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '-':
+            advance();
+
+            tokens.push_back({TokenType::Minus,
+                              "-",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '*':
+            advance();
+
+            tokens.push_back({TokenType::Star,
+                              "*",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '/':
+            if (peekChar() == '/')
+            {
+                advance();
+                advance();
+
+                skipComment();
+            }
+            else
+            {
+                advance();
+
+                tokens.push_back({TokenType::Slash,
+                                  "/",
+                                  tokenLine,
+                                  tokenColumn});
+            }
             break;
 
         case '(':
             advance();
-            tokens.push_back({TokenType::LeftParen, "(", line});
+
+            tokens.push_back({TokenType::LeftParen,
+                              "(",
+                              tokenLine,
+                              tokenColumn});
             break;
 
         case ')':
             advance();
-            tokens.push_back({TokenType::RightParen, ")", line});
+
+            tokens.push_back({TokenType::RightParen,
+                              ")",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '{':
+            advance();
+
+            tokens.push_back({TokenType::LeftBrace,
+                              "{",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '}':
+            advance();
+
+            tokens.push_back({TokenType::RightBrace,
+                              "}",
+                              tokenLine,
+                              tokenColumn});
             break;
 
         case ',':
             advance();
-            tokens.push_back({TokenType::Comma, ",", line});
+
+            tokens.push_back({TokenType::Comma,
+                              ",",
+                              tokenLine,
+                              tokenColumn});
             break;
 
         case '\n':
             advance();
-            tokens.push_back({TokenType::NewLine, "\\n", line});
-            line++;
+
+            tokens.push_back({TokenType::NewLine,
+                              "\n",
+                              tokenLine,
+                              tokenColumn});
             break;
 
         case ' ':
@@ -148,7 +396,12 @@ namespace netuno
 
         default:
             throw std::runtime_error(
-                "Unexpected character: " + std::string(1, character));
+                "Unexpected character '" +
+                std::string(1, character) +
+                "' at line " +
+                std::to_string(tokenLine) +
+                ", column " +
+                std::to_string(tokenColumn));
         }
     }
 
@@ -159,7 +412,10 @@ namespace netuno
             scanToken();
         }
 
-        tokens.push_back({TokenType::EndOfFile, "", line});
+        tokens.push_back({TokenType::EndOfFile,
+                          "",
+                          line,
+                          column});
 
         return tokens;
     }

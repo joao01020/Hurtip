@@ -23,11 +23,15 @@ namespace netuno
 
         std::size_t position = 0;
         int line = 1;
+        int column = 1;
 
         char currentChar() const;
+        char peekChar() const;
         char advance();
 
         void skipWhitespace();
+        void skipComment();
+
         void scanToken();
         void scanIdentifier();
         void scanString();
