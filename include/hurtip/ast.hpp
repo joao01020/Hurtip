@@ -22,6 +22,8 @@ namespace hurtip
         virtual ~Expression() = default;
     };
 
+    // Statements
+
     struct CreateStatement : ASTNode
     {
         std::string name;
@@ -32,6 +34,18 @@ namespace hurtip
     {
         std::string name;
         std::unique_ptr<Expression> value;
+    };
+
+    struct LoadStatement : ASTNode
+    {
+        std::string path;
+        std::string alias;
+    };
+
+    struct ImportStatement : ASTNode
+    {
+        std::string name;
+        std::string alias;
     };
 
     struct BlockStatement : ASTNode
@@ -60,6 +74,8 @@ namespace hurtip
     {
     };
 
+    // Expressions
+
     struct LiteralExpression : Expression
     {
         TokenType type;
@@ -69,6 +85,12 @@ namespace hurtip
     struct IdentifierExpression : Expression
     {
         std::string name;
+    };
+
+    struct MemberExpression : Expression
+    {
+        std::unique_ptr<Expression> object;
+        std::string member;
     };
 
     struct BinaryExpression : Expression
@@ -91,7 +113,7 @@ namespace hurtip
 
     struct CallExpression : Expression
     {
-        std::string name;
+        std::unique_ptr<Expression> callee;
         std::vector<std::unique_ptr<Expression>> arguments;
     };
 

@@ -31,7 +31,9 @@ namespace hurtip
 
         std::unique_ptr<ASTNode> parseStatement();
 
+        // Statements
         std::unique_ptr<CreateStatement> parseCreateStatement();
+        std::unique_ptr<LoadStatement> parseLoadStatement();
         std::unique_ptr<AssignmentStatement> parseAssignmentStatement();
 
         std::unique_ptr<IfStatement> parseIfStatement();
@@ -59,10 +61,11 @@ namespace hurtip
         std::unique_ptr<Expression> parseMultiplicativeExpression();
         std::unique_ptr<Expression> parseUnaryExpression();
 
-        // Primary expressions
+        // Primary and postfix expressions
         std::unique_ptr<Expression> parsePrimaryExpression();
 
-        std::unique_ptr<CallExpression> parseCallExpression();
+        std::unique_ptr<CallExpression> parseCallExpression(
+            std::unique_ptr<Expression> callee);
     };
 
 }

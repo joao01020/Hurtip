@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace hurtip
 {
@@ -91,6 +92,11 @@ namespace hurtip
             return parseCreateStatement();
         }
 
+        if (check(TokenType::Load))
+        {
+            return parseLoadStatement();
+        }
+
         if (check(TokenType::If))
         {
             return parseIfStatement();
@@ -153,6 +159,39 @@ namespace hurtip
         }
 
         statement->value = parseExpression();
+
+        return statement;
+    }
+
+    // Load statement
+
+    std::unique_ptr<LoadStatement> Parser::parseLoadStatement()
+    {
+        const Token &loadToken = advance();
+
+        if (!check(TokenType::String))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected a file path after 'load'");
+        }
+
+        auto statement = std::make_unique<LoadStatement>();
+
+        statement->line = loadToken.line;
+        statement->path = advance().lexeme;
+
+        if (match(TokenType::As))
+        {
+            if (!check(TokenType::Identifier))
+            {
+                throw parserError(
+                    currentToken(),
+                    "Expected a module name after 'as'");
+            }
+
+            statement->alias = advance().lexeme;
+        }
 
         return statement;
     }
@@ -543,10 +582,14 @@ namespace hurtip
         return parsePrimaryExpression();
     }
 
-    // Primary expressions
+    // Primary and postfix expressions
 
     std::unique_ptr<Expression> Parser::parsePrimaryExpression()
     {
+        std::unique_ptr<Expression> expression;
+
+        // Literal values
+
         if (check(TokenType::Number) ||
             check(TokenType::String) ||
             check(TokenType::True) ||
@@ -554,43 +597,38 @@ namespace hurtip
         {
             const Token &token = advance();
 
-            auto expression = std::make_unique<LiteralExpression>();
+            auto literal = std::make_unique<LiteralExpression>();
 
-            expression->line = token.line;
-            expression->type = token.type;
-            expression->value = token.lexeme;
+            literal->line = token.line;
+            literal->type = token.type;
+            literal->value = token.lexeme;
 
-            return expression;
+            expression = std::move(literal);
         }
 
-        if (check(TokenType::Identifier))
+        // Identifier
+
+        else if (check(TokenType::Identifier))
         {
-            const bool isCall =
-                position + 1 < tokens.size() &&
-                tokens[position + 1].type == TokenType::LeftParen;
-
-            if (isCall)
-            {
-                return parseCallExpression();
-            }
-
             const Token &token = advance();
 
-            auto expression =
+            auto identifier =
                 std::make_unique<IdentifierExpression>();
 
-            expression->line = token.line;
-            expression->name = token.lexeme;
+            identifier->line = token.line;
+            identifier->name = token.lexeme;
 
-            return expression;
+            expression = std::move(identifier);
         }
 
-        if (match(TokenType::LeftParen))
-        {
-            auto expression = std::make_unique<GroupingExpression>();
+        // Grouped expression
 
-            expression->expression = parseExpression();
-            expression->line = expression->expression->line;
+        else if (match(TokenType::LeftParen))
+        {
+            auto grouping = std::make_unique<GroupingExpression>();
+
+            grouping->expression = parseExpression();
+            grouping->line = grouping->expression->line;
 
             if (!match(TokenType::RightParen))
             {
@@ -599,31 +637,77 @@ namespace hurtip
                     "Expected ')' after expression");
             }
 
-            return expression;
+            expression = std::move(grouping);
         }
 
-        throw parserError(
-            currentToken(),
-            "Expected an expression, got: " +
-                currentToken().lexeme);
+        else
+        {
+            throw parserError(
+                currentToken(),
+                "Expected an expression, got: " +
+                    currentToken().lexeme);
+        }
+
+        // Postfix expressions:
+        // member access and function calls
+
+        while (true)
+        {
+            // Member access: object.member
+
+            if (match(TokenType::Dot))
+            {
+                if (!check(TokenType::Identifier))
+                {
+                    throw parserError(
+                        currentToken(),
+                        "Expected a member name after '.'");
+                }
+
+                const Token &memberToken = advance();
+
+                auto member = std::make_unique<MemberExpression>();
+
+                member->line = memberToken.line;
+                member->object = std::move(expression);
+                member->member = memberToken.lexeme;
+
+                expression = std::move(member);
+
+                continue;
+            }
+
+            // Function call: expression(arguments)
+
+            if (check(TokenType::LeftParen))
+            {
+                expression = parseCallExpression(
+                    std::move(expression));
+
+                continue;
+            }
+
+            break;
+        }
+
+        return expression;
     }
 
     // Function calls
 
-    std::unique_ptr<CallExpression> Parser::parseCallExpression()
+    std::unique_ptr<CallExpression> Parser::parseCallExpression(
+        std::unique_ptr<Expression> callee)
     {
         auto expression = std::make_unique<CallExpression>();
 
-        const Token &nameToken = advance();
-
-        expression->line = nameToken.line;
-        expression->name = nameToken.lexeme;
+        expression->line = callee->line;
+        expression->callee = std::move(callee);
 
         if (!match(TokenType::LeftParen))
         {
             throw parserError(
                 currentToken(),
-                "Expected '(' after function name");
+                "Expected '(' after function expression");
         }
 
         if (!check(TokenType::RightParen))

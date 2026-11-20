@@ -87,6 +87,14 @@ namespace hurtip
         {
             type = TokenType::Create;
         }
+        else if (value == "load")
+        {
+            type = TokenType::Load;
+        }
+        else if (value == "as")
+        {
+            type = TokenType::As;
+        }
         else if (value == "true")
         {
             type = TokenType::True;
@@ -387,6 +395,15 @@ namespace hurtip
 
             tokens.push_back({TokenType::Comma,
                               ",",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case '.':
+            advance();
+
+            tokens.push_back({TokenType::Dot,
+                              ".",
                               tokenLine,
                               tokenColumn});
             break;

@@ -9,6 +9,9 @@ namespace hurtip
     enum class TokenType
     {
         Create,
+        Load,
+        As,
+
         True,
         False,
         If,
@@ -47,6 +50,7 @@ namespace hurtip
         LeftBrace,
         RightBrace,
         Comma,
+        Dot,
 
         NewLine,
         EndOfFile
