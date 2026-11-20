@@ -12,8 +12,8 @@ A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
 sem abandonar a possibilidade de evoluir para recursos mais avançados.
 
 > O Netuno está em desenvolvimento. Atualmente, possui um interpretador básico
-> capaz de executar arquivos `.nt`, além de suporte inicial ao Visual Studio
-> Code.
+> capaz de executar arquivos `.nt`, uma arquitetura inicial composta por Lexer,
+> Parser, AST e Interpreter, além de suporte inicial ao Visual Studio Code.
 
 ---
 
@@ -103,7 +103,7 @@ view(language)
 
 Atualmente, `view()` aceita exatamente um argumento.
 
-### Tipos atualmente suportados
+### Tipos atualmente suportados pelo interpretador
 
 | Tipo           | Exemplo    |
 | -------------- | ---------- |
@@ -112,6 +112,9 @@ Atualmente, `view()` aceita exatamente um argumento.
 
 Internamente, os números são representados como `double` no interpretador,
 embora a sintaxe numérica atual reconheça apenas números inteiros.
+
+**Observação:** o Lexer já reconhece as palavras `true` e `false`, mas o suporte
+a valores booleanos no interpretador ainda precisa ser implementado.
 
 ---
 
@@ -146,7 +149,8 @@ Interpreter
 
 ### Lexer — Análise léxica
 
-O Lexer lê o código-fonte e identifica os elementos da linguagem.
+O Lexer lê o código-fonte e identifica os elementos da linguagem, transformando
+o texto em uma sequência de tokens.
 
 Por exemplo:
 
@@ -154,14 +158,43 @@ Por exemplo:
 create name = "Netuno"
 ```
 
-É transformado em uma sequência de tokens, como:
+É transformado em tokens como:
 
 - `Create`
 - `Identifier`
 - `Equal`
 - `String`
 
-O Lexer também mantém informações sobre as linhas do código-fonte.
+#### Tokens reconhecidos
+
+O Lexer possui reconhecimento para as seguintes categorias:
+
+| Categoria              | Tokens                                                   |
+| ---------------------- | -------------------------------------------------------- |
+| Palavras reservadas    | `Create`, `True`, `False`                                |
+| Identificadores        | `Identifier`                                             |
+| Valores literais       | `String`, `Number`                                       |
+| Atribuição             | `Equal` (`=`)                                            |
+| Operadores aritméticos | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`) |
+| Delimitadores          | `LeftParen`, `RightParen`, `Comma`                       |
+| Estrutura do código    | `NewLine`, `EndOfFile`                                   |
+
+#### Rastreamento de posição
+
+Cada token armazena informações sobre sua localização no código-fonte:
+
+- `line`: linha em que o token começa.
+- `column`: coluna em que o token começa.
+
+Essas informações formam a base para diagnósticos mais precisos, permitindo
+identificar onde determinados elementos estão localizados.
+
+O Lexer também reconhece palavras reservadas, diferenciando-as de
+identificadores comuns.
+
+**Importante:** o reconhecimento léxico dos operadores `+`, `-`, `*` e `/` já
+está implementado, mas sua interpretação como operações matemáticas ainda está
+em desenvolvimento.
 
 ### Parser — Análise sintática
 
@@ -171,11 +204,20 @@ linguagem.
 Ele também constrói a AST (_Abstract Syntax Tree_), uma representação
 estruturada do programa.
 
-Atualmente, o Parser reconhece declarações, expressões, valores literais,
-referências a variáveis e chamadas de funções.
+Atualmente, o Parser possui suporte inicial para:
+
+- Declarações com `create`.
+- Valores literais.
+- Referências a variáveis.
+- Chamadas de funções.
+- Argumentos separados por vírgula.
+- Expressões primárias.
 
 Também possui um mecanismo inicial de diagnóstico de erros sintáticos com
 identificação de linha.
+
+A implementação de expressões aritméticas com precedência de operadores ainda
+será adicionada.
 
 ### AST — Árvore sintática abstrata
 
@@ -191,6 +233,9 @@ Atualmente, existem estruturas para representar:
 
 Os nós da AST também armazenam informações sobre a linha de origem, permitindo
 localizar determinados erros durante a execução.
+
+A estrutura será expandida para representar operadores binários, operadores
+unários e expressões agrupadas.
 
 ### Interpreter — Interpretador
 
@@ -239,8 +284,9 @@ Netuno Error: Line 3: Undefined variable: unknown
 ```
 
 O sistema ainda está em desenvolvimento. A identificação de linha já funciona em
-alguns erros do Parser e do Interpreter, mas a localização por arquivo e a
-padronização completa das mensagens ainda precisam ser implementadas.
+alguns erros do Parser e do Interpreter. O rastreamento de coluna foi adicionado
+à estrutura dos tokens, mas a localização completa por linha e coluna nas
+mensagens de erro ainda precisa ser integrada e padronizada.
 
 ---
 
@@ -363,5 +409,144 @@ Netuno/
 └── vscode-extension/
     ├── package.json
     ├── language-configuration.json
-    ├──
+    ├── syntaxes/
+    │   └── netuno.tmLanguage.json
+    └── icons/
+        ├── netuno-file.png
+        ├── netuno-file.svg
+        └── netuno-icon-theme.json
 ```
+
+---
+
+## 8. Compilação e execução
+
+O projeto utiliza CMake para configurar e compilar a implementação em C++.
+
+### Requisitos
+
+- GCC / G++ com suporte a C++17.
+- CMake.
+- Sistema operacional Linux ou ambiente compatível.
+
+### Compilar
+
+Na raiz do projeto, execute:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+### Executar
+
+Para executar um arquivo Netuno:
+
+```bash
+./build/netuno examples/program.nt
+```
+
+Exemplo de saída:
+
+```text
+Hello, World!
+Netuno Vitor
+1
+20
+30
+-5
+22.5
+true
+false
+```
+
+A saída acima corresponde a um exemplo executado durante o desenvolvimento do
+interpretador; ela não significa que todas as operações e tipos envolvidos já
+estejam implementados como recursos gerais da linguagem.
+
+---
+
+## 9. Estado atual do desenvolvimento
+
+O Netuno está sendo desenvolvido gradualmente, com foco na construção de uma
+base sólida antes da implementação de recursos mais avançados.
+
+### Componentes principais
+
+| Componente                                | Estado                |
+| ----------------------------------------- | --------------------- |
+| Lexer                                     | Implementado          |
+| Reconhecimento de palavras reservadas     | Implementado          |
+| Reconhecimento de operadores aritméticos  | Implementado no Lexer |
+| Rastreamento de linha e coluna dos tokens | Implementado no Lexer |
+| Parser básico                             | Implementado          |
+| AST básica                                | Implementada          |
+| Interpreter básico                        | Implementado          |
+| Diagnóstico inicial de erros              | Implementado          |
+| Extensão inicial para VS Code             | Implementada          |
+
+### Próximas etapas
+
+**Etapa atual — Expressões**
+
+- [ ] Formalizar a gramática de expressões.
+- [ ] Adicionar expressões binárias à AST.
+- [ ] Adicionar expressões unárias à AST.
+- [ ] Adicionar expressões agrupadas à AST.
+- [ ] Implementar precedência de operadores no Parser.
+- [ ] Implementar avaliação de expressões no Interpreter.
+- [ ] Adicionar suporte a valores booleanos no interpretador.
+
+**Evolução da linguagem**
+
+- [ ] Operadores de comparação.
+- [ ] Operadores lógicos.
+- [ ] Estruturas condicionais `if` e `else`.
+- [ ] Blocos de código.
+- [ ] Funções definidas pelo usuário.
+- [ ] Estrutura `while`.
+- [ ] Estrutura `for`.
+- [ ] Instrução `return`.
+- [ ] Biblioteca padrão.
+
+**Infraestrutura e ferramentas**
+
+- [ ] Melhorar o sistema de diagnóstico de erros.
+- [ ] Integrar localização por linha e coluna nas mensagens de erro.
+- [ ] Implementar testes automatizados.
+- [ ] Melhorar a interface de linha de comando.
+- [ ] Expandir o suporte ao Visual Studio Code.
+- [ ] Documentar formalmente a gramática da linguagem.
+
+**Objetivos futuros**
+
+- Explorar compilação para código nativo.
+- Investigar gerenciamento de memória.
+- Desenvolver recursos de baixo nível.
+- Explorar suporte a microcontroladores, especialmente ESP32.
+- Investigar possibilidades de aplicação em inteligência artificial e
+  desenvolvimento de jogos.
+
+---
+
+## 10. Direção futura
+
+O Netuno começa como um interpretador experimental, mas sua visão vai além de
+executar pequenos programas.
+
+A intenção é construir uma linguagem que combine uma sintaxe acessível com
+recursos técnicos capazes de atender a diferentes cenários de desenvolvimento.
+
+Uma das direções prioritárias é explorar programação de baixo nível e sistemas
+embarcados, permitindo que a linguagem possa futuramente interagir diretamente
+com hardware e microcontroladores.
+
+A partir dessa base, o projeto poderá evoluir para outras áreas, como
+desenvolvimento de aplicações, jogos e inteligência artificial.
+
+A evolução será gradual, priorizando uma arquitetura bem estruturada,
+previsibilidade e controle sobre o funcionamento interno da linguagem.
+
+---
+
+**Netuno — Simples para começar. Flexível para evoluir.**

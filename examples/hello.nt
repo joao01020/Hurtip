@@ -1,0 +1,6 @@
+create name = "Netuno"
+create age = 1
+
+view("Hello, World!")
+view(name, "Vitor")
+view(age)

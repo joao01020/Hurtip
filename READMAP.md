@@ -1,5 +1,24 @@
-[✓] Lexer [✓] Parser básico [✓] AST [✓] Interpreter básico [✓] Diagnósticos com
-linha [→] Diagnósticos robustos do Parser [ ] Expressões [ ] Valores e variáveis
-no runtime [ ] Operadores [ ] Comparações [ ] if / else [ ] Blocos [ ] Funções [
-] while [ ] for [ ] return [ ] Biblioteca padrão [ ] CLI / tooling [ ] Testes
-automatizados
+## Estado atual do desenvolvimento
+
+- [x] Lexer
+- [x] Parser básico
+- [x] AST
+- [x] Interpreter básico
+- [x] Diagnósticos iniciais com identificação de linha
+- [x] Expressões
+- [x] Valores e variáveis no runtime
+- [x] Operadores aritméticos
+- [ ] Diagnósticos robustos do Parser
+- [ ] Rastreamento completo de linha e coluna nos diagnósticos
+- [ ] Comparações (`==`, `!=`, `>`, `<`, `>=`, `<=`)
+- [ ] Operadores lógicos (`and`, `or`, `not`)
+- [ ] `if` / `else`
+- [ ] Blocos de código
+- [ ] `while`
+- [ ] `for`
+- [ ] Funções definidas pelo usuário
+- [ ] `return`
+- [ ] Biblioteca padrão
+- [x] Execução de arquivos `.nt` por argumento na CLI
+- [ ] CLI / tooling avançado
+- [ ] Testes automatizados
