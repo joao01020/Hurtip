@@ -103,6 +103,18 @@ namespace netuno
         {
             type = TokenType::Else;
         }
+        else if (value == "while")
+        {
+            type = TokenType::While;
+        }
+        else if (value == "break")
+        {
+            type = TokenType::Break;
+        }
+        else if (value == "continue")
+        {
+            type = TokenType::Continue;
+        }
         else if (value == "and")
         {
             type = TokenType::And;

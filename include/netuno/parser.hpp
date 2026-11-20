@@ -21,6 +21,8 @@ namespace netuno
         const std::vector<Token> &tokens;
         std::size_t position = 0;
 
+        int loopDepth = 0;
+
         const Token &currentToken() const;
         const Token &advance();
 
@@ -30,7 +32,14 @@ namespace netuno
         std::unique_ptr<ASTNode> parseStatement();
 
         std::unique_ptr<CreateStatement> parseCreateStatement();
+        std::unique_ptr<AssignmentStatement> parseAssignmentStatement();
+
         std::unique_ptr<IfStatement> parseIfStatement();
+        std::unique_ptr<WhileStatement> parseWhileStatement();
+
+        std::unique_ptr<BreakStatement> parseBreakStatement();
+        std::unique_ptr<ContinueStatement> parseContinueStatement();
+
         std::unique_ptr<BlockStatement> parseBlockStatement();
 
         // Expression parsing

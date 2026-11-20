@@ -28,6 +28,12 @@ namespace netuno
         std::unique_ptr<Expression> value;
     };
 
+    struct AssignmentStatement : ASTNode
+    {
+        std::string name;
+        std::unique_ptr<Expression> value;
+    };
+
     struct BlockStatement : ASTNode
     {
         std::vector<std::unique_ptr<ASTNode>> statements;
@@ -38,6 +44,20 @@ namespace netuno
         std::unique_ptr<Expression> condition;
         std::unique_ptr<BlockStatement> thenBranch;
         std::unique_ptr<BlockStatement> elseBranch;
+    };
+
+    struct WhileStatement : ASTNode
+    {
+        std::unique_ptr<Expression> condition;
+        std::unique_ptr<BlockStatement> body;
+    };
+
+    struct BreakStatement : ASTNode
+    {
+    };
+
+    struct ContinueStatement : ASTNode
+    {
     };
 
     struct LiteralExpression : Expression

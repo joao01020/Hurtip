@@ -9,12 +9,42 @@
 namespace netuno
 {
 
+    namespace
+    {
+
+        struct BreakSignal
+        {
+            int line;
+        };
+
+        struct ContinueSignal
+        {
+            int line;
+        };
+
+    }
+
     void Interpreter::interpret(
         const std::vector<std::unique_ptr<ASTNode>> &statements)
     {
         for (const auto &statement : statements)
         {
-            execute(*statement);
+            try
+            {
+                execute(*statement);
+            }
+            catch (const BreakSignal &signal)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(signal.line) +
+                    ": 'break' can only be used inside a loop");
+            }
+            catch (const ContinueSignal &signal)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(signal.line) +
+                    ": 'continue' can only be used inside a loop");
+            }
         }
     }
 
@@ -29,6 +59,26 @@ namespace netuno
             RuntimeValue value = evaluate(*create->value);
 
             variables[create->name] = value;
+
+            return;
+        }
+
+        // Variable assignment
+        if (const auto *assignment =
+                dynamic_cast<const AssignmentStatement *>(&statement))
+        {
+            auto variable = variables.find(assignment->name);
+
+            if (variable == variables.end())
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(assignment->line) +
+                    ": Undefined variable: " + assignment->name);
+            }
+
+            RuntimeValue value = evaluate(*assignment->value);
+
+            variable->second = value;
 
             return;
         }
@@ -55,6 +105,60 @@ namespace netuno
             else if (ifStatement->elseBranch)
             {
                 execute(*ifStatement->elseBranch);
+            }
+
+            return;
+        }
+
+        // Break statement
+        if (const auto *breakStatement =
+                dynamic_cast<const BreakStatement *>(&statement))
+        {
+            throw BreakSignal{breakStatement->line};
+        }
+
+        // Continue statement
+        if (const auto *continueStatement =
+                dynamic_cast<const ContinueStatement *>(&statement))
+        {
+            throw ContinueSignal{continueStatement->line};
+        }
+
+        // While statement
+        if (const auto *whileStatement =
+                dynamic_cast<const WhileStatement *>(&statement))
+        {
+            while (true)
+            {
+                RuntimeValue condition =
+                    evaluate(*whileStatement->condition);
+
+                const bool *boolean = std::get_if<bool>(&condition);
+
+                if (!boolean)
+                {
+                    throw std::runtime_error(
+                        "Line " + std::to_string(whileStatement->line) +
+                        ": While condition must be a boolean");
+                }
+
+                if (!*boolean)
+                {
+                    break;
+                }
+
+                try
+                {
+                    execute(*whileStatement->body);
+                }
+                catch (const ContinueSignal &)
+                {
+                    continue;
+                }
+                catch (const BreakSignal &)
+                {
+                    break;
+                }
             }
 
             return;
@@ -241,8 +345,6 @@ namespace netuno
 
         switch (expression.operation)
         {
-            // Arithmetic operations
-
         case TokenType::Plus:
         {
             const std::string *leftString =
@@ -292,15 +394,11 @@ namespace netuno
             }
             break;
 
-            // Equality comparisons
-
         case TokenType::EqualEqual:
             return left == right;
 
         case TokenType::BangEqual:
             return left != right;
-
-            // Relational comparisons
 
         case TokenType::Greater:
             if (leftNumber && rightNumber)

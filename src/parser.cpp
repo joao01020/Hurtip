@@ -96,8 +96,29 @@ namespace netuno
             return parseIfStatement();
         }
 
+        if (check(TokenType::While))
+        {
+            return parseWhileStatement();
+        }
+
+        if (check(TokenType::Break))
+        {
+            return parseBreakStatement();
+        }
+
+        if (check(TokenType::Continue))
+        {
+            return parseContinueStatement();
+        }
+
         if (check(TokenType::Identifier))
         {
+            if (position + 1 < tokens.size() &&
+                tokens[position + 1].type == TokenType::Equal)
+            {
+                return parseAssignmentStatement();
+            }
+
             return parseExpression();
         }
 
@@ -123,6 +144,30 @@ namespace netuno
 
         statement->line = createToken.line;
         statement->name = advance().lexeme;
+
+        if (!match(TokenType::Equal))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected '=' after variable name");
+        }
+
+        statement->value = parseExpression();
+
+        return statement;
+    }
+
+    // Variable assignment
+
+    std::unique_ptr<AssignmentStatement>
+    Parser::parseAssignmentStatement()
+    {
+        const Token &nameToken = advance();
+
+        auto statement = std::make_unique<AssignmentStatement>();
+
+        statement->line = nameToken.line;
+        statement->name = nameToken.lexeme;
 
         if (!match(TokenType::Equal))
         {
@@ -163,7 +208,6 @@ namespace netuno
 
         statement->thenBranch = parseBlockStatement();
 
-        // Preserve newlines if there is no else branch.
         const std::size_t afterThenBranch = position;
 
         while (match(TokenType::NewLine))
@@ -178,6 +222,88 @@ namespace netuno
         {
             position = afterThenBranch;
         }
+
+        return statement;
+    }
+
+    // While statement
+
+    std::unique_ptr<WhileStatement> Parser::parseWhileStatement()
+    {
+        const Token &whileToken = advance();
+
+        auto statement = std::make_unique<WhileStatement>();
+        statement->line = whileToken.line;
+
+        if (!match(TokenType::LeftParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected '(' after 'while'");
+        }
+
+        statement->condition = parseExpression();
+
+        if (!match(TokenType::RightParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected ')' after while condition");
+        }
+
+        loopDepth++;
+
+        try
+        {
+            statement->body = parseBlockStatement();
+        }
+        catch (...)
+        {
+            loopDepth--;
+            throw;
+        }
+
+        loopDepth--;
+
+        return statement;
+    }
+
+    // Break statement
+
+    std::unique_ptr<BreakStatement> Parser::parseBreakStatement()
+    {
+        const Token &breakToken = advance();
+
+        if (loopDepth <= 0)
+        {
+            throw parserError(
+                breakToken,
+                "'break' can only be used inside a loop");
+        }
+
+        auto statement = std::make_unique<BreakStatement>();
+
+        statement->line = breakToken.line;
+
+        return statement;
+    }
+
+    // Continue statement
+
+    std::unique_ptr<ContinueStatement> Parser::parseContinueStatement()
+    {
+        const Token &continueToken = advance();
+
+        if (loopDepth <= 0)
+        {
+            throw parserError(
+                continueToken,
+                "'continue' can only be used inside a loop");
+        }
+
+        auto statement = std::make_unique<ContinueStatement>();
+
+        statement->line = continueToken.line;
 
         return statement;
     }

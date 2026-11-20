@@ -13,6 +13,9 @@ namespace netuno
         False,
         If,
         Else,
+        While,
+        Break,
+        Continue,
 
         // Logical operators
         And,
