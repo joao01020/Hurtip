@@ -11,9 +11,11 @@ recursos para desenvolvimento de aplicações e sistemas embarcados.
 A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
 sem abandonar a possibilidade de evoluir para recursos mais avançados.
 
-> O Netuno está em desenvolvimento. Atualmente, possui um interpretador básico
-> capaz de executar arquivos `.nt`, uma arquitetura inicial composta por Lexer,
-> Parser, AST e Interpreter, além de suporte inicial ao Visual Studio Code.
+> O Netuno está em desenvolvimento. Atualmente, possui um interpretador
+> funcional capaz de executar arquivos `.nt`, uma arquitetura composta por
+> Lexer, Parser, AST e Interpreter, suporte a variáveis, expressões, operações
+> matemáticas, lógica, decisões e estruturas de repetição, além de suporte
+> inicial ao Visual Studio Code.
 
 ---
 
@@ -67,11 +69,13 @@ Exemplo:
 
 ```netuno
 create name = "Netuno"
-create age = 1
+create age = 24
+create is_active = true
 
 view("Minha primeira execução!")
 view(name)
 view(age)
+view(is_active)
 ```
 
 ### Declaração de variáveis
@@ -80,10 +84,30 @@ A palavra-chave `create` é utilizada para criar variáveis.
 
 ```netuno
 create name = "Netuno"
-create age = 1
+create age = 24
+create is_active = true
 ```
 
 A escolha de `create` busca tornar a declaração mais compreensível e intuitiva.
+
+As variáveis podem armazenar valores e ser utilizadas posteriormente em
+expressões, operações e decisões.
+
+### Atribuição de valores
+
+É possível atualizar o valor de uma variável já declarada.
+
+```netuno
+create counter = 0
+
+counter = counter + 1
+counter = counter + 1
+
+view(counter)
+```
+
+A atribuição permite modificar o conteúdo armazenado em uma variável durante a
+execução do programa.
 
 ### Exibição de valores
 
@@ -105,22 +129,310 @@ Atualmente, `view()` aceita exatamente um argumento.
 
 ### Tipos atualmente suportados pelo interpretador
 
-| Tipo           | Exemplo    |
-| -------------- | ---------- |
-| Texto          | `"Netuno"` |
-| Número inteiro | `10`       |
+| Tipo     | Exemplo    | Representação interna |
+| -------- | ---------- | --------------------- |
+| Texto    | `"Netuno"` | `std::string`         |
+| Número   | `24`       | `double`              |
+| Booleano | `true`     | `bool`                |
 
-Internamente, os números são representados como `double` no interpretador,
-embora a sintaxe numérica atual reconheça apenas números inteiros.
+Internamente, os valores são armazenados utilizando `std::variant`.
 
-**Observação:** o Lexer já reconhece as palavras `true` e `false`, mas o suporte
-a valores booleanos no interpretador ainda precisa ser implementado.
+**Observação:** o interpretador já trabalha com números representados como
+`double`, mas a sintaxe numérica atual do Lexer reconhece apenas números
+inteiros. O suporte a literais decimais ainda precisa ser implementado.
+
+### Comentários
+
+O Netuno permite comentários de linha utilizando `//`.
+
+```netuno
+// Este é um comentário
+
+create age = 24 // Comentário na mesma linha
+
+view(age)
+```
+
+Os comentários são ignorados durante a execução do programa.
 
 ---
 
-## 4. Arquitetura atual
+## 4. Operadores e expressões
 
-O Netuno está sendo desenvolvido em C++ e utiliza uma arquitetura dividida em
+O Netuno já possui suporte a diferentes operadores para realizar cálculos,
+comparações e operações lógicas.
+
+### Operadores aritméticos
+
+| Operador | Operação      | Exemplo  |
+| -------- | ------------- | -------- |
+| `+`      | Adição        | `10 + 5` |
+| `-`      | Subtração     | `10 - 5` |
+| `*`      | Multiplicação | `10 * 5` |
+| `/`      | Divisão       | `10 / 5` |
+
+Exemplo:
+
+```netuno
+create sum = 10 + 5
+create subtraction = 10 - 5
+create multiplication = 10 * 5
+create division = 10 / 5
+
+view(sum)
+view(subtraction)
+view(multiplication)
+view(division)
+```
+
+### Precedência matemática
+
+O interpretador respeita a precedência dos operadores matemáticos.
+
+```netuno
+create result = 10 + 5 * 2
+create grouped_result = (10 + 5) * 2
+
+view(result)
+view(grouped_result)
+```
+
+A multiplicação é realizada antes da adição, enquanto os parênteses permitem
+agrupar expressões.
+
+### Operadores unários
+
+O Netuno possui suporte aos operadores unários positivos e negativos.
+
+```netuno
+create negative = -10
+create positive = +10
+
+view(negative)
+view(positive)
+```
+
+### Operadores de comparação
+
+| Operador | Significado    |
+| -------- | -------------- |
+| `==`     | Igual          |
+| `!=`     | Diferente      |
+| `>`      | Maior que      |
+| `<`      | Menor que      |
+| `>=`     | Maior ou igual |
+| `<=`     | Menor ou igual |
+
+Exemplo:
+
+```netuno
+create age = 24
+
+view(age == 24)
+view(age != 18)
+view(age > 18)
+view(age < 30)
+view(age >= 24)
+view(age <= 24)
+```
+
+As comparações produzem valores booleanos.
+
+### Operadores lógicos
+
+| Operador | Significado    |
+| -------- | -------------- |
+| `and`    | E lógico       |
+| `or`     | OU lógico      |
+| `not`    | Negação lógica |
+
+Exemplo:
+
+```netuno
+view(true and true)
+view(true and false)
+
+view(false or true)
+view(false or false)
+
+view(not true)
+view(not false)
+```
+
+### Precedência lógica
+
+O interpretador considera a precedência entre os operadores lógicos e permite
+agrupamento com parênteses.
+
+```netuno
+view(true or false and false)
+view((true or false) and false)
+view(not false and true)
+```
+
+### Avaliação de curto-circuito
+
+O Netuno possui avaliação de curto-circuito nos operadores `and` e `or`.
+
+Isso significa que a segunda parte de uma expressão pode não ser avaliada quando
+o resultado já pode ser determinado pela primeira parte.
+
+```netuno
+view(false and missing == 1)
+view(true or missing == 1)
+```
+
+Nos dois casos, a variável `missing` não precisa ser avaliada.
+
+---
+
+## 5. Estruturas de controle
+
+O Netuno possui estruturas condicionais e de repetição para controlar o fluxo de
+execução dos programas.
+
+### if e else
+
+A estrutura `if` permite executar instruções dependendo de uma condição.
+
+```netuno
+create age = 24
+
+if (age >= 18) {
+    view("Maior de idade")
+} else {
+    view("Menor de idade")
+}
+```
+
+O `else` permite definir o que acontece quando a condição não é verdadeira.
+
+### Decisões aninhadas
+
+É possível utilizar estruturas condicionais dentro de outras estruturas
+condicionais.
+
+```netuno
+create age = 24
+
+if (age >= 18) {
+    if (age >= 21) {
+        view("Idade igual ou superior a 21")
+    } else {
+        view("Idade entre 18 e 20")
+    }
+} else {
+    view("Menor de idade")
+}
+```
+
+Também é possível utilizar `if` sem `else`.
+
+### Blocos de código
+
+As instruções podem ser agrupadas utilizando chaves `{}`.
+
+Os blocos são utilizados nas estruturas condicionais e nos loops.
+
+### While
+
+O `while` executa um bloco de código enquanto sua condição permanecer
+verdadeira.
+
+```netuno
+create counter = 0
+
+while (counter < 5) {
+    view(counter)
+    counter = counter + 1
+}
+```
+
+### Break
+
+O `break` encerra a execução do loop em que está inserido.
+
+```netuno
+create counter = 0
+
+while (counter < 10) {
+    counter = counter + 1
+
+    if (counter == 5) {
+        break
+    }
+
+    view(counter)
+}
+```
+
+### Continue
+
+O `continue` interrompe a repetição atual e passa para a próxima iteração do
+loop.
+
+```netuno
+create counter = 0
+
+while (counter < 5) {
+    counter = counter + 1
+
+    if (counter == 3) {
+        continue
+    }
+
+    view(counter)
+}
+```
+
+### Loops aninhados
+
+O Netuno permite utilizar loops dentro de outros loops.
+
+Também foi testado o comportamento de `break` em loops aninhados, garantindo que
+a interrupção do loop interno não encerre automaticamente o loop externo.
+
+```netuno
+create outer = 0
+
+while (outer < 3) {
+    outer = outer + 1
+
+    create inner = 0
+
+    while (inner < 5) {
+        inner = inner + 1
+
+        if (inner == 3) {
+            break
+        }
+
+        view(inner)
+    }
+
+    view(outer)
+}
+```
+
+### Recursos de controle de fluxo
+
+| Recurso            | Estado        |
+| ------------------ | ------------- |
+| `if`               | Implementado  |
+| `else`             | Implementado  |
+| Decisões aninhadas | Implementadas |
+| Blocos de código   | Implementados |
+| `while`            | Implementado  |
+| `break`            | Implementado  |
+| `continue`         | Implementado  |
+| Loops aninhados    | Implementados |
+| `for`              | Pendente      |
+
+---
+
+## 6. Arquitetura atual
+
+O Netuno está sendo desenvolvido em C++17 e utiliza uma arquitetura dividida em
 etapas.
 
 O fluxo atual de execução é:
@@ -169,15 +481,19 @@ create name = "Netuno"
 
 O Lexer possui reconhecimento para as seguintes categorias:
 
-| Categoria              | Tokens                                                   |
-| ---------------------- | -------------------------------------------------------- |
-| Palavras reservadas    | `Create`, `True`, `False`                                |
-| Identificadores        | `Identifier`                                             |
-| Valores literais       | `String`, `Number`                                       |
-| Atribuição             | `Equal` (`=`)                                            |
-| Operadores aritméticos | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`) |
-| Delimitadores          | `LeftParen`, `RightParen`, `Comma`                       |
-| Estrutura do código    | `NewLine`, `EndOfFile`                                   |
+| Categoria                | Elementos                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| Palavras reservadas      | `create`, `true`, `false`, `if`, `else`, `while`, `break`, `continue`, `and`, `or`, `not` |
+| Identificadores          | Nomes de variáveis e identificadores                                                      |
+| Valores literais         | `String`, `Number`, `True`, `False`                                                       |
+| Atribuição               | `Equal` (`=`)                                                                             |
+| Operadores aritméticos   | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`)                                  |
+| Operadores de comparação | `EqualEqual`, `BangEqual`, `Greater`, `Less`, `GreaterEqual`, `LessEqual`                 |
+| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `Comma`                             |
+| Estrutura do código      | `NewLine`, `EndOfFile`                                                                    |
+| Controle de fluxo        | `Break`, `Continue`                                                                       |
+
+O Lexer também reconhece comentários de linha iniciados por `//`.
 
 #### Rastreamento de posição
 
@@ -186,15 +502,7 @@ Cada token armazena informações sobre sua localização no código-fonte:
 - `line`: linha em que o token começa.
 - `column`: coluna em que o token começa.
 
-Essas informações formam a base para diagnósticos mais precisos, permitindo
-identificar onde determinados elementos estão localizados.
-
-O Lexer também reconhece palavras reservadas, diferenciando-as de
-identificadores comuns.
-
-**Importante:** o reconhecimento léxico dos operadores `+`, `-`, `*` e `/` já
-está implementado, mas sua interpretação como operações matemáticas ainda está
-em desenvolvimento.
+Essas informações formam a base para diagnósticos mais precisos.
 
 ### Parser — Análise sintática
 
@@ -204,20 +512,28 @@ linguagem.
 Ele também constrói a AST (_Abstract Syntax Tree_), uma representação
 estruturada do programa.
 
-Atualmente, o Parser possui suporte inicial para:
+Atualmente, o Parser possui suporte para:
 
 - Declarações com `create`.
+- Atribuição de variáveis.
 - Valores literais.
 - Referências a variáveis.
 - Chamadas de funções.
-- Argumentos separados por vírgula.
-- Expressões primárias.
+- Expressões aritméticas.
+- Expressões unárias.
+- Expressões agrupadas.
+- Operadores de comparação.
+- Operadores lógicos.
+- Precedência de operadores.
+- Estruturas condicionais.
+- Blocos de código.
+- Loops `while`.
+- Instruções `break` e `continue`.
+- Verificação inicial de uso de `break` e `continue` dentro de loops.
 
-Também possui um mecanismo inicial de diagnóstico de erros sintáticos com
-identificação de linha.
-
-A implementação de expressões aritméticas com precedência de operadores ainda
-será adicionada.
+O Parser possui mecanismos iniciais de diagnóstico, mas ainda precisa de
+melhorias para lidar com erros sintáticos de maneira mais completa e
+consistente.
 
 ### AST — Árvore sintática abstrata
 
@@ -226,16 +542,19 @@ A AST representa a estrutura do código de maneira organizada.
 Atualmente, existem estruturas para representar:
 
 - Declarações de variáveis.
+- Atribuições.
 - Expressões.
-- Chamadas de funções.
 - Valores literais.
 - Referências a variáveis.
+- Expressões binárias.
+- Expressões unárias.
+- Chamadas de funções.
+- Decisões condicionais.
+- Blocos de código.
+- Loops.
+- Instruções de interrupção e continuação de loops.
 
-Os nós da AST também armazenam informações sobre a linha de origem, permitindo
-localizar determinados erros durante a execução.
-
-A estrutura será expandida para representar operadores binários, operadores
-unários e expressões agrupadas.
+A estrutura também armazena informações de origem utilizadas nos diagnósticos.
 
 ### Interpreter — Interpretador
 
@@ -245,16 +564,36 @@ instruções.
 Atualmente, ele consegue:
 
 - Criar variáveis.
-- Armazenar valores.
-- Recuperar valores armazenados.
+- Armazenar e recuperar valores.
+- Atualizar variáveis existentes.
+- Trabalhar com strings, números e booleanos.
+- Avaliar expressões matemáticas.
+- Realizar comparações.
+- Avaliar expressões lógicas.
+- Executar operações com curto-circuito.
 - Executar a função nativa `view()`.
+- Executar estruturas condicionais.
+- Executar loops `while`.
+- Interpretar `break` e `continue`.
+- Executar loops aninhados.
 - Identificar variáveis não declaradas.
 - Informar a linha de determinados erros de execução.
 
-### Sistema de diagnóstico
+O interpretador utiliza `std::variant` para representar os valores em tempo de
+execução.
 
-O Netuno já possui uma implementação inicial de mensagens de erro com
-identificação de linha.
+Atualmente, os tipos internos são:
+
+```cpp
+using RuntimeValue = std::variant<std::string, double, bool>;
+```
+
+---
+
+## 7. Sistema de diagnóstico
+
+O Netuno possui uma implementação inicial de mensagens de erro com identificação
+de linha.
 
 Exemplo de erro de sintaxe:
 
@@ -262,7 +601,7 @@ Exemplo de erro de sintaxe:
 create name "Netuno"
 ```
 
-Resultado:
+Resultado esperado:
 
 ```text
 Netuno Error: Line 1: Expected '=' after variable name
@@ -276,21 +615,30 @@ create name = "Netuno"
 view(unknown)
 ```
 
-Resultado:
+Resultado esperado:
 
 ```text
 Netuno
 Netuno Error: Line 3: Undefined variable: unknown
 ```
 
-O sistema ainda está em desenvolvimento. A identificação de linha já funciona em
-alguns erros do Parser e do Interpreter. O rastreamento de coluna foi adicionado
-à estrutura dos tokens, mas a localização completa por linha e coluna nas
-mensagens de erro ainda precisa ser integrada e padronizada.
+O sistema ainda está em desenvolvimento.
+
+A identificação de linha já funciona em determinados erros do Parser e do
+Interpreter. O rastreamento de linha e coluna também existe na estrutura dos
+tokens, mas a localização completa precisa ser integrada e padronizada em todas
+as mensagens de erro.
+
+As próximas melhorias incluem:
+
+- Diagnósticos mais robustos do Parser.
+- Identificação precisa de linha e coluna.
+- Mensagens de erro mais claras.
+- Tratamento consistente de erros léxicos, sintáticos e de execução.
 
 ---
 
-## 5. Suporte ao Visual Studio Code
+## 8. Suporte ao Visual Studio Code
 
 O Netuno possui uma extensão inicial para o Visual Studio Code, criada para
 reconhecer a linguagem e facilitar a edição de arquivos `.nt`.
@@ -300,10 +648,10 @@ reconhecer a linguagem e facilitar a edição de arquivos `.nt`.
 - Reconhecimento da extensão `.nt`.
 - Identificação da linguagem Netuno.
 - Realce de sintaxe.
-- Destaque da palavra-chave `create`.
+- Destaque de palavras-chave.
 - Destaque da função `view()`.
 - Destaque de strings e números.
-- Destaque do operador de atribuição `=`.
+- Destaque de operadores.
 - Fechamento automático de parênteses e aspas.
 - Tema de ícones personalizado.
 
@@ -344,7 +692,7 @@ em um marketplace ainda não foi realizada.
 
 ---
 
-## 6. Tecnologias utilizadas
+## 9. Tecnologias utilizadas
 
 | Tecnologia       | Utilização                                     |
 | ---------------- | ---------------------------------------------- |
@@ -363,9 +711,9 @@ com compiladores e sistemas embarcados.
 
 ---
 
-## 7. Estrutura do projeto
+## 10. Estrutura do projeto
 
-A organização atual do repositório é:
+A organização do repositório inclui os seguintes componentes:
 
 ```text
 Netuno/
@@ -390,7 +738,9 @@ Netuno/
 │
 ├── include/
 │   └── netuno/
+│       ├── token.hpp
 │       ├── lexer.hpp
+│       ├── ast.hpp
 │       ├── parser.hpp
 │       └── interpreter.hpp
 │
@@ -419,7 +769,7 @@ Netuno/
 
 ---
 
-## 8. Compilação e execução
+## 11. Compilação e execução
 
 O projeto utiliza CMake para configurar e compilar a implementação em C++.
 
@@ -446,90 +796,117 @@ Para executar um arquivo Netuno:
 ./build/netuno examples/program.nt
 ```
 
-Exemplo de saída:
-
-```text
-Hello, World!
-Netuno Vitor
-1
-20
-30
--5
-22.5
-true
-false
-```
-
-A saída acima corresponde a um exemplo executado durante o desenvolvimento do
-interpretador; ela não significa que todas as operações e tipos envolvidos já
-estejam implementados como recursos gerais da linguagem.
+O interpretador recebe o caminho do arquivo `.nt` como argumento e executa as
+instruções presentes nele.
 
 ---
 
-## 9. Estado atual do desenvolvimento
+## 12. Estado atual do desenvolvimento
 
 O Netuno está sendo desenvolvido gradualmente, com foco na construção de uma
 base sólida antes da implementação de recursos mais avançados.
 
 ### Componentes principais
 
-| Componente                                | Estado                |
-| ----------------------------------------- | --------------------- |
-| Lexer                                     | Implementado          |
-| Reconhecimento de palavras reservadas     | Implementado          |
-| Reconhecimento de operadores aritméticos  | Implementado no Lexer |
-| Rastreamento de linha e coluna dos tokens | Implementado no Lexer |
-| Parser básico                             | Implementado          |
-| AST básica                                | Implementada          |
-| Interpreter básico                        | Implementado          |
-| Diagnóstico inicial de erros              | Implementado          |
-| Extensão inicial para VS Code             | Implementada          |
+| Componente                                | Estado        |
+| ----------------------------------------- | ------------- |
+| Lexer                                     | Implementado  |
+| Reconhecimento de palavras reservadas     | Implementado  |
+| Reconhecimento de operadores              | Implementado  |
+| Rastreamento de linha e coluna dos tokens | Implementado  |
+| Parser básico                             | Implementado  |
+| AST                                       | Implementada  |
+| Interpreter                               | Implementado  |
+| Variáveis e valores no runtime            | Implementados |
+| Expressões                                | Implementadas |
+| Operações aritméticas                     | Implementadas |
+| Comparações                               | Implementadas |
+| Operadores lógicos                        | Implementados |
+| Estruturas condicionais                   | Implementadas |
+| Loops e controle de fluxo                 | Implementados |
+| Diagnósticos iniciais                     | Implementados |
+| Execução de arquivos `.nt` pela CLI       | Implementada  |
+| Extensão inicial para VS Code             | Implementada  |
 
-### Próximas etapas
+### Roadmap
 
-**Etapa atual — Expressões**
+**Núcleo da linguagem**
 
-- [ ] Formalizar a gramática de expressões.
-- [ ] Adicionar expressões binárias à AST.
-- [ ] Adicionar expressões unárias à AST.
-- [ ] Adicionar expressões agrupadas à AST.
-- [ ] Implementar precedência de operadores no Parser.
-- [ ] Implementar avaliação de expressões no Interpreter.
-- [ ] Adicionar suporte a valores booleanos no interpretador.
+- [x] Lexer
+- [x] Parser básico
+- [x] AST
+- [x] Interpreter básico
+- [x] Execução de arquivos `.nt` por argumento na CLI
+- [x] Valores e variáveis no runtime
+- [x] Declaração de variáveis com `create`
+- [x] Atribuição e atualização de variáveis
+- [x] Strings, números e booleanos
+- [x] Expressões
+- [x] Operadores aritméticos (`+`, `-`, `*`, `/`)
+- [x] Operadores unários (`+`, `-`)
+- [x] Precedência matemática
+- [x] Agrupamento de expressões com parênteses
+- [x] Comentários de linha (`//`)
 
-**Evolução da linguagem**
+**Operadores e lógica**
 
-- [ ] Operadores de comparação.
-- [ ] Operadores lógicos.
-- [ ] Estruturas condicionais `if` e `else`.
-- [ ] Blocos de código.
-- [ ] Funções definidas pelo usuário.
-- [ ] Estrutura `while`.
-- [ ] Estrutura `for`.
-- [ ] Instrução `return`.
-- [ ] Biblioteca padrão.
+- [x] Comparações (`==`, `!=`, `>`, `<`, `>=`, `<=`)
+- [x] Operadores lógicos (`and`, `or`, `not`)
+- [x] Precedência de operadores lógicos
+- [x] Avaliação de curto-circuito
+- [x] Validação de valores booleanos nas operações lógicas
 
-**Infraestrutura e ferramentas**
+**Controle de fluxo**
 
-- [ ] Melhorar o sistema de diagnóstico de erros.
-- [ ] Integrar localização por linha e coluna nas mensagens de erro.
-- [ ] Implementar testes automatizados.
-- [ ] Melhorar a interface de linha de comando.
-- [ ] Expandir o suporte ao Visual Studio Code.
-- [ ] Documentar formalmente a gramática da linguagem.
+- [x] `if` / `else`
+- [x] Decisões aninhadas
+- [x] Blocos de código
+- [x] `while`
+- [x] `break`
+- [x] `continue`
+- [x] Loops aninhados
+- [ ] `for`
 
-**Objetivos futuros**
+**Diagnósticos e confiabilidade**
 
-- Explorar compilação para código nativo.
-- Investigar gerenciamento de memória.
-- Desenvolver recursos de baixo nível.
-- Explorar suporte a microcontroladores, especialmente ESP32.
-- Investigar possibilidades de aplicação em inteligência artificial e
-  desenvolvimento de jogos.
+- [x] Diagnósticos iniciais com identificação de linha
+- [x] Rastreamento de linha e coluna nos tokens
+- [ ] Diagnósticos robustos do Parser
+- [ ] Rastreamento completo de linha e coluna nos diagnósticos
+- [ ] Testes de erros léxicos
+- [ ] Testes de erros sintáticos
+- [ ] Testes de erros em tempo de execução
+- [ ] Tratamento robusto de erros
+
+**Funções e estruturas de dados**
+
+- [ ] Funções definidas pelo usuário
+- [ ] Parâmetros de funções
+- [ ] Valores de retorno
+- [ ] `return`
+- [ ] Escopo local e global
+- [ ] Arrays e listas
+- [ ] Estruturas de dados
+
+**Biblioteca e ferramentas**
+
+- [ ] Biblioteca padrão
+- [ ] Sistema de módulos e importação
+- [ ] CLI / tooling avançado
+- [ ] Testes automatizados
+- [ ] Documentação formal da gramática
+
+**Recursos de baixo nível e hardware**
+
+- [ ] Controle de memória
+- [ ] Tipos de dados de baixo nível
+- [ ] Acesso a recursos do sistema
+- [ ] Comunicação com microcontroladores
+- [ ] Suporte ao ESP32
 
 ---
 
-## 10. Direção futura
+## 13. Direção futura
 
 O Netuno começa como um interpretador experimental, mas sua visão vai além de
 executar pequenos programas.
