@@ -1,54 +1,14 @@
 
 #pragma once
 
-#include "netuno/lexer.hpp"
+#include "netuno/ast.hpp"
+
 #include <cstddef>
 #include <memory>
-#include <string>
 #include <vector>
 
 namespace netuno
 {
-
-    // Base class for all syntax tree nodes
-    struct ASTNode
-    {
-        int line = 1;
-
-        virtual ~ASTNode() = default;
-    };
-
-    // Represents a literal value or variable reference
-    struct Expression : ASTNode
-    {
-    };
-
-    // Represents a variable declaration
-    struct CreateStatement : ASTNode
-    {
-        std::string name;
-        std::unique_ptr<Expression> value;
-    };
-
-    // Represents a function call
-    struct CallExpression : Expression
-    {
-        std::string name;
-        std::vector<std::unique_ptr<Expression>> arguments;
-    };
-
-    // Represents a string or numeric value
-    struct LiteralExpression : Expression
-    {
-        TokenType type;
-        std::string value;
-    };
-
-    // Represents a variable reference
-    struct IdentifierExpression : Expression
-    {
-        std::string name;
-    };
 
     class Parser
     {
@@ -68,10 +28,31 @@ namespace netuno
         bool check(TokenType type) const;
 
         std::unique_ptr<ASTNode> parseStatement();
-        std::unique_ptr<CreateStatement> parseCreateStatement();
 
+        std::unique_ptr<CreateStatement> parseCreateStatement();
+        std::unique_ptr<IfStatement> parseIfStatement();
+        std::unique_ptr<BlockStatement> parseBlockStatement();
+
+        // Expression parsing
         std::unique_ptr<Expression> parseExpression();
+
+        // Logical expressions
+        std::unique_ptr<Expression> parseOrExpression();
+        std::unique_ptr<Expression> parseAndExpression();
+        std::unique_ptr<Expression> parseNotExpression();
+
+        // Comparison expressions
+        std::unique_ptr<Expression> parseEqualityExpression();
+        std::unique_ptr<Expression> parseComparisonExpression();
+
+        // Arithmetic expressions
+        std::unique_ptr<Expression> parseAdditiveExpression();
+        std::unique_ptr<Expression> parseMultiplicativeExpression();
+        std::unique_ptr<Expression> parseUnaryExpression();
+
+        // Primary expressions
         std::unique_ptr<Expression> parsePrimaryExpression();
+
         std::unique_ptr<CallExpression> parseCallExpression();
     };
 
