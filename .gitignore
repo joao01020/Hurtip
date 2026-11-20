@@ -18,7 +18,7 @@ compile_commands.json
 *.out
 
 # Executables
-netuno.exe
+hurtip.exe
 
 # Operating system files
 .DS_Store

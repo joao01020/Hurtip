@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace netuno
+namespace hurtip
 {
 
     enum class TokenType

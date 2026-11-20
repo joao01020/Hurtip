@@ -1,8 +1,8 @@
 
-// Meu primeiro programa em Netuno
+// Meu primeiro programa em Hurtip
 
 // Criando variáveis
-create language = "Netuno"
+create language = "Hurtip"
 create version = 1
 create age = 24
 create is_active = true
@@ -142,7 +142,7 @@ view(counter)
 
 // Alterando texto
 create message = "Hello"
-message = "Hello Netuno"
+message = "Hello Hurtip"
 
 view(message)
 
@@ -242,4 +242,4 @@ while (outer < 3) {
 view("Nested loops finished")
 
 // Finalizando programa
-view("Hello Netuno!")
+view("Hello Hurtip!")

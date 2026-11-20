@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "netuno/token.hpp"
+#include "hurtip/token.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace netuno
+namespace hurtip
 {
 
     struct ASTNode

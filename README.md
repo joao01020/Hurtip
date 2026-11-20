@@ -1,9 +1,9 @@
-# Netuno
+# Hurtip
 
 **Uma linguagem de programação experimental, simples e intuitiva, desenvolvida
 em C++.**
 
-O Netuno é um projeto experimental de criação de uma linguagem de programação
+A Hurtip é um projeto experimental de criação de uma linguagem de programação
 própria. Seu objetivo é explorar como uma linguagem pode tornar a programação
 mais acessível, reduzir a complexidade desnecessária e, futuramente, oferecer
 recursos para desenvolvimento de aplicações e sistemas embarcados.
@@ -11,8 +11,8 @@ recursos para desenvolvimento de aplicações e sistemas embarcados.
 A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
 sem abandonar a possibilidade de evoluir para recursos mais avançados.
 
-> O Netuno está em desenvolvimento. Atualmente, possui um interpretador
-> funcional capaz de executar arquivos `.nt`, uma arquitetura composta por
+> A Hurtip está em desenvolvimento. Atualmente, possui um interpretador
+> funcional capaz de executar arquivos `.hurtip`, uma arquitetura composta por
 > Lexer, Parser, AST e Interpreter, suporte a variáveis, expressões, operações
 > matemáticas, lógica, decisões e estruturas de repetição, além de suporte
 > inicial ao Visual Studio Code.
@@ -24,7 +24,7 @@ sem abandonar a possibilidade de evoluir para recursos mais avançados.
 Muitas linguagens de programação oferecem grande flexibilidade e desempenho, mas
 podem apresentar uma curva de aprendizado complexa para iniciantes.
 
-O Netuno nasce da ideia de experimentar uma abordagem diferente: criar uma
+A Hurtip nasce da ideia de experimentar uma abordagem diferente: criar uma
 linguagem em que as instruções sejam intuitivas, legíveis e próximas da intenção
 de quem está programando.
 
@@ -45,7 +45,7 @@ simplificar a experiência de desenvolvimento sem limitar sua evolução técnic
 
 ## 2. Filosofia da linguagem
 
-O Netuno segue alguns princípios:
+A Hurtip segue alguns princípios:
 
 **Simplicidade:** comandos devem ser fáceis de compreender.
 
@@ -63,12 +63,12 @@ especialmente pensando em possíveis aplicações embarcadas.
 
 ## 3. Sintaxe inicial
 
-A sintaxe inicial do Netuno busca utilizar palavras intuitivas.
+A sintaxe inicial da Hurtip busca utilizar palavras intuitivas.
 
 Exemplo:
 
-```netuno
-create name = "Netuno"
+```hurtip
+create name = "Hurtip"
 create age = 24
 create is_active = true
 
@@ -82,8 +82,8 @@ view(is_active)
 
 A palavra-chave `create` é utilizada para criar variáveis.
 
-```netuno
-create name = "Netuno"
+```hurtip
+create name = "Hurtip"
 create age = 24
 create is_active = true
 ```
@@ -97,7 +97,7 @@ expressões, operações e decisões.
 
 É possível atualizar o valor de uma variável já declarada.
 
-```netuno
+```hurtip
 create counter = 0
 
 counter = counter + 1
@@ -113,14 +113,14 @@ execução do programa.
 
 A função nativa `view()` permite exibir valores no terminal.
 
-```netuno
-view("Hello, Netuno!")
+```hurtip
+view("Hello, Hurtip!")
 ```
 
 Também é possível exibir o conteúdo de uma variável:
 
-```netuno
-create language = "Netuno"
+```hurtip
+create language = "Hurtip"
 
 view(language)
 ```
@@ -131,7 +131,7 @@ Atualmente, `view()` aceita exatamente um argumento.
 
 | Tipo     | Exemplo    | Representação interna |
 | -------- | ---------- | --------------------- |
-| Texto    | `"Netuno"` | `std::string`         |
+| Texto    | `"Hurtip"` | `std::string`         |
 | Número   | `24`       | `double`              |
 | Booleano | `true`     | `bool`                |
 
@@ -143,9 +143,9 @@ inteiros. O suporte a literais decimais ainda precisa ser implementado.
 
 ### Comentários
 
-O Netuno permite comentários de linha utilizando `//`.
+A Hurtip permite comentários de linha utilizando `//`.
 
-```netuno
+```hurtip
 // Este é um comentário
 
 create age = 24 // Comentário na mesma linha
@@ -159,7 +159,7 @@ Os comentários são ignorados durante a execução do programa.
 
 ## 4. Operadores e expressões
 
-O Netuno já possui suporte a diferentes operadores para realizar cálculos,
+A Hurtip já possui suporte a diferentes operadores para realizar cálculos,
 comparações e operações lógicas.
 
 ### Operadores aritméticos
@@ -173,7 +173,7 @@ comparações e operações lógicas.
 
 Exemplo:
 
-```netuno
+```hurtip
 create sum = 10 + 5
 create subtraction = 10 - 5
 create multiplication = 10 * 5
@@ -189,7 +189,7 @@ view(division)
 
 O interpretador respeita a precedência dos operadores matemáticos.
 
-```netuno
+```hurtip
 create result = 10 + 5 * 2
 create grouped_result = (10 + 5) * 2
 
@@ -202,9 +202,9 @@ agrupar expressões.
 
 ### Operadores unários
 
-O Netuno possui suporte aos operadores unários positivos e negativos.
+A Hurtip possui suporte aos operadores unários positivos e negativos.
 
-```netuno
+```hurtip
 create negative = -10
 create positive = +10
 
@@ -225,7 +225,7 @@ view(positive)
 
 Exemplo:
 
-```netuno
+```hurtip
 create age = 24
 
 view(age == 24)
@@ -248,7 +248,7 @@ As comparações produzem valores booleanos.
 
 Exemplo:
 
-```netuno
+```hurtip
 view(true and true)
 view(true and false)
 
@@ -264,7 +264,7 @@ view(not false)
 O interpretador considera a precedência entre os operadores lógicos e permite
 agrupamento com parênteses.
 
-```netuno
+```hurtip
 view(true or false and false)
 view((true or false) and false)
 view(not false and true)
@@ -272,12 +272,12 @@ view(not false and true)
 
 ### Avaliação de curto-circuito
 
-O Netuno possui avaliação de curto-circuito nos operadores `and` e `or`.
+A Hurtip possui avaliação de curto-circuito nos operadores `and` e `or`.
 
 Isso significa que a segunda parte de uma expressão pode não ser avaliada quando
 o resultado já pode ser determinado pela primeira parte.
 
-```netuno
+```hurtip
 view(false and missing == 1)
 view(true or missing == 1)
 ```
@@ -288,14 +288,14 @@ Nos dois casos, a variável `missing` não precisa ser avaliada.
 
 ## 5. Estruturas de controle
 
-O Netuno possui estruturas condicionais e de repetição para controlar o fluxo de
+A Hurtip possui estruturas condicionais e de repetição para controlar o fluxo de
 execução dos programas.
 
 ### if e else
 
 A estrutura `if` permite executar instruções dependendo de uma condição.
 
-```netuno
+```hurtip
 create age = 24
 
 if (age >= 18) {
@@ -312,7 +312,7 @@ O `else` permite definir o que acontece quando a condição não é verdadeira.
 É possível utilizar estruturas condicionais dentro de outras estruturas
 condicionais.
 
-```netuno
+```hurtip
 create age = 24
 
 if (age >= 18) {
@@ -339,7 +339,7 @@ Os blocos são utilizados nas estruturas condicionais e nos loops.
 O `while` executa um bloco de código enquanto sua condição permanecer
 verdadeira.
 
-```netuno
+```hurtip
 create counter = 0
 
 while (counter < 5) {
@@ -352,7 +352,7 @@ while (counter < 5) {
 
 O `break` encerra a execução do loop em que está inserido.
 
-```netuno
+```hurtip
 create counter = 0
 
 while (counter < 10) {
@@ -371,7 +371,7 @@ while (counter < 10) {
 O `continue` interrompe a repetição atual e passa para a próxima iteração do
 loop.
 
-```netuno
+```hurtip
 create counter = 0
 
 while (counter < 5) {
@@ -387,12 +387,12 @@ while (counter < 5) {
 
 ### Loops aninhados
 
-O Netuno permite utilizar loops dentro de outros loops.
+A Hurtip permite utilizar loops dentro de outros loops.
 
 Também foi testado o comportamento de `break` em loops aninhados, garantindo que
 a interrupção do loop interno não encerre automaticamente o loop externo.
 
-```netuno
+```hurtip
 create outer = 0
 
 while (outer < 3) {
@@ -432,13 +432,13 @@ while (outer < 3) {
 
 ## 6. Arquitetura atual
 
-O Netuno está sendo desenvolvido em C++17 e utiliza uma arquitetura dividida em
+A Hurtip está sendo desenvolvida em C++17 e utiliza uma arquitetura dividida em
 etapas.
 
 O fluxo atual de execução é:
 
 ```text
-Arquivo .nt
+Arquivo .hurtip
     |
     v
   Lexer
@@ -466,8 +466,8 @@ o texto em uma sequência de tokens.
 
 Por exemplo:
 
-```netuno
-create name = "Netuno"
+```hurtip
+create name = "Hurtip"
 ```
 
 É transformado em tokens como:
@@ -592,25 +592,25 @@ using RuntimeValue = std::variant<std::string, double, bool>;
 
 ## 7. Sistema de diagnóstico
 
-O Netuno possui uma implementação inicial de mensagens de erro com identificação
+A Hurtip possui uma implementação inicial de mensagens de erro com identificação
 de linha.
 
 Exemplo de erro de sintaxe:
 
-```netuno
-create name "Netuno"
+```hurtip
+create name "Hurtip"
 ```
 
 Resultado esperado:
 
 ```text
-Netuno Error: Line 1: Expected '=' after variable name
+Hurtip Error: Line 1: Expected '=' after variable name
 ```
 
 Exemplo de erro durante a execução:
 
-```netuno
-create name = "Netuno"
+```hurtip
+create name = "Hurtip"
 
 view(unknown)
 ```
@@ -618,8 +618,7 @@ view(unknown)
 Resultado esperado:
 
 ```text
-Netuno
-Netuno Error: Line 3: Undefined variable: unknown
+Hurtip Error: Line 3: Undefined variable: unknown
 ```
 
 O sistema ainda está em desenvolvimento.
@@ -640,13 +639,13 @@ As próximas melhorias incluem:
 
 ## 8. Suporte ao Visual Studio Code
 
-O Netuno possui uma extensão inicial para o Visual Studio Code, criada para
-reconhecer a linguagem e facilitar a edição de arquivos `.nt`.
+A Hurtip possui uma extensão inicial para o Visual Studio Code, criada para
+reconhecer a linguagem e facilitar a edição de arquivos `.hurtip`.
 
 ### Recursos disponíveis
 
-- Reconhecimento da extensão `.nt`.
-- Identificação da linguagem Netuno.
+- Reconhecimento da extensão `.hurtip`.
+- Identificação da linguagem Hurtip.
 - Realce de sintaxe.
 - Destaque de palavras-chave.
 - Destaque da função `view()`.
@@ -657,13 +656,13 @@ reconhecer a linguagem e facilitar a edição de arquivos `.nt`.
 
 ### Identidade visual
 
-O projeto possui uma identidade visual própria, incluindo ícone para o Netuno e
+O projeto possui uma identidade visual própria, incluindo ícone para a Hurtip e
 variações em diferentes resoluções.
 
-O ícone dos arquivos `.nt` foi integrado ao tema Seti do VS Code, preservando os
-ícones existentes para os demais tipos de arquivos.
+O ícone dos arquivos `.hurtip` foi integrado ao tema Seti do VS Code,
+preservando os ícones existentes para os demais tipos de arquivos.
 
-O tema personalizado é identificado como **Seti + Netuno**.
+O tema personalizado é identificado como **Seti + Hurtip**.
 
 ### Estrutura da extensão
 
@@ -673,12 +672,12 @@ vscode-extension/
 ├── language-configuration.json
 │
 ├── syntaxes/
-│   └── netuno.tmLanguage.json
+│   └── hurtip.tmLanguage.json
 │
 └── icons/
-    ├── netuno-file.png
-    ├── netuno-file.svg
-    ├── netuno-icon-theme.json
+    ├── hurtip-file.png
+    ├── hurtip-file.svg
+    ├── hurtip-icon-theme.json
     │
     └── seti/
         ├── seti-circular-128x128.png
@@ -716,7 +715,7 @@ com compiladores e sistemas embarcados.
 A organização do repositório inclui os seguintes componentes:
 
 ```text
-Netuno/
+Hurtip/
 ├── CMakeLists.txt
 ├── README.md
 ├── .gitignore
@@ -734,10 +733,10 @@ Netuno/
 │   │   └── icon-256.png
 │   │
 │   └── linux/
-│       └── netuno.desktop
+│       └── hurtip.desktop
 │
 ├── include/
-│   └── netuno/
+│   └── hurtip/
 │       ├── token.hpp
 │       ├── lexer.hpp
 │       ├── ast.hpp
@@ -751,7 +750,8 @@ Netuno/
 │   └── interpreter.cpp
 │
 ├── examples/
-│   └── program.nt
+│   ├── hello.hurtip
+│   └── program.hurtip
 │
 ├── tests/
 │   └── CMakeLists.txt
@@ -760,11 +760,13 @@ Netuno/
     ├── package.json
     ├── language-configuration.json
     ├── syntaxes/
-    │   └── netuno.tmLanguage.json
+    │   └── hurtip.tmLanguage.json
     └── icons/
-        ├── netuno-file.png
-        ├── netuno-file.svg
-        └── netuno-icon-theme.json
+        ├── hurtip-file.png
+        ├── hurtip-file.svg
+        ├── hurtip-icon-theme.json
+        └── seti/
+            └── vs-seti-icon-theme.json
 ```
 
 ---
@@ -790,20 +792,20 @@ cmake --build build
 
 ### Executar
 
-Para executar um arquivo Netuno:
+Para executar um arquivo Hurtip:
 
 ```bash
-./build/netuno examples/program.nt
+./build/hurtip examples/program.hurtip
 ```
 
-O interpretador recebe o caminho do arquivo `.nt` como argumento e executa as
-instruções presentes nele.
+O interpretador recebe o caminho do arquivo `.hurtip` como argumento e executa
+as instruções presentes nele.
 
 ---
 
 ## 12. Estado atual do desenvolvimento
 
-O Netuno está sendo desenvolvido gradualmente, com foco na construção de uma
+A Hurtip está sendo desenvolvida gradualmente, com foco na construção de uma
 base sólida antes da implementação de recursos mais avançados.
 
 ### Componentes principais
@@ -825,7 +827,7 @@ base sólida antes da implementação de recursos mais avançados.
 | Estruturas condicionais                   | Implementadas |
 | Loops e controle de fluxo                 | Implementados |
 | Diagnósticos iniciais                     | Implementados |
-| Execução de arquivos `.nt` pela CLI       | Implementada  |
+| Execução de arquivos `.hurtip` pela CLI   | Implementada  |
 | Extensão inicial para VS Code             | Implementada  |
 
 ### Roadmap
@@ -836,7 +838,7 @@ base sólida antes da implementação de recursos mais avançados.
 - [x] Parser básico
 - [x] AST
 - [x] Interpreter básico
-- [x] Execução de arquivos `.nt` por argumento na CLI
+- [x] Execução de arquivos `.hurtip` por argumento na CLI
 - [x] Valores e variáveis no runtime
 - [x] Declaração de variáveis com `create`
 - [x] Atribuição e atualização de variáveis
@@ -908,7 +910,7 @@ base sólida antes da implementação de recursos mais avançados.
 
 ## 13. Direção futura
 
-O Netuno começa como um interpretador experimental, mas sua visão vai além de
+A Hurtip começa como um interpretador experimental, mas sua visão vai além de
 executar pequenos programas.
 
 A intenção é construir uma linguagem que combine uma sintaxe acessível com
@@ -926,4 +928,4 @@ previsibilidade e controle sobre o funcionamento interno da linguagem.
 
 ---
 
-**Netuno — Simples para começar. Flexível para evoluir.**
+**Hurtip — Simples para começar. Flexível para evoluir.**

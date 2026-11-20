@@ -1,10 +1,10 @@
 
-#include "netuno/parser.hpp"
+#include "hurtip/parser.hpp"
 
 #include <stdexcept>
 #include <string>
 
-namespace netuno
+namespace hurtip
 {
 
     static std::runtime_error parserError(

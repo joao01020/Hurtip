@@ -1,4 +1,4 @@
-create name = "Netuno"
+create name = "Hurtip"
 create age = 1
 
 view("Hello, World!")

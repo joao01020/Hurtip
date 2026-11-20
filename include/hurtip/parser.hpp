@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "netuno/ast.hpp"
+#include "hurtip/ast.hpp"
 
 #include <cstddef>
 #include <memory>
 #include <vector>
 
-namespace netuno
+namespace hurtip
 {
 
     class Parser

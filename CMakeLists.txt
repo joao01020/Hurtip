@@ -1,9 +1,9 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(Netuno
+project(Hurtip
     VERSION 0.1.0
-    DESCRIPTION "Netuno Programming Language"
+    DESCRIPTION "Hurtip Programming Language"
     LANGUAGES CXX
 )
 
@@ -11,27 +11,26 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(netuno
+add_executable(hurtip
     src/main.cpp
     src/lexer.cpp
     src/parser.cpp
     src/interpreter.cpp
 )
 
-target_include_directories(netuno
+target_include_directories(hurtip
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
 )
 
 if(MSVC)
-    target_compile_options(netuno PRIVATE /W4)
+    target_compile_options(hurtip PRIVATE /W4)
 else()
-    target_compile_options(netuno PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(hurtip PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-
-# Netuno visual assets
+# Recursos visuais da Hurtip
 install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/assets/
-    DESTINATION share/netuno/assets
+    DESTINATION share/hurtip/assets
 )

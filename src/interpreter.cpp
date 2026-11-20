@@ -1,12 +1,12 @@
 
-#include "netuno/interpreter.hpp"
+#include "hurtip/interpreter.hpp"
 
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
 
-namespace netuno
+namespace hurtip
 {
 
     namespace

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "netuno/parser.hpp"
+#include "hurtip/parser.hpp"
 
 #include <memory>
 #include <string>
@@ -9,7 +9,7 @@
 #include <variant>
 #include <vector>
 
-namespace netuno
+namespace hurtip
 {
 
     using RuntimeValue = std::variant<std::string, double, bool>;

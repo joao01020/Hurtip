@@ -1,0 +1,14 @@
+
+{
+    "iconDefinitions": {
+        "_hurtip": {
+            "iconPath": "./hurtip-file.svg"
+        }
+    },
+    "fileExtensions": {
+        "hurtip": "_hurtip"
+    },
+    "languageIds": {
+        "hurtip": "_hurtip"
+    }
+}

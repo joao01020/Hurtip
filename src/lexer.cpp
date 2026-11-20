@@ -1,10 +1,10 @@
 
-#include "netuno/lexer.hpp"
+#include "hurtip/lexer.hpp"
 
 #include <cctype>
 #include <stdexcept>
 
-namespace netuno
+namespace hurtip
 {
 
     Lexer::Lexer(const std::string &source)

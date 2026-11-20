@@ -1,12 +1,12 @@
-## Estado atual do desenvolvimento
+# Estado atual do desenvolvimento
 
-### Núcleo da linguagem
+## Núcleo da linguagem
 
 - [x] Lexer
 - [x] Parser básico
 - [x] AST
 - [x] Interpreter básico
-- [x] Execução de arquivos `.nt` por argumento na CLI
+- [x] Execução de arquivos `.hurtip` por argumento na CLI
 - [x] Valores e variáveis no runtime
 - [x] Declaração de variáveis com `create`
 - [x] Atribuição e atualização de variáveis
@@ -18,7 +18,7 @@
 - [x] Agrupamento de expressões com parênteses
 - [x] Comentários de linha (`//`)
 
-### Operadores e lógica
+## Operadores e lógica
 
 - [x] Comparações (`==`, `!=`, `>`, `<`, `>=`, `<=`)
 - [x] Operadores lógicos (`and`, `or`, `not`)
@@ -26,7 +26,7 @@
 - [x] Avaliação de curto-circuito
 - [x] Validação de valores booleanos nas operações lógicas
 
-### Controle de fluxo
+## Controle de fluxo
 
 - [x] `if` / `else`
 - [x] Decisões aninhadas
@@ -37,7 +37,7 @@
 - [x] Loops aninhados
 - [ ] `for`
 
-### Diagnósticos e confiabilidade
+## Diagnósticos e confiabilidade
 
 - [x] Diagnósticos iniciais com identificação de linha
 - [ ] Diagnósticos robustos do Parser
@@ -47,7 +47,7 @@
 - [ ] Testes de erros em tempo de execução
 - [ ] Tratamento robusto de erros
 
-### Funções e estruturas de dados
+## Funções e estruturas de dados
 
 - [ ] Funções definidas pelo usuário
 - [ ] Parâmetros de funções
@@ -57,14 +57,14 @@
 - [ ] Arrays e listas
 - [ ] Estruturas de dados
 
-### Biblioteca e ferramentas
+## Biblioteca e ferramentas
 
 - [ ] Biblioteca padrão
 - [ ] Sistema de módulos e importação
 - [ ] CLI / tooling avançado
 - [ ] Testes automatizados
 
-### Recursos de baixo nível e hardware
+## Recursos de baixo nível e hardware
 
 - [ ] Controle de memória
 - [ ] Tipos de dados de baixo nível
