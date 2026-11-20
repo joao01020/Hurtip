@@ -128,3 +128,118 @@ if (age == 18) {
 else {
     view("Não tem 18 anos")
 }
+
+// Atribuição de variáveis
+create counter = 0
+
+view(counter)
+
+counter = counter + 1
+view(counter)
+
+counter = counter + 1
+view(counter)
+
+// Alterando texto
+create message = "Hello"
+message = "Hello Netuno"
+
+view(message)
+
+// Alterando booleanos
+create is_ready = false
+is_ready = true
+
+view(is_ready)
+
+// Atribuição dentro de if
+if (counter == 2) {
+    counter = 10
+}
+
+view(counter)
+
+// While loop
+create while_counter = 1
+
+while (while_counter <= 5) {
+    view(while_counter)
+    while_counter = while_counter + 1
+}
+
+view("Loop finished")
+
+// Testando break
+create break_counter = 0
+
+while (break_counter < 10) {
+    break_counter = break_counter + 1
+
+    if (break_counter == 5) {
+        break
+    }
+
+    view(break_counter)
+}
+
+view("Break finished")
+
+// Testando continue
+create continue_counter = 0
+
+while (continue_counter < 5) {
+    continue_counter = continue_counter + 1
+
+    if (continue_counter == 3) {
+        continue
+    }
+
+    view(continue_counter)
+}
+
+view("Continue finished")
+
+// Testando break e continue juntos
+create control_counter = 0
+
+while (control_counter < 10) {
+    control_counter = control_counter + 1
+
+    if (control_counter == 3) {
+        continue
+    }
+
+    if (control_counter == 7) {
+        break
+    }
+
+    view(control_counter)
+}
+
+view("Control flow finished")
+
+// Testando loops aninhados
+create outer = 0
+
+while (outer < 3) {
+    outer = outer + 1
+
+    create inner = 0
+
+    while (inner < 5) {
+        inner = inner + 1
+
+        if (inner == 3) {
+            break
+        }
+
+        view(inner)
+    }
+
+    view(outer)
+}
+
+view("Nested loops finished")
+
+// Finalizando programa
+view("Hello Netuno!")
