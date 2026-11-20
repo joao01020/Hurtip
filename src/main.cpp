@@ -10,6 +10,8 @@
 #include "hurtip/parser.hpp"
 #include "hurtip/interpreter.hpp"
 
+#include <filesystem>
+
 int main(int argc, char *argv[])
 {
 
@@ -48,7 +50,9 @@ int main(int argc, char *argv[])
 
         // Interpreter
         hurtip::Interpreter interpreter;
-        interpreter.interpret(statements);
+        interpreter.interpret(
+            statements,
+            std::filesystem::absolute(filePath));
     }
     catch (const std::exception &error)
     {

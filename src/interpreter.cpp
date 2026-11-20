@@ -1,10 +1,15 @@
 
 #include "hurtip/interpreter.hpp"
 
+#include "hurtip/lexer.hpp"
+
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+#include <system_error>
 
 namespace hurtip
 {
@@ -22,9 +27,71 @@ namespace hurtip
             int line;
         };
 
+        // Resolve a callable expression into its qualified name.
+        // Examples:
+        // view               -> "view"
+        // math.sum           -> "math.sum"
+        // math.geometry.area -> "math.geometry.area"
+
+        std::string resolveCalleeName(const Expression &expression)
+        {
+            if (const auto *identifier =
+                    dynamic_cast<const IdentifierExpression *>(&expression))
+            {
+                return identifier->name;
+            }
+
+            if (const auto *member =
+                    dynamic_cast<const MemberExpression *>(&expression))
+            {
+                return resolveCalleeName(*member->object) +
+                       "." + member->member;
+            }
+
+            if (const auto *grouping =
+                    dynamic_cast<const GroupingExpression *>(&expression))
+            {
+                return resolveCalleeName(*grouping->expression);
+            }
+
+            throw std::runtime_error(
+                "Invalid function call target");
+        }
+
+    }
+
+    // Program execution
+
+    void Interpreter::interpret(
+        const std::vector<std::unique_ptr<ASTNode>> &statements)
+    {
+        interpret(statements, std::filesystem::current_path() /
+                                  "__main__.hurtip");
     }
 
     void Interpreter::interpret(
+        const std::vector<std::unique_ptr<ASTNode>> &statements,
+        const std::filesystem::path &sourcePath)
+    {
+        currentFilePath = std::filesystem::absolute(sourcePath)
+                              .lexically_normal();
+
+        std::error_code error;
+
+        std::filesystem::path canonicalPath =
+            std::filesystem::weakly_canonical(
+                currentFilePath,
+                error);
+
+        if (!error)
+        {
+            currentFilePath = canonicalPath;
+        }
+
+        executeStatements(statements);
+    }
+
+    void Interpreter::executeStatements(
         const std::vector<std::unique_ptr<ASTNode>> &statements)
     {
         for (const auto &statement : statements)
@@ -59,6 +126,15 @@ namespace hurtip
             RuntimeValue value = evaluate(*create->value);
 
             variables[create->name] = value;
+
+            return;
+        }
+
+        // Module loading
+        if (const auto *load =
+                dynamic_cast<const LoadStatement *>(&statement))
+        {
+            executeLoad(*load);
 
             return;
         }
@@ -188,6 +264,136 @@ namespace hurtip
         throw std::runtime_error("Unknown statement");
     }
 
+    // Module loading
+
+    void Interpreter::executeLoad(const LoadStatement &statement)
+    {
+        const std::filesystem::path requestedPath(statement.path);
+
+        if (requestedPath.extension() != ".hurtip")
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Module files must use the '.hurtip' extension");
+        }
+
+        std::filesystem::path modulePath;
+
+        if (requestedPath.is_absolute())
+        {
+            modulePath = requestedPath;
+        }
+        else
+        {
+            modulePath = currentFilePath.parent_path() /
+                         requestedPath;
+        }
+
+        std::error_code error;
+
+        const std::filesystem::path canonicalPath =
+            std::filesystem::canonical(modulePath, error);
+
+        if (error)
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Could not find module: " +
+                modulePath.string());
+        }
+
+        const std::string moduleKey = canonicalPath.string();
+
+        // A module already executed does not need to run again.
+        if (loadedModules.find(moduleKey) != loadedModules.end())
+        {
+            return;
+        }
+
+        // Detect circular dependencies.
+        if (loadingModules.find(moduleKey) != loadingModules.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Circular module dependency detected: " +
+                canonicalPath.string());
+        }
+
+        std::ifstream file(canonicalPath);
+
+        if (!file.is_open())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Could not open module: " +
+                canonicalPath.string());
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+
+        if (file.bad())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Failed to read module: " +
+                canonicalPath.string());
+        }
+
+        const std::string source = buffer.str();
+
+        // Mark the module as currently loading.
+        loadingModules.insert(moduleKey);
+
+        const std::filesystem::path previousFilePath =
+            currentFilePath;
+
+        try
+        {
+            // Change the current source file.
+            // Nested loads will be resolved relative to this module.
+            currentFilePath = canonicalPath;
+
+            // Lexer
+            Lexer lexer(source);
+            std::vector<Token> tokens = lexer.tokenize();
+
+            // Parser
+            Parser parser(tokens);
+            auto statements = parser.parse();
+
+            // Execute module statements in the current interpreter.
+            executeStatements(statements);
+
+            // Mark the module as successfully loaded.
+            loadedModules.insert(moduleKey);
+
+            loadingModules.erase(moduleKey);
+
+            // Restore the previous source file.
+            currentFilePath = previousFilePath;
+        }
+        catch (const std::exception &exception)
+        {
+            loadingModules.erase(moduleKey);
+
+            currentFilePath = previousFilePath;
+
+            throw std::runtime_error(
+                "Error loading module '" +
+                canonicalPath.string() +
+                "': " + exception.what());
+        }
+        catch (...)
+        {
+            loadingModules.erase(moduleKey);
+
+            currentFilePath = previousFilePath;
+
+            throw;
+        }
+    }
+
     // Expression evaluation
 
     RuntimeValue Interpreter::evaluate(const Expression &expression)
@@ -231,6 +437,17 @@ namespace hurtip
             return variable->second;
         }
 
+        // Member access
+        if (const auto *member =
+                dynamic_cast<const MemberExpression *>(&expression))
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(member->line) +
+                ": Member access '" +
+                resolveCalleeName(*member) +
+                "' is not available yet");
+        }
+
         // Binary expression
         if (const auto *binary =
                 dynamic_cast<const BinaryExpression *>(&expression))
@@ -256,14 +473,9 @@ namespace hurtip
         if (const auto *call =
                 dynamic_cast<const CallExpression *>(&expression))
         {
-            if (call->name == "view")
-            {
-                executeCall(*call);
-                return std::string("");
-            }
+            executeCall(*call);
 
-            throw std::runtime_error(
-                "Unknown function: " + call->name);
+            return std::string("");
         }
 
         throw std::runtime_error("Invalid expression");
@@ -487,16 +699,13 @@ namespace hurtip
 
     void Interpreter::executeCall(const CallExpression &expression)
     {
-        if (expression.name != "view")
-        {
-            throw std::runtime_error(
-                "Unknown function: " + expression.name);
-        }
+        const std::string functionName =
+            resolveCalleeName(*expression.callee);
 
-        if (expression.arguments.size() != 1)
+        if (functionName != "view")
         {
             throw std::runtime_error(
-                "Function 'view' expects exactly one argument");
+                "Unknown function: " + functionName);
         }
 
         for (std::size_t i = 0;
