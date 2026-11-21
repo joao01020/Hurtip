@@ -43,16 +43,16 @@ namespace hurtip
         if (const auto *identifier =
                 dynamic_cast<const IdentifierExpression *>(&expression))
         {
-            auto variable = variables.find(identifier->name);
+            RuntimeValue value;
 
-            if (variable == variables.end())
+            if (!currentEnvironment->get(identifier->name, value))
             {
                 throw std::runtime_error(
                     "Line " + std::to_string(identifier->line) +
                     ": Undefined variable: " + identifier->name);
             }
 
-            return variable->second;
+            return value;
         }
 
         // Member expression
@@ -500,9 +500,9 @@ namespace hurtip
             arguments.push_back(evaluate(*argument));
         }
 
-        // Preserve the current execution environment.
+        // Preserve the current execution context.
 
-        auto previousVariables = variables;
+        auto previousEnvironment = currentEnvironment;
 
         const std::string previousNamespace =
             currentNamespace;
@@ -511,6 +511,11 @@ namespace hurtip
 
         try
         {
+            // Create an isolated environment for this function call.
+
+            currentEnvironment =
+                std::make_shared<Environment>(globalEnvironment);
+
             currentNamespace = targetNamespace;
 
             // Bind arguments to function parameters.
@@ -519,8 +524,9 @@ namespace hurtip
                  i < function->parameters.size();
                  i++)
             {
-                variables[function->parameters[i]] =
-                    arguments[i];
+                currentEnvironment->define(
+                    function->parameters[i],
+                    arguments[i]);
             }
 
             // Execute function body.
@@ -533,15 +539,15 @@ namespace hurtip
         }
         catch (...)
         {
-            variables = std::move(previousVariables);
+            currentEnvironment = previousEnvironment;
             currentNamespace = previousNamespace;
 
             throw;
         }
 
-        // Restore the previous execution environment.
+        // Restore the previous execution context.
 
-        variables = std::move(previousVariables);
+        currentEnvironment = previousEnvironment;
         currentNamespace = previousNamespace;
 
         return returnValue;

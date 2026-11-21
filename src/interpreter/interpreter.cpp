@@ -32,6 +32,7 @@ namespace hurtip
     {
         currentFilePath.clear();
         currentNamespace.clear();
+        currentEnvironment = globalEnvironment;
 
         executeStatements(statements);
     }
@@ -54,6 +55,7 @@ namespace hurtip
         }
 
         currentNamespace.clear();
+        currentEnvironment = globalEnvironment;
 
         executeStatements(statements);
     }
@@ -93,7 +95,7 @@ namespace hurtip
         {
             RuntimeValue value = evaluate(*create->value);
 
-            variables[create->name] = value;
+            currentEnvironment->define(create->name, value);
 
             return;
         }
@@ -103,9 +105,7 @@ namespace hurtip
         if (const auto *assignment =
                 dynamic_cast<const AssignmentStatement *>(&statement))
         {
-            auto variable = variables.find(assignment->name);
-
-            if (variable == variables.end())
+            if (!currentEnvironment->contains(assignment->name))
             {
                 throw std::runtime_error(
                     "Line " + std::to_string(assignment->line) +
@@ -114,7 +114,7 @@ namespace hurtip
 
             RuntimeValue value = evaluate(*assignment->value);
 
-            variable->second = value;
+            currentEnvironment->assign(assignment->name, value);
 
             return;
         }
@@ -266,15 +266,30 @@ namespace hurtip
             return;
         }
 
-        // Block statement
+        // Block statement with its own environment
 
         if (const auto *block =
                 dynamic_cast<const BlockStatement *>(&statement))
         {
-            for (const auto &blockStatement : block->statements)
+            const auto previousEnvironment = currentEnvironment;
+
+            currentEnvironment =
+                std::make_shared<Environment>(previousEnvironment);
+
+            try
             {
-                execute(*blockStatement);
+                for (const auto &blockStatement : block->statements)
+                {
+                    execute(*blockStatement);
+                }
             }
+            catch (...)
+            {
+                currentEnvironment = previousEnvironment;
+                throw;
+            }
+
+            currentEnvironment = previousEnvironment;
 
             return;
         }
@@ -405,6 +420,9 @@ namespace hurtip
         const std::string previousNamespace =
             currentNamespace;
 
+        const auto previousEnvironment =
+            currentEnvironment;
+
         // Create the namespace before executing the module.
 
         namespaces.emplace(alias, FunctionRegistry{});
@@ -433,6 +451,7 @@ namespace hurtip
 
             currentFilePath = modulePath;
             currentNamespace = alias;
+            currentEnvironment = globalEnvironment;
 
             executeStatements(*modulePointer);
 
@@ -442,6 +461,7 @@ namespace hurtip
 
             currentFilePath = previousFilePath;
             currentNamespace = previousNamespace;
+            currentEnvironment = previousEnvironment;
 
             loadingModules.erase(moduleKey);
             loadedModules.insert(moduleKey);
@@ -450,6 +470,7 @@ namespace hurtip
         {
             currentFilePath = previousFilePath;
             currentNamespace = previousNamespace;
+            currentEnvironment = previousEnvironment;
 
             loadingModules.erase(moduleKey);
 

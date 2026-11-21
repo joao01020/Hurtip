@@ -2,20 +2,17 @@
 #pragma once
 
 #include "hurtip/parser/parser.hpp"
+#include "hurtip/environment/environment.hpp"
 
 #include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <variant>
 #include <vector>
 
 namespace hurtip
 {
-
-    using RuntimeValue = std::variant<std::string, double, bool>;
-
     class Interpreter
     {
     public:
@@ -32,8 +29,12 @@ namespace hurtip
                 std::string,
                 const FunctionDeclaration *>;
 
-        // Variables
-        std::unordered_map<std::string, RuntimeValue> variables;
+        // Variable environments
+        std::shared_ptr<Environment> globalEnvironment =
+            std::make_shared<Environment>();
+
+        std::shared_ptr<Environment> currentEnvironment =
+            globalEnvironment;
 
         // Global functions
         FunctionRegistry functions;
@@ -72,5 +73,4 @@ namespace hurtip
 
         RuntimeValue executeCall(const CallExpression &expression);
     };
-
 }
