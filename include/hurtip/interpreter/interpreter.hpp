@@ -1,6 +1,7 @@
+
 #pragma once
 
-#include "hurtip/parser.hpp"
+#include "hurtip/parser/parser.hpp"
 
 #include <filesystem>
 #include <memory>
@@ -26,19 +27,33 @@ namespace hurtip
             const std::filesystem::path &sourcePath);
 
     private:
+        using FunctionRegistry =
+            std::unordered_map<
+                std::string,
+                const FunctionDeclaration *>;
+
+        // Variables
         std::unordered_map<std::string, RuntimeValue> variables;
 
-        // Function registry
-        std::unordered_map<std::string, const FunctionDeclaration *> functions;
+        // Global functions
+        FunctionRegistry functions;
+
+        // Namespace -> functions
+        std::unordered_map<std::string, FunctionRegistry> namespaces;
+
+        // Module path -> functions declared by that module
+        std::unordered_map<std::string, FunctionRegistry> moduleFunctions;
 
         // Keeps module ASTs alive at stable addresses.
         std::vector<
             std::unique_ptr<std::vector<std::unique_ptr<ASTNode>>>>
             moduleStatements;
 
-        // Module loading
+        // Module execution context
         std::filesystem::path currentFilePath;
+        std::string currentNamespace;
 
+        // Module loading state
         std::unordered_set<std::string> loadedModules;
         std::unordered_set<std::string> loadingModules;
 

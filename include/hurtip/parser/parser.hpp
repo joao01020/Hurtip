@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "hurtip/ast.hpp"
+#include "hurtip/ast/ast.hpp"
 
 #include <cstddef>
 #include <memory>
