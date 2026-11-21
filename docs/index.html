@@ -421,6 +421,54 @@ h1 span {
     font-size: 12px;
 }
 
+/* PROJECT PAGES */
+
+.page-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.page-link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 25px;
+    transition: .2s;
+}
+
+.page-link-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.page-link-card h3 {
+    font-size: 17px;
+    margin: 8px 0;
+}
+
+.page-link-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.page-link-card .page-link-action {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: auto;
+}
+
+@media (max-width: 800px) {
+    .page-links {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* CTA */
 
 .cta {
@@ -605,7 +653,7 @@ footer {
 
     <div class="code-content">
 
-<pre><span class="line"><span class="number">01</span><span class="keyword">load</span> <span class="string">"modules/greeting.hurtip"</span></span><span class="line"><span class="number">02</span><span class="keyword">import</span> <span class="string">"math"</span></span><span class="line"><span class="number">03</span></span><span class="line"><span class="number">04</span><span class="keyword">create</span> result = <span class="function">math.sum</span>(10, 20)</span><span class="line"><span class="number">05</span></span><span class="line"><span class="number">06</span><span class="function">view</span>(result)</span><span class="line"><span class="number">07</span><span class="function">view</span>(<span class="string">"O módulo foi carregado com sucesso!"</span>)</span><span class="line"><span class="number">08</span><span class="function">view</span>(<span class="string">"Programa finalizado."</span>)</span></pre>
+<pre><span class="line"><span class="number">01</span><span class="keyword">load</span> <span class="string">"modules/greeting.hurtip"</span></span><span class="line"><span class="number">02</span><span class="keyword">import</span> <span class="string">"math"</span></span><span class="line"><span class="number">03</span></span><span class="line"><span class="number">04</span></span><span class="line"><span class="number">05</span><span class="keyword">create</span> result = <span class="function">math.sum</span>(10, 20)</span><span class="line"><span class="number">06</span></span><span class="line"><span class="number">07</span></span><span class="line"><span class="number">08</span><span class="function">view</span>(result)</span><span class="line"><span class="number">09</span><span class="function">view</span>(<span class="string">"O módulo foi carregado com sucesso!"</span>)</span><span class="line"><span class="number">10</span><span class="function">view</span>(<span class="string">"Programa finalizado."</span>)</span></pre>
 
     </div>
 
@@ -714,6 +762,44 @@ footer {
         parte dos próximos objetivos da linguagem.
     </p>
 
+    <h3 class="section-title" style="font-size: 23px; margin-top: 42px; margin-bottom: 20px;">
+        Sintaxe principal
+    </h3>
+
+    <div class="features">
+        <article class="feature">
+            <div class="feature-symbol">
+                <code>create</code>
+            </div>
+            <h3>Criação de variáveis</h3>
+            <p>
+                O comando <code>create</code> cria uma variável
+                para armazenar um valor e utilizá-lo no programa.
+            </p>
+        </article>
+
+        <article class="feature">
+            <div class="feature-symbol">
+                <code>import</code>
+            </div>
+            <h3>Importação de bibliotecas</h3>
+            <p>
+                O comando <code>import</code> importa bibliotecas
+                externas para disponibilizar suas funções no programa.
+            </p>
+        </article>
+
+        <article class="feature">
+            <div class="feature-symbol">
+                <code>load</code>
+            </div>
+            <h3>Carregamento de módulos</h3>
+            <p>
+                O comando <code>load</code> carrega arquivos e módulos
+                que fazem parte do próprio projeto.
+            </p>
+        </article>
+    </div>
 
     <div class="status">
 
@@ -761,6 +847,73 @@ footer {
     <a href="roadmap.html" class="button primary">
         Ver progresso completo →
     </a>
+
+</div>
+
+</section>
+
+
+<section class="section" id="explorar">
+
+<div class="container">
+
+    <div class="section-label">
+        03 — Explore o projeto
+    </div>
+
+    <h2 class="section-title">
+        Conheça outras áreas do Hurtip.
+    </h2>
+
+    <p class="section-description">
+        Consulte os objetivos da linguagem, veja como começar,
+        acompanhe as atualizações ou descubra como contribuir
+        com o projeto.
+    </p>
+
+    <div class="page-links">
+
+        <a href="objectives.html" class="page-link-card">
+            <div class="feature-symbol">◎</div>
+            <h3>Objetivos</h3>
+            <p>
+                Conheça o propósito do Hurtip, seus princípios
+                de desenvolvimento e as áreas que pretende alcançar.
+            </p>
+            <span class="page-link-action">Conhecer os objetivos →</span>
+        </a>
+
+        <a href="getting-started.html" class="page-link-card">
+            <div class="feature-symbol">⌘</div>
+            <h3>Instalação e primeiros passos</h3>
+            <p>
+                Encontre orientações para acessar o código-fonte,
+                preparar o ambiente e começar a explorar a linguagem.
+            </p>
+            <span class="page-link-action">Começar →</span>
+        </a>
+
+        <a href="updates.html" class="page-link-card">
+            <div class="feature-symbol">↻</div>
+            <h3>Atualizações</h3>
+            <p>
+                Acompanhe versões, mudanças, correções e novidades
+                publicadas durante o desenvolvimento.
+            </p>
+            <span class="page-link-action">Ver atualizações →</span>
+        </a>
+
+        <a href="contribute.html" class="page-link-card">
+            <div class="feature-symbol">＋</div>
+            <h3>Contribuir</h3>
+            <p>
+                Saiba como acompanhar o repositório, relatar problemas
+                e participar do desenvolvimento do Hurtip.
+            </p>
+            <span class="page-link-action">Como contribuir →</span>
+        </a>
+
+    </div>
 
 </div>
 
