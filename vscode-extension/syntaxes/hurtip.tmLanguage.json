@@ -1,27 +1,27 @@
+
 {
-    "scopeName": "source.netuno",
+    "scopeName": "source.hurtip",
     "patterns": [
         {
-            "name": "keyword.control.netuno",
+            "name": "keyword.control.hurtip",
             "match": "\\bcreate\\b"
         },
         {
-            "name": "entity.name.function.netuno",
+            "name": "entity.name.function.hurtip",
             "match": "\\bview(?=\\s*\\()"
         },
         {
-            "name": "string.quoted.double.netuno",
+            "name": "string.quoted.double.hurtip",
             "begin": "\"",
             "end": "\""
         },
         {
-            "name": "constant.numeric.netuno",
+            "name": "constant.numeric.hurtip",
             "match": "\\b[0-9]+\\b"
         },
         {
-            "name": "keyword.operator.assignment.netuno",
+            "name": "keyword.operator.assignment.hurtip",
             "match": "="
         }
     ]
 }
-

@@ -1,13 +1,12 @@
-
 #pragma once
 
-#include "netuno/token.hpp"
+#include "hurtip/token.hpp"
 
 #include <cstddef>
 #include <string>
 #include <vector>
 
-namespace netuno
+namespace hurtip
 {
 
     class Lexer
@@ -23,11 +22,15 @@ namespace netuno
 
         std::size_t position = 0;
         int line = 1;
+        int column = 1;
 
         char currentChar() const;
+        char peekChar() const;
         char advance();
 
         void skipWhitespace();
+        void skipComment();
+
         void scanToken();
         void scanIdentifier();
         void scanString();

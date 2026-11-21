@@ -1,0 +1,245 @@
+
+// Meu primeiro programa em Hurtip
+
+// Criando variáveis
+create language = "Hurtip"
+create version = 1
+create age = 24
+create is_active = true
+create is_finished = false
+
+// Exibindo valores
+view(language)
+view(version)
+view(age)
+view(is_active)
+view(is_finished)
+
+// Operações matemáticas
+create sum = 10 + 5
+create subtraction = 10 - 5
+create multiplication = 10 * 5
+create division = 10 / 5
+
+view(sum)
+view(subtraction)
+view(multiplication)
+view(division)
+
+// Precedência matemática
+create result = 10 + 5 * 2
+create grouped_result = (10 + 5) * 2
+
+view(result)
+view(grouped_result)
+
+// Operadores unários
+create negative = -10
+create positive = +10
+
+view(negative)
+view(positive)
+
+// Operadores de comparação
+view(age == 24)
+view(age != 18)
+view(age > 18)
+view(age < 30)
+view(age >= 24)
+view(age <= 24)
+
+// Operadores lógicos
+view(true and true)
+view(true and false)
+view(false or true)
+view(false or false)
+view(not true)
+view(not false)
+
+// Combinando operadores
+view(age >= 18 and age <= 30)
+view(age < 18 or age == 24)
+view(not age > 18)
+
+// Testando precedência lógica
+view(true or false and false)
+view((true or false) and false)
+view(not false and true)
+
+// Testando avaliação de curto-circuito
+view(false and missing == 1)
+view(true or missing == 1)
+
+// Comentário na mesma linha de uma instrução
+create comment_test = 100 // Este comentário será ignorado
+
+view(comment_test)
+
+// Decisões com if
+if (age >= 18) {
+    view("Maior de idade")
+}
+
+// Decisões com if e else
+if (age < 18) {
+    view("Menor de idade")
+} else {
+    view("Maior de idade")
+}
+
+// Decisões com operadores lógicos
+create has_permission = true
+
+if (age >= 18 and has_permission) {
+    view("Acesso permitido")
+} else {
+    view("Acesso negado")
+}
+
+// Decisões com not
+if (not false) {
+    view("A condição é verdadeira")
+} else {
+    view("A condição é falsa")
+}
+
+// Decisões aninhadas
+if (age >= 18) {
+    if (age >= 21) {
+        view("Idade igual ou superior a 21")
+    } else {
+        view("Idade entre 18 e 20")
+    }
+} else {
+    view("Menor de idade")
+}
+
+// Decisão sem else
+create number = 10
+
+if (number == 10) {
+    view("O número é 10")
+}
+
+// Else em uma linha separada
+if (age == 18) {
+    view("Tem 18 anos")
+}
+else {
+    view("Não tem 18 anos")
+}
+
+// Atribuição de variáveis
+create counter = 0
+
+view(counter)
+
+counter = counter + 1
+view(counter)
+
+counter = counter + 1
+view(counter)
+
+// Alterando texto
+create message = "Hello"
+message = "Hello Hurtip"
+
+view(message)
+
+// Alterando booleanos
+create is_ready = false
+is_ready = true
+
+view(is_ready)
+
+// Atribuição dentro de if
+if (counter == 2) {
+    counter = 10
+}
+
+view(counter)
+
+// While loop
+create while_counter = 1
+
+while (while_counter <= 5) {
+    view(while_counter)
+    while_counter = while_counter + 1
+}
+
+view("Loop finished")
+
+// Testando break
+create break_counter = 0
+
+while (break_counter < 10) {
+    break_counter = break_counter + 1
+
+    if (break_counter == 5) {
+        break
+    }
+
+    view(break_counter)
+}
+
+view("Break finished")
+
+// Testando continue
+create continue_counter = 0
+
+while (continue_counter < 5) {
+    continue_counter = continue_counter + 1
+
+    if (continue_counter == 3) {
+        continue
+    }
+
+    view(continue_counter)
+}
+
+view("Continue finished")
+
+// Testando break e continue juntos
+create control_counter = 0
+
+while (control_counter < 10) {
+    control_counter = control_counter + 1
+
+    if (control_counter == 3) {
+        continue
+    }
+
+    if (control_counter == 7) {
+        break
+    }
+
+    view(control_counter)
+}
+
+view("Control flow finished")
+
+// Testando loops aninhados
+create outer = 0
+
+while (outer < 3) {
+    outer = outer + 1
+
+    create inner = 0
+
+    while (inner < 5) {
+        inner = inner + 1
+
+        if (inner == 3) {
+            break
+        }
+
+        view(inner)
+    }
+
+    view(outer)
+}
+
+view("Nested loops finished")
+
+// Finalizando programa
+view("Hello Hurtip!")

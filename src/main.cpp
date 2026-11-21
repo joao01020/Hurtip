@@ -6,16 +6,18 @@
 #include <vector>
 #include <exception>
 
-#include "netuno/lexer.hpp"
-#include "netuno/parser.hpp"
-#include "netuno/interpreter.hpp"
+#include "hurtip/lexer/lexer.hpp"
+#include "hurtip/parser/parser.hpp"
+#include "hurtip/interpreter/interpreter.hpp"
+
+#include <filesystem>
 
 int main(int argc, char *argv[])
 {
 
     if (argc < 2)
     {
-        std::cerr << "Usage: netuno <file.nt>\n";
+        std::cerr << "Usage: hurtip <file.hurtip>\n";
         return 1;
     }
 
@@ -39,21 +41,23 @@ int main(int argc, char *argv[])
     {
 
         // Lexer
-        netuno::Lexer lexer(source);
-        std::vector<netuno::Token> tokens = lexer.tokenize();
+        hurtip::Lexer lexer(source);
+        std::vector<hurtip::Token> tokens = lexer.tokenize();
 
         // Parser
-        netuno::Parser parser(tokens);
+        hurtip::Parser parser(tokens);
         auto statements = parser.parse();
 
         // Interpreter
-        netuno::Interpreter interpreter;
-        interpreter.interpret(statements);
+        hurtip::Interpreter interpreter;
+        interpreter.interpret(
+            statements,
+            std::filesystem::absolute(filePath));
     }
     catch (const std::exception &error)
     {
 
-        std::cerr << "Netuno Error: "
+        std::cerr << "Hurtip Error: "
                   << error.what() << '\n';
 
         return 1;

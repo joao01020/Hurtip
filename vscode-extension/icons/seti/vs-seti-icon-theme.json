@@ -1553,8 +1553,8 @@
       "fontCharacter": "\\E0A9",
       "fontColor": "#6d8086"
     },
-    "_netuno": {
-      "iconPath": "../netuno-file.svg"
+    "_hurtip": {
+      "iconPath": "../hurtip-file.svg"
     }
   },
   "file": "_default",
@@ -1797,7 +1797,7 @@
     "crt": "_lock",
     "pem": "_lock",
     "ds_store": "_ignored",
-    "nt": "_netuno"
+    "hurtip": "_hurtip"
   },
   "fileNames": {
     "mix": "_hex",
@@ -1985,7 +1985,8 @@
     "prompt": "_markdown",
     "instructions": "_markdown",
     "chatagent": "_markdown",
-    "skill": "_markdown"
+    "skill": "_markdown",
+    "hurtip": "_hurtip"
   },
   "light": {
     "file": "_default_light",
@@ -2228,7 +2229,7 @@
       "crt": "_lock_light",
       "pem": "_lock_light",
       "ds_store": "_ignored_light",
-      "nt": "_netuno"
+      "hurtip": "_hurtip"
     },
     "languageIds": {
       "bat": "_windows_light",
@@ -2312,7 +2313,8 @@
       "prompt": "_markdown_light",
       "instructions": "_markdown_light",
       "chatagent": "_markdown_light",
-      "skill": "_markdown_light"
+      "skill": "_markdown_light",
+      "hurtip": "_hurtip"
     },
     "fileNames": {
       "mix": "_hex_light",

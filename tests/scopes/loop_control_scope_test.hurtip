@@ -1,0 +1,19 @@
+create counter = 0
+
+while (counter < 5) {
+    create localNumber = counter + 10
+
+    counter = counter + 1
+
+    if (counter == 2) {
+        continue
+    }
+
+    if (counter == 4) {
+        break
+    }
+
+    view(localNumber)
+}
+
+view(counter)

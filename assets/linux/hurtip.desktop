@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+MimeType=text/x-hurtip;
+Name=Hurtip
+Comment=Hurtip Programming Language
+Exec=/home/joao/Documentos/PlatformIO/Projects/Hurtip/build/hurtip
+Icon=/home/joao/Documentos/PlatformIO/Projects/Hurtip/assets/icon.png
+Terminal=true
+Categories=Development;IDE;

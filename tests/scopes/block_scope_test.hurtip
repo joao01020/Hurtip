@@ -1,0 +1,8 @@
+create number = 10
+
+if (true) {
+    create number = 20
+    view(number)
+}
+
+view(number)

@@ -1,0 +1,2 @@
+create result = 10 +
+view(result)

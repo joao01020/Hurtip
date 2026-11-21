@@ -1,9 +1,10 @@
+
 {
-    "name": "netuno-language",
-    "displayName": "Netuno Language Support",
-    "description": "Language support for the Netuno programming language",
+    "name": "hurtip-language",
+    "displayName": "Hurtip Language Support",
+    "description": "Language support for the Hurtip programming language",
     "version": "0.1.0",
-    "publisher": "netuno",
+    "publisher": "hurtip",
     "engines": {
         "vscode": "^1.80.0"
     },
@@ -13,28 +14,28 @@
     "contributes": {
         "languages": [
             {
-                "id": "netuno",
+                "id": "hurtip",
                 "aliases": [
-                    "Netuno",
-                    "netuno"
+                    "Hurtip",
+                    "hurtip"
                 ],
                 "extensions": [
-                    ".nt"
+                    ".hurtip"
                 ],
                 "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [
             {
-                "language": "netuno",
-                "scopeName": "source.netuno",
-                "path": "./syntaxes/netuno.tmLanguage.json"
+                "language": "hurtip",
+                "scopeName": "source.hurtip",
+                "path": "./syntaxes/hurtip.tmLanguage.json"
             }
         ],
         "iconThemes": [
             {
-                "id": "seti-netuno",
-                "label": "Seti + Netuno",
+                "id": "seti-hurtip",
+                "label": "Seti + Hurtip",
                 "path": "./icons/seti/vs-seti-icon-theme.json"
             }
         ]

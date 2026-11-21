@@ -1,0 +1,14 @@
+function countdown(n)
+{
+    create current = n
+
+    if (n <= 0) {
+        return current
+    }
+
+    create result = countdown(n - 1)
+
+    return current + result
+}
+
+view(countdown(5))
