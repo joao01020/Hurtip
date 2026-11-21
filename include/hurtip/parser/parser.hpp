@@ -29,6 +29,7 @@ namespace hurtip
 
         bool match(TokenType type);
         bool check(TokenType type) const;
+        void skipNewLines();
 
         std::unique_ptr<ASTNode> parseStatement();
 

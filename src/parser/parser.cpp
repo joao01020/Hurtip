@@ -21,6 +21,17 @@ namespace hurtip
     Parser::Parser(const std::vector<Token> &tokens)
         : tokens(tokens)
     {
+        if (this->tokens.empty())
+        {
+            throw std::invalid_argument(
+                "Parser received an empty token list");
+        }
+
+        if (this->tokens.back().type != TokenType::EndOfFile)
+        {
+            throw std::invalid_argument(
+                "Parser expected an EndOfFile token");
+        }
     }
 
     const Token &Parser::currentToken() const
@@ -54,6 +65,13 @@ namespace hurtip
 
         advance();
         return true;
+    }
+
+    void Parser::skipNewLines()
+    {
+        while (match(TokenType::NewLine))
+        {
+        }
     }
 
     // Program parsing
@@ -290,14 +308,9 @@ namespace hurtip
                 "Expected ')' after function parameters");
         }
 
-        // Allow new lines before the function body.
-
-        while (match(TokenType::NewLine))
-        {
-        }
+        skipNewLines();
 
         // A function has its own loop context.
-        // A break or continue cannot escape into an outer loop.
 
         const int previousLoopDepth = loopDepth;
 
@@ -338,8 +351,6 @@ namespace hurtip
 
         statement->line = returnToken.line;
 
-        // Return may have a value or be used without one.
-
         if (!check(TokenType::NewLine) &&
             !check(TokenType::RightBrace) &&
             !check(TokenType::EndOfFile))
@@ -375,20 +386,32 @@ namespace hurtip
                 "Expected ')' after if condition");
         }
 
+        // Allow new lines before the if block.
+
+        skipNewLines();
+
         statement->thenBranch = parseBlockStatement();
+
+        // Preserve the position immediately after the then block.
 
         const std::size_t afterThenBranch = position;
 
-        while (match(TokenType::NewLine))
-        {
-        }
+        // Allow else on the same line or on a following line.
+
+        skipNewLines();
 
         if (match(TokenType::Else))
         {
+            // Allow new lines before the else block.
+
+            skipNewLines();
+
             statement->elseBranch = parseBlockStatement();
         }
         else
         {
+            // Do not consume new lines belonging to the outer parser.
+
             position = afterThenBranch;
         }
 
@@ -419,6 +442,10 @@ namespace hurtip
                 currentToken(),
                 "Expected ')' after while condition");
         }
+
+        // Allow new lines before the while block.
+
+        skipNewLines();
 
         loopDepth++;
 
