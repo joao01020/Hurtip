@@ -13,9 +13,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(hurtip
     src/main.cpp
-    src/lexer.cpp
-    src/parser.cpp
-    src/interpreter.cpp
+    src/lexer/lexer.cpp
+    src/parser/parser.cpp
+    src/interpreter/interpreter.cpp
+    src/interpreter/interpreter_expressions.cpp
 )
 
 target_include_directories(hurtip
@@ -30,6 +31,7 @@ else()
 endif()
 
 # Recursos visuais da Hurtip
+
 install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/assets/
     DESTINATION share/hurtip/assets

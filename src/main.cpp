@@ -6,9 +6,9 @@
 #include <vector>
 #include <exception>
 
-#include "hurtip/lexer.hpp"
-#include "hurtip/parser.hpp"
-#include "hurtip/interpreter.hpp"
+#include "hurtip/lexer/lexer.hpp"
+#include "hurtip/parser/parser.hpp"
+#include "hurtip/interpreter/interpreter.hpp"
 
 #include <filesystem>
 
