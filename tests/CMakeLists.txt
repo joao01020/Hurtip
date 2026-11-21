@@ -72,6 +72,44 @@ add_hurtip_success_test(
 60]=]
 )
 
+# Native imports
+
+add_hurtip_success_test(
+    math_import
+    tests/import/math_import_test.hurtip
+    [=[30]=]
+)
+
+add_hurtip_success_test(
+    math_alias
+    tests/import/math_alias_test.hurtip
+    [=[30]=]
+)
+
+add_hurtip_error_test(
+    unknown_import
+    tests/import/unknown_import_test.hurtip
+    "Unknown native library: unknown"
+)
+
+add_hurtip_error_test(
+    unknown_native_function
+    tests/import/unknown_function_test.hurtip
+    "Unknown function 'subtract' in library 'math'"
+)
+
+add_hurtip_error_test(
+    invalid_native_arguments
+    tests/import/invalid_native_arguments_test.hurtip
+    "Native function 'sum' failed: Function 'sum' expects exactly 2 arguments"
+)
+
+add_hurtip_error_test(
+    invalid_native_types
+    tests/import/invalid_native_types_test.hurtip
+    "Native function 'sum' failed: Function 'sum' expects numeric arguments"
+)
+
 # Parser - successful programs
 
 add_hurtip_success_test(

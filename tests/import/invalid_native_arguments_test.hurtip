@@ -1,0 +1,5 @@
+import "math"
+
+create result = math.sum(10)
+
+view(result)

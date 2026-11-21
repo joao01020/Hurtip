@@ -115,6 +115,11 @@ namespace hurtip
             return parseLoadStatement();
         }
 
+        if (check(TokenType::Import))
+        {
+            return parseImportStatement();
+        }
+
         if (check(TokenType::Function))
         {
             return parseFunctionDeclaration();
@@ -216,6 +221,39 @@ namespace hurtip
                 throw parserError(
                     currentToken(),
                     "Expected a module name after 'as'");
+            }
+
+            statement->alias = advance().lexeme;
+        }
+
+        return statement;
+    }
+
+    // Import statement
+
+    std::unique_ptr<ImportStatement> Parser::parseImportStatement()
+    {
+        const Token &importToken = advance();
+
+        if (!check(TokenType::String))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected a library name after 'import'");
+        }
+
+        auto statement = std::make_unique<ImportStatement>();
+
+        statement->line = importToken.line;
+        statement->name = advance().lexeme;
+
+        if (match(TokenType::As))
+        {
+            if (!check(TokenType::Identifier))
+            {
+                throw parserError(
+                    currentToken(),
+                    "Expected a library alias after 'as'");
             }
 
             statement->alias = advance().lexeme;

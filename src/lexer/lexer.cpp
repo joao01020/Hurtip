@@ -1,3 +1,4 @@
+
 #include "hurtip/lexer/lexer.hpp"
 
 #include <cctype>
@@ -89,6 +90,10 @@ namespace hurtip
         else if (value == "load")
         {
             type = TokenType::Load;
+        }
+        else if (value == "import")
+        {
+            type = TokenType::Import;
         }
         else if (value == "as")
         {

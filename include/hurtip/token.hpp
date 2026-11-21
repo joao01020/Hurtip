@@ -9,6 +9,7 @@ namespace hurtip
     {
         Create,
         Load,
+        Import,
         As,
 
         Function,

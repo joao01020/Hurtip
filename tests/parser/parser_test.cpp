@@ -152,6 +152,46 @@ namespace
                "Expected empty alias");
     }
 
+    void testImportStatement()
+    {
+        auto statements = parseSource(
+            "import \"math\"\n");
+
+        expect(statements.size() == 1,
+               "Expected one statement");
+
+        auto *importStatement =
+            expectNode<ImportStatement>(
+                statements[0].get(),
+                "Expected ImportStatement");
+
+        expect(importStatement->name == "math",
+               "Incorrect library name");
+
+        expect(importStatement->alias.empty(),
+               "Expected empty library alias");
+    }
+
+    void testImportStatementWithAlias()
+    {
+        auto statements = parseSource(
+            "import \"math\" as mathematics\n");
+
+        expect(statements.size() == 1,
+               "Expected one statement");
+
+        auto *importStatement =
+            expectNode<ImportStatement>(
+                statements[0].get(),
+                "Expected ImportStatement");
+
+        expect(importStatement->name == "math",
+               "Incorrect library name");
+
+        expect(importStatement->alias == "mathematics",
+               "Incorrect library alias");
+    }
+
     void testFunctionDeclaration()
     {
         auto statements = parseSource(
@@ -907,6 +947,7 @@ namespace
             "Incorrect literal value");
     }
 }
+
 int main()
 {
     std::cout << "Running Hurtip Parser tests...\n\n";
@@ -915,6 +956,10 @@ int main()
     runTest("variable assignment", testVariableAssignment);
     runTest("load statement", testLoadStatement);
     runTest("load without alias", testLoadWithoutAlias);
+    runTest("import statement", testImportStatement);
+    runTest(
+        "import statement with alias",
+        testImportStatementWithAlias);
 
     runTest("function declaration", testFunctionDeclaration);
     runTest("function without parameters", testFunctionWithoutParameters);
@@ -1015,6 +1060,21 @@ int main()
         "invalid member access inside grouping",
         "create result = (math.)\n",
         "Expected a member name after '.'");
+
+    testExpectedError(
+        "import without library name",
+        "import\n",
+        "Expected a library name after 'import'");
+
+    testExpectedError(
+        "import without string",
+        "import math\n",
+        "Expected a library name after 'import'");
+
+    testExpectedError(
+        "import without alias name",
+        "import \"math\" as\n",
+        "Expected a library alias after 'as'");
 
     // Parser input validation tests
 

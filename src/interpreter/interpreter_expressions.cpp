@@ -334,6 +334,7 @@ namespace hurtip
         std::string targetNamespace;
 
         const FunctionDeclaration *function = nullptr;
+        NativeFunction nativeFunction;
 
         // Unqualified function call
 
@@ -438,34 +439,96 @@ namespace hurtip
             targetNamespace = object->name;
             functionName = member->member;
 
-            auto namespaceIterator =
-                namespaces.find(targetNamespace);
+            // Check imported native libraries first.
 
-            if (namespaceIterator == namespaces.end())
+            auto imported =
+                importedLibraries.find(targetNamespace);
+
+            if (imported != importedLibraries.end())
             {
-                throw std::runtime_error(
-                    "Line " + std::to_string(expression.line) +
-                    ": Unknown namespace: " + targetNamespace);
+                auto library =
+                    nativeLibraries.find(imported->second);
+
+                if (library == nativeLibraries.end())
+                {
+                    throw std::runtime_error(
+                        "Native library not registered: " +
+                        imported->second);
+                }
+
+                auto native =
+                    library->second.find(functionName);
+
+                if (native == library->second.end())
+                {
+                    throw std::runtime_error(
+                        "Line " + std::to_string(expression.line) +
+                        ": Unknown function '" + functionName +
+                        "' in library '" + imported->second + "'");
+                }
+
+                nativeFunction = native->second;
             }
-
-            auto functionIterator =
-                namespaceIterator->second.find(functionName);
-
-            if (functionIterator == namespaceIterator->second.end())
+            else
             {
-                throw std::runtime_error(
-                    "Line " + std::to_string(expression.line) +
-                    ": Unknown function '" + functionName +
-                    "' in namespace '" + targetNamespace + "'");
-            }
+                // Existing Hurtip module namespace.
 
-            function = functionIterator->second;
+                auto namespaceIterator =
+                    namespaces.find(targetNamespace);
+
+                if (namespaceIterator == namespaces.end())
+                {
+                    throw std::runtime_error(
+                        "Line " + std::to_string(expression.line) +
+                        ": Unknown namespace: " + targetNamespace);
+                }
+
+                auto functionIterator =
+                    namespaceIterator->second.find(functionName);
+
+                if (functionIterator ==
+                    namespaceIterator->second.end())
+                {
+                    throw std::runtime_error(
+                        "Line " + std::to_string(expression.line) +
+                        ": Unknown function '" + functionName +
+                        "' in namespace '" + targetNamespace + "'");
+                }
+
+                function = functionIterator->second;
+            }
         }
         else
         {
             throw std::runtime_error(
                 "Line " + std::to_string(expression.line) +
                 ": Invalid function call");
+        }
+
+        // Execute native function.
+
+        if (nativeFunction)
+        {
+            std::vector<RuntimeValue> arguments;
+
+            arguments.reserve(expression.arguments.size());
+
+            for (const auto &argument : expression.arguments)
+            {
+                arguments.push_back(evaluate(*argument));
+            }
+
+            try
+            {
+                return nativeFunction(arguments);
+            }
+            catch (const std::exception &error)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(expression.line) +
+                    ": Native function '" + functionName +
+                    "' failed: " + error.what());
+            }
         }
 
         if (!function)

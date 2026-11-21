@@ -5,6 +5,7 @@
 #include "hurtip/environment/environment.hpp"
 
 #include <filesystem>
+#include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -16,12 +17,23 @@ namespace hurtip
     class Interpreter
     {
     public:
+        using NativeFunction =
+            std::function<RuntimeValue(
+                const std::vector<RuntimeValue> &)>;
+
+        using NativeFunctionRegistry =
+            std::unordered_map<std::string, NativeFunction>;
+
         void interpret(
             const std::vector<std::unique_ptr<ASTNode>> &statements);
 
         void interpret(
             const std::vector<std::unique_ptr<ASTNode>> &statements,
             const std::filesystem::path &sourcePath);
+
+        void registerLibrary(
+            const std::string &name,
+            NativeFunctionRegistry functions);
 
     private:
         using FunctionRegistry =
@@ -39,8 +51,17 @@ namespace hurtip
         // Global functions
         FunctionRegistry functions;
 
-        // Namespace -> functions
+        // Hurtip module namespaces
         std::unordered_map<std::string, FunctionRegistry> namespaces;
+
+        // Native libraries
+        std::unordered_map<
+            std::string,
+            NativeFunctionRegistry>
+            nativeLibraries;
+
+        // Imported library aliases
+        std::unordered_map<std::string, std::string> importedLibraries;
 
         // Module path -> functions declared by that module
         std::unordered_map<std::string, FunctionRegistry> moduleFunctions;
@@ -64,6 +85,8 @@ namespace hurtip
             const std::vector<std::unique_ptr<ASTNode>> &statements);
 
         void executeLoad(const LoadStatement &statement);
+
+        void executeImport(const ImportStatement &statement);
 
         RuntimeValue evaluate(const Expression &expression);
 

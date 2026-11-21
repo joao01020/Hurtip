@@ -101,35 +101,56 @@ namespace
     {
         check(
             "keywords",
-            "create load as function return true false if else while break continue and or not",
+            "create load import as function return true false if else while break continue and or not",
             {{TokenType::Create, "create", 1, 1},
              {TokenType::Load, "load", 1, 8},
-             {TokenType::As, "as", 1, 13},
-             {TokenType::Function, "function", 1, 16},
-             {TokenType::Return, "return", 1, 25},
-             {TokenType::True, "true", 1, 32},
-             {TokenType::False, "false", 1, 37},
-             {TokenType::If, "if", 1, 43},
-             {TokenType::Else, "else", 1, 46},
-             {TokenType::While, "while", 1, 51},
-             {TokenType::Break, "break", 1, 57},
-             {TokenType::Continue, "continue", 1, 63},
-             {TokenType::And, "and", 1, 72},
-             {TokenType::Or, "or", 1, 76},
-             {TokenType::Not, "not", 1, 79},
-             {TokenType::EndOfFile, "", 1, 82}});
+             {TokenType::Import, "import", 1, 13},
+             {TokenType::As, "as", 1, 20},
+             {TokenType::Function, "function", 1, 23},
+             {TokenType::Return, "return", 1, 32},
+             {TokenType::True, "true", 1, 39},
+             {TokenType::False, "false", 1, 44},
+             {TokenType::If, "if", 1, 50},
+             {TokenType::Else, "else", 1, 53},
+             {TokenType::While, "while", 1, 58},
+             {TokenType::Break, "break", 1, 64},
+             {TokenType::Continue, "continue", 1, 70},
+             {TokenType::And, "and", 1, 79},
+             {TokenType::Or, "or", 1, 83},
+             {TokenType::Not, "not", 1, 86},
+             {TokenType::EndOfFile, "", 1, 89}});
     }
 
     void testIdentifiers()
     {
         check(
             "identifiers",
-            "name user_name _private value123",
+            "name user_name _private value123 imported",
             {{TokenType::Identifier, "name", 1, 1},
              {TokenType::Identifier, "user_name", 1, 6},
              {TokenType::Identifier, "_private", 1, 16},
              {TokenType::Identifier, "value123", 1, 25},
-             {TokenType::EndOfFile, "", 1, 33}});
+             {TokenType::Identifier, "imported", 1, 34},
+             {TokenType::EndOfFile, "", 1, 42}});
+    }
+
+    void testImportStatementTokens()
+    {
+        check(
+            "import statement tokens",
+            "import \"math\"",
+            {{TokenType::Import, "import", 1, 1},
+             {TokenType::String, "math", 1, 8},
+             {TokenType::EndOfFile, "", 1, 14}});
+
+        check(
+            "import with alias tokens",
+            "import \"math\" as mathematics",
+            {{TokenType::Import, "import", 1, 1},
+             {TokenType::String, "math", 1, 8},
+             {TokenType::As, "as", 1, 15},
+             {TokenType::Identifier, "mathematics", 1, 18},
+             {TokenType::EndOfFile, "", 1, 29}});
     }
 
     void testLiterals()
@@ -264,6 +285,7 @@ int main()
 
     testKeywords();
     testIdentifiers();
+    testImportStatementTokens();
     testLiterals();
     testOperators();
     testDelimiters();

@@ -36,6 +36,7 @@ namespace hurtip
         // Statements
         std::unique_ptr<CreateStatement> parseCreateStatement();
         std::unique_ptr<LoadStatement> parseLoadStatement();
+        std::unique_ptr<ImportStatement> parseImportStatement();
         std::unique_ptr<AssignmentStatement> parseAssignmentStatement();
 
         std::unique_ptr<FunctionDeclaration> parseFunctionDeclaration();

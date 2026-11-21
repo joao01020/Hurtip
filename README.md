@@ -5,8 +5,8 @@ em C++.**
 
 A Hurtip é um projeto experimental de criação de uma linguagem de programação
 própria. Seu objetivo é explorar como uma linguagem pode tornar a programação
-mais acessível, reduzir a complexidade desnecessária e, futuramente, oferecer
-recursos para desenvolvimento de aplicações, sistemas e dispositivos embarcados.
+mais acessível, reduzir a complexidade desnecessária e oferecer recursos para
+desenvolvimento de aplicações, sistemas e dispositivos embarcados.
 
 A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
 sem abandonar a possibilidade de evoluir para recursos mais avançados.
@@ -14,8 +14,8 @@ sem abandonar a possibilidade de evoluir para recursos mais avançados.
 > A Hurtip está em desenvolvimento. Atualmente, possui um interpretador
 > funcional capaz de executar arquivos `.hurtip`, uma arquitetura composta por
 > Lexer, Parser, AST e Interpreter, suporte a variáveis, expressões, operações
-> matemáticas, lógica, estruturas de controle, funções, recursividade, escopos e
-> um sistema inicial de módulos.
+> matemáticas, lógica, estruturas de controle, funções, recursividade, escopos,
+> módulos e importação de bibliotecas nativas.
 
 ---
 
@@ -40,7 +40,7 @@ simplificar a experiência de desenvolvimento sem limitar sua evolução técnic
 - Investigar possibilidades de uso em sistemas embarcados.
 - Buscar eficiência e simplicidade na implementação.
 - Construir uma arquitetura que permita adicionar recursos gradualmente.
-- Permitir integração futura com bibliotecas externas e recursos de baixo nível.
+- Permitir integração com bibliotecas externas e recursos de baixo nível.
 
 ---
 
@@ -60,8 +60,8 @@ especialmente pensando em possíveis aplicações embarcadas.
 
 **Acessibilidade:** reduzir barreiras para quem está começando a programar.
 
-**Controle:** oferecer, progressivamente, recursos que permitam ao programador
-compreender e controlar o funcionamento dos programas.
+**Controle:** oferecer recursos que permitam ao programador compreender e
+controlar o funcionamento dos programas.
 
 ---
 
@@ -153,7 +153,7 @@ using RuntimeValue = std::variant<std::string, double, bool>;
 
 **Observação:** o runtime utiliza `double` para representar números, mas a
 sintaxe numérica atual do Lexer ainda reconhece apenas números inteiros. O
-suporte a literais decimais precisa ser implementado.
+suporte a literais decimais ainda não foi implementado.
 
 ### Comentários
 
@@ -443,24 +443,24 @@ while (outer < 3) {
 
 ### Recursos de controle de fluxo
 
-| Recurso                                | Estado        |
-| -------------------------------------- | ------------- |
-| `if`                                   | Implementado  |
-| `else`                                 | Implementado  |
-| Decisões aninhadas                     | Implementadas |
-| Blocos de código                       | Implementados |
-| Escopo próprio para blocos de controle | Implementado  |
-| `while`                                | Implementado  |
-| `break`                                | Implementado  |
-| `continue`                             | Implementado  |
-| Loops aninhados                        | Implementados |
-| `for`                                  | Pendente      |
+| Recurso                                | Estado           |
+| -------------------------------------- | ---------------- |
+| `if`                                   | Implementado     |
+| `else`                                 | Implementado     |
+| Decisões aninhadas                     | Implementadas    |
+| Blocos de código                       | Implementados    |
+| Escopo próprio para blocos de controle | Implementado     |
+| `while`                                | Implementado     |
+| `break`                                | Implementado     |
+| `continue`                             | Implementado     |
+| Loops aninhados                        | Implementados    |
+| `for`                                  | Não implementado |
 
 ---
 
 ## 6. Funções e escopos
 
-A Hurtip possui suporte inicial a funções definidas pelo programador.
+A Hurtip possui suporte a funções definidas pelo programador.
 
 As funções permitem organizar instruções em blocos reutilizáveis, receber
 parâmetros e retornar valores.
@@ -595,22 +595,18 @@ O bloco utiliza uma variável local sem substituir a variável existente no
 ambiente externo.
 
 **Limitações atuais:** closures e captura de ambientes léxicos ainda não foram
-implementados. O sistema de escopos das funções também não oferece ainda todos
-os recursos de um modelo lexical completo.
+implementados. O sistema de escopos das funções também não oferece todos os
+recursos de um modelo lexical completo.
 
 ---
 
 ## 7. Sistema de módulos e bibliotecas
 
-A Hurtip está sendo desenvolvida com uma separação conceitual entre o
-carregamento de arquivos do próprio projeto e a importação de bibliotecas
-externas.
+A Hurtip possui mecanismos separados para carregar arquivos da própria linguagem
+e importar bibliotecas nativas.
 
-A ideia é utilizar duas instruções com responsabilidades distintas: `load` e
+Essa separação utiliza duas instruções com responsabilidades distintas: `load` e
 `import`.
-
-Essa separação permitirá organizar projetos, reutilizar código e, futuramente,
-ampliar as possibilidades da linguagem por meio de bibliotecas externas.
 
 ### 7.1. Load — arquivos da própria linguagem
 
@@ -634,7 +630,7 @@ sintaxe da Hurtip.
 O alias `as` permite associar um nome ao módulo, possibilitando acessar suas
 funções por meio de um namespace.
 
-### Recursos de `load` já implementados
+### Recursos de `load` implementados
 
 - Carregamento de arquivos `.hurtip`.
 - Associação de alias com `as`.
@@ -645,65 +641,107 @@ funções por meio de um namespace.
 - Detecção de dependências circulares.
 - Testes de integração entre arquivos.
 
-### 7.2. Import — bibliotecas externas
+### 7.2. Import — bibliotecas nativas
 
-A ideia de `import` é oferecer um mecanismo separado para incorporar bibliotecas
-externas à Hurtip.
+A instrução `import` permite incorporar bibliotecas nativas registradas no
+interpretador.
 
-Enquanto `load` trabalha com arquivos `.hurtip` do próprio projeto, `import`
-deverá permitir utilizar recursos desenvolvidos e disponibilizados fora dele.
+Diferentemente de `load`, que carrega arquivos `.hurtip`, o `import` atual
+utiliza um sistema de registro de funções implementadas em C++.
 
-Exemplos conceituais de uso futuro:
+Exemplo:
 
 ```hurtip
-import math
-import graphics
-import networking
+import "math"
+
+create result = math.sum(10, 20)
+
+view(result)
 ```
 
-Esses exemplos representam uma direção planejada para a linguagem, não uma
-sintaxe já implementada ou definitivamente especificada.
+Também é possível utilizar aliases:
 
-A ideia é que bibliotecas externas possam oferecer funcionalidades que não
-precisam ser reimplementadas diretamente na linguagem, ampliando suas
-possibilidades.
+```hurtip
+import "math" as mathematics
 
-Entre as possibilidades futuras estão:
+create result = mathematics.sum(10, 20)
 
-- Bibliotecas matemáticas.
-- Bibliotecas gráficas.
-- Comunicação e redes.
-- Integração com sistemas operacionais.
-- Bibliotecas de terceiros.
-- Integração com bibliotecas C/C++.
-- Recursos para sistemas embarcados.
+view(result)
+```
 
-### 7.3. Diferença entre load e import
+O alias permite escolher o nome utilizado para acessar a biblioteca dentro do
+programa.
 
-| Instrução | Finalidade                             | Origem               |
-| --------- | -------------------------------------- | -------------------- |
-| `load`    | Carregar módulos e arquivos do projeto | Arquivos `.hurtip`   |
-| `import`  | Incorporar bibliotecas externas        | Bibliotecas externas |
+### Biblioteca math
 
-Essa distinção é uma decisão arquitetural importante para a evolução da Hurtip.
+A primeira biblioteca nativa implementada é `math`.
 
-Ela evita misturar o mecanismo de organização de arquivos da própria linguagem
-com o mecanismo de integração de bibliotecas externas.
+Atualmente, ela disponibiliza a função:
+
+| Função           | Descrição                   | Exemplo            |
+| ---------------- | --------------------------- | ------------------ |
+| `math.sum(a, b)` | Soma dois valores numéricos | `math.sum(10, 20)` |
+
+Exemplo completo:
+
+```hurtip
+import "math"
+
+create result = math.sum(10, 20)
+
+view(result)
+```
+
+Resultado:
+
+```text
+30
+```
+
+A função valida a quantidade e os tipos dos argumentos recebidos. Quando a
+chamada é inválida, o interpretador apresenta uma mensagem de erro.
+
+### Registro de bibliotecas
+
+As bibliotecas nativas são registradas no interpretador por meio de uma
+interface interna.
+
+O registro centralizado é realizado por `registerStandardLibraries()`, que
+mantém a inicialização das bibliotecas separada do arquivo principal da
+aplicação.
+
+Essa estrutura permite adicionar novas bibliotecas sem concentrar toda a
+implementação no `main.cpp`.
+
+### Diferença entre load e import
+
+| Instrução | Finalidade                               | Origem                        |
+| --------- | ---------------------------------------- | ----------------------------- |
+| `load`    | Carregar módulos e arquivos do projeto   | Arquivos `.hurtip`            |
+| `import`  | Importar bibliotecas nativas registradas | Implementações nativas em C++ |
+
+Essa distinção evita misturar o mecanismo de organização de arquivos da própria
+linguagem com o mecanismo de integração de bibliotecas nativas.
 
 ### Estado atual
 
-| Recurso                                     | Estado       |
-| ------------------------------------------- | ------------ |
-| `load` de arquivos `.hurtip`                | Implementado |
-| Alias de módulos com `as`                   | Implementado |
-| Namespace de módulos                        | Implementado |
-| Resolução de caminhos relativos             | Implementada |
-| Cache de módulos                            | Implementado |
-| Detecção de dependências circulares         | Implementada |
-| `import` de bibliotecas externas            | Planejado    |
-| Sistema de bibliotecas externas             | Pendente     |
-| Isolamento completo de variáveis por módulo | Pendente     |
-| Biblioteca padrão                           | Pendente     |
+| Recurso                                     | Estado           |
+| ------------------------------------------- | ---------------- |
+| `load` de arquivos `.hurtip`                | Implementado     |
+| Alias de módulos com `as`                   | Implementado     |
+| Namespace de módulos                        | Implementado     |
+| Resolução de caminhos relativos             | Implementada     |
+| Cache de módulos                            | Implementado     |
+| Detecção de dependências circulares         | Implementada     |
+| `import` de bibliotecas nativas             | Implementado     |
+| Importação com alias                        | Implementada     |
+| Registro de funções nativas                 | Implementado     |
+| Registro centralizado de bibliotecas        | Implementado     |
+| Biblioteca nativa `math`                    | Implementada     |
+| Função `math.sum()`                         | Implementada     |
+| Carregamento dinâmico de bibliotecas        | Não implementado |
+| API pública para bibliotecas de terceiros   | Não implementada |
+| Isolamento completo de variáveis por módulo | Não implementado |
 
 ---
 
@@ -756,17 +794,17 @@ create name = "Hurtip"
 
 #### Tokens reconhecidos
 
-| Categoria                | Elementos                                                                                                                     |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Palavras reservadas      | `create`, `true`, `false`, `if`, `else`, `while`, `function`, `return`, `load`, `as`, `break`, `continue`, `and`, `or`, `not` |
-| Identificadores          | Nomes de variáveis e identificadores                                                                                          |
-| Valores literais         | `String`, `Number`, `True`, `False`                                                                                           |
-| Atribuição               | `Equal` (`=`)                                                                                                                 |
-| Operadores aritméticos   | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`)                                                                      |
-| Operadores de comparação | `EqualEqual`, `BangEqual`, `Greater`, `Less`, `GreaterEqual`, `LessEqual`                                                     |
-| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `Comma`                                                                 |
-| Estrutura do código      | `NewLine`, `EndOfFile`                                                                                                        |
-| Controle de fluxo        | `Break`, `Continue`, `Return`                                                                                                 |
+| Categoria                | Elementos                                                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Palavras reservadas      | `create`, `true`, `false`, `if`, `else`, `while`, `function`, `return`, `load`, `import`, `as`, `break`, `continue`, `and`, `or`, `not` |
+| Identificadores          | Nomes de variáveis e identificadores                                                                                                    |
+| Valores literais         | `String`, `Number`, `True`, `False`                                                                                                     |
+| Atribuição               | `Equal` (`=`)                                                                                                                           |
+| Operadores aritméticos   | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`)                                                                                |
+| Operadores de comparação | `EqualEqual`, `BangEqual`, `Greater`, `Less`, `GreaterEqual`, `LessEqual`                                                               |
+| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `Comma`                                                                           |
+| Estrutura do código      | `NewLine`, `EndOfFile`                                                                                                                  |
+| Controle de fluxo        | `Break`, `Continue`, `Return`                                                                                                           |
 
 O Lexer também reconhece comentários de linha iniciados por `//`.
 
@@ -797,6 +835,8 @@ Atualmente, o Parser possui suporte para:
 - Declarações de funções.
 - Parâmetros e retornos.
 - Carregamento de módulos.
+- Importação de bibliotecas nativas.
+- Aliases com `as`.
 - Expressões aritméticas.
 - Expressões unárias.
 - Expressões agrupadas.
@@ -810,9 +850,9 @@ Atualmente, o Parser possui suporte para:
 - Verificação de uso de `break` e `continue` dentro de loops.
 - Abertura de blocos na mesma linha ou na linha seguinte.
 
-O Parser possui mecanismos de diagnóstico que já identificam diferentes
-estruturas sintáticas inválidas, mas ainda precisa de melhorias para padronizar
-e ampliar o tratamento de erros.
+O Parser possui mecanismos de diagnóstico que identificam diferentes estruturas
+sintáticas inválidas, mas ainda existem situações que precisam de tratamento
+mais abrangente.
 
 ### AST — Árvore sintática abstrata
 
@@ -832,6 +872,7 @@ Atualmente, existem estruturas para representar:
 - Declarações de funções.
 - Instruções de retorno.
 - Declarações de carregamento de módulos.
+- Declarações de importação.
 - Decisões condicionais.
 - Blocos de código.
 - Loops.
@@ -863,6 +904,8 @@ Atualmente, ele consegue:
 - Interpretar `break` e `continue`.
 - Executar loops aninhados.
 - Carregar módulos e acessar funções por namespace.
+- Importar bibliotecas nativas.
+- Executar funções registradas em bibliotecas nativas.
 - Identificar variáveis não declaradas.
 - Informar a localização de determinados erros de execução.
 
@@ -877,8 +920,8 @@ using RuntimeValue = std::variant<std::string, double, bool>;
 
 ## 9. Sistema de diagnóstico
 
-A Hurtip possui uma implementação inicial de mensagens de erro com identificação
-de linha e coluna em diferentes situações.
+A Hurtip possui uma implementação de mensagens de erro com identificação de
+linha e coluna em diferentes situações.
 
 Exemplo de erro de sintaxe:
 
@@ -945,16 +988,9 @@ situações de sintaxe inválida, incluindo:
 O Lexer também possui testes para situações como caracteres inválidos e strings
 não terminadas.
 
-### Próximas melhorias
-
-- Diagnósticos mais robustos e padronizados.
-- Identificação consistente de linha e coluna.
-- Mensagens específicas para fim de linha e fim de arquivo.
-- Tratamento de erros léxicos.
-- Tratamento de erros sintáticos.
-- Tratamento de erros em tempo de execução.
-- Maior previsibilidade no comportamento do Parser.
-- Recuperação de erros para permitir diagnósticos adicionais quando possível.
+O sistema de importação de bibliotecas nativas também apresenta mensagens
+específicas para bibliotecas inexistentes, funções não registradas e argumentos
+inválidos.
 
 ---
 
@@ -968,6 +1004,7 @@ separando programas demonstrativos dos testes de comportamento.
 ```text
 tests/
 ├── CMakeLists.txt
+├── run_test.cmake
 │
 ├── environment/
 │   └── environment_test.hurtip
@@ -988,6 +1025,14 @@ tests/
 │   ├── module_test.hurtip
 │   └── modules/
 │       └── math.hurtip
+│
+├── import/
+│   ├── math_import_test.hurtip
+│   ├── math_alias_test.hurtip
+│   ├── unknown_import_test.hurtip
+│   ├── unknown_function_test.hurtip
+│   ├── invalid_native_arguments_test.hurtip
+│   └── invalid_native_types_test.hurtip
 │
 ├── lexer/
 │   └── lexer_test.cpp
@@ -1021,6 +1066,10 @@ Foram executados testes para verificar:
 - Funções aninhadas.
 - Recursividade.
 - Sistema de módulos.
+- Importação de bibliotecas nativas.
+- Importação com alias.
+- Bibliotecas e funções inexistentes.
+- Argumentos e tipos inválidos em funções nativas.
 - Abertura de blocos em linhas separadas.
 - Delimitadores incompletos.
 - Argumentos inválidos.
@@ -1040,7 +1089,7 @@ entrada de tokens.
 
 ### CTest
 
-O projeto possui integração funcional com CTest no CMake principal:
+O projeto possui integração com CTest no CMake principal:
 
 ```cmake
 include(CTest)
@@ -1053,21 +1102,21 @@ endif()
 O arquivo `tests/CMakeLists.txt` cadastra os testes de integração e os
 executáveis de testes unitários.
 
-### Resultado mais recente
+### Resultado mais recente confirmado
 
-| Categoria                        | Testes aprovados |
-| -------------------------------- | ---------------: |
-| Testes de integração `.hurtip`   |               21 |
-| Teste unitário do Lexer          |     1 executável |
-| Teste unitário do Parser         |     1 executável |
-| Total registrado no CTest        |               23 |
-| Verificações unitárias do Lexer  |               13 |
-| Verificações unitárias do Parser |               40 |
+| Categoria                        |       Testes |
+| -------------------------------- | -----------: |
+| Testes de integração `.hurtip`   |           27 |
+| Teste unitário do Lexer          | 1 executável |
+| Teste unitário do Parser         | 1 executável |
+| Total registrado no CTest        |           29 |
+| Verificações unitárias do Lexer  |           13 |
+| Verificações unitárias do Parser |           40 |
 
 **Último resultado confirmado:**
 
 ```text
-100% tests passed, 0 tests failed out of 23
+100% tests passed, 0 tests failed out of 29
 ```
 
 Os 40 testes do Parser são verificações internas de um único executável
@@ -1087,9 +1136,6 @@ Para executar os testes unitários individualmente:
 ./build/tests/lexer_tests
 ./build/tests/parser_tests
 ```
-
-Os testes de resistência com entradas extremas, expressões profundamente
-aninhadas e fuzz testing ainda estão planejados para uma etapa posterior.
 
 ---
 
@@ -1169,7 +1215,7 @@ com compiladores e sistemas embarcados.
 
 ## 13. Estrutura do projeto
 
-A organização atual do repositório separa os componentes da linguagem por
+A organização do repositório separa os componentes da linguagem por
 responsabilidade.
 
 ```text
@@ -1197,6 +1243,9 @@ Hurtip/
 │       │   └── lexer.hpp
 │       ├── parser/
 │       │   └── parser.hpp
+│       ├── libraries/
+│       │   ├── math.hpp
+│       │   └── standard_library.hpp
 │       └── token.hpp
 │
 ├── src/
@@ -1213,8 +1262,12 @@ Hurtip/
 │   ├── lexer/
 │   │   └── lexer.cpp
 │   │
-│   └── parser/
-│       └── parser.cpp
+│   ├── parser/
+│   │   └── parser.cpp
+│   │
+│   └── libraries/
+│       ├── math.cpp
+│       └── standard_library.cpp
 │
 ├── examples/
 │   ├── hello.hurtip
@@ -1222,8 +1275,10 @@ Hurtip/
 │
 ├── tests/
 │   ├── CMakeLists.txt
+│   ├── run_test.cmake
 │   ├── environment/
 │   ├── functions/
+│   ├── import/
 │   ├── lexer/
 │   ├── modules/
 │   ├── parser/
@@ -1286,217 +1341,54 @@ ctest --test-dir build --output-on-failure
 
 ## 15. Estado atual do desenvolvimento
 
-A Hurtip está sendo desenvolvida gradualmente, com foco na construção de uma
-base sólida antes da implementação de recursos mais avançados.
+A Hurtip possui um núcleo funcional implementado em C++17, com Lexer, Parser,
+AST e Interpreter integrados.
+
+A linguagem oferece suporte a variáveis, expressões, operadores aritméticos,
+comparações, lógica, estruturas condicionais, loops, funções, parâmetros,
+retornos, recursividade e escopos.
+
+O sistema de módulos permite carregar arquivos `.hurtip` com `load`, utilizar
+aliases e acessar funções por namespace.
+
+O sistema de bibliotecas nativas também está implementado. O `import` permite
+incorporar bibliotecas registradas no interpretador, incluindo a biblioteca
+`math` e sua função `math.sum()`.
+
+A inicialização das bibliotecas é centralizada em `standard_library`, mantendo o
+registro separado do ponto de entrada da aplicação.
 
 ### Componentes principais
 
-| Componente                                | Estado                 |
-| ----------------------------------------- | ---------------------- |
-| Lexer                                     | Implementado           |
-| Reconhecimento de palavras reservadas     | Implementado           |
-| Reconhecimento de operadores              | Implementado           |
-| Rastreamento de linha e coluna dos tokens | Implementado           |
-| Parser                                    | Implementado           |
-| AST                                       | Implementada           |
-| Interpreter                               | Implementado           |
-| Variáveis e valores no runtime            | Implementados          |
-| Expressões                                | Implementadas          |
-| Operações aritméticas                     | Implementadas          |
-| Comparações                               | Implementadas          |
-| Operadores lógicos                        | Implementados          |
-| Estruturas condicionais                   | Implementadas          |
-| Loops e controle de fluxo                 | Implementados          |
-| Funções e parâmetros                      | Implementados          |
-| Recursividade                             | Implementada           |
-| Escopos                                   | Implementados          |
-| Sistema inicial de módulos                | Implementado           |
-| `load` de arquivos `.hurtip`              | Implementado           |
-| `import` de bibliotecas externas          | Planejado              |
-| Diagnósticos iniciais                     | Implementados          |
-| Execução de arquivos `.hurtip` pela CLI   | Implementada           |
-| Extensão inicial para VS Code             | Implementada           |
-| Testes unitários do Lexer e Parser        | Implementados          |
-| Testes automatizados com CTest            | Integrados e aprovados |
-
-### Roadmap
-
-**Núcleo da linguagem**
-
-- [x] Lexer
-- [x] Parser básico
-- [x] AST
-- [x] Interpreter básico
-- [x] Execução de arquivos `.hurtip` por argumento na CLI
-- [x] Valores e variáveis no runtime
-- [x] Declaração de variáveis com `create`
-- [x] Atribuição e atualização de variáveis
-- [x] Strings, números e booleanos
-- [x] Expressões
-- [x] Operadores aritméticos (`+`, `-`, `*`, `/`)
-- [x] Operadores unários (`+`, `-`)
-- [x] Precedência matemática
-- [x] Agrupamento de expressões com parênteses
-- [x] Comentários de linha (`//`)
-
-**Operadores e lógica**
-
-- [x] Comparações (`==`, `!=`, `>`, `<`, `>=`, `<=`)
-- [x] Operadores lógicos (`and`, `or`, `not`)
-- [x] Precedência de operadores lógicos
-- [x] Avaliação de curto-circuito
-- [x] Validação de valores booleanos nas operações lógicas
-
-**Controle de fluxo**
-
-- [x] `if` / `else`
-- [x] Decisões aninhadas
-- [x] Blocos de código
-- [x] Abertura de blocos na mesma linha ou na linha seguinte
-- [x] `while`
-- [x] `break`
-- [x] `continue`
-- [x] Loops aninhados
-- [x] Escopo próprio para blocos de controle
-- [x] Restauração de escopo após `break`, `continue` e `return`
-- [ ] `for`
-
-**Funções e escopos**
-
-- [x] Funções definidas pelo usuário
-- [x] Declaração de parâmetros
-- [x] Chamadas de funções
-- [x] Valores de retorno
-- [x] `return`
-- [x] Escopo local e global
-- [x] Funções aninhadas
-- [x] Recursividade
-- [x] Isolamento de variáveis locais entre chamadas
-- [ ] Closures
-- [ ] Arrays e listas
-- [ ] Estruturas de dados adicionais
-
-**Sistema de módulos e bibliotecas**
-
-- [x] Carregamento de arquivos `.hurtip` com `load`
-- [x] Alias de módulos com `as`
-- [x] Acesso a funções por namespace
-- [x] Resolução de caminhos relativos ao arquivo que executa `load`
-- [x] Cache de módulos carregados
-- [x] Detecção de dependências circulares
-- [x] Teste de integração entre módulos
-- [ ] Isolamento completo de variáveis por módulo
-- [ ] Sistema de importação de bibliotecas externas com `import`
-- [ ] Arquitetura para integração com bibliotecas C/C++
-- [ ] Biblioteca padrão
-- [ ] Gerenciador de pacotes
-
-**Parser, diagnósticos e confiabilidade**
-
-- [x] Diagnósticos iniciais com identificação de linha
-- [x] Identificação de linha e coluna nos erros sintáticos testados
-- [x] Detecção de blocos sem abertura `{`
-- [x] Detecção de blocos sem fechamento `}`
-- [x] Detecção de parênteses não fechados em condições
-- [x] Detecção de chamadas de função incompletas
-- [x] Detecção de argumentos ausentes
-- [x] Detecção de vírgula sobrando nos argumentos
-- [x] Detecção de expressões incompletas
-- [x] Detecção de operadores inválidos em expressões
-- [x] Validação de lista de tokens vazia
-- [x] Validação da presença do token `EndOfFile`
-- [x] Testes unitários de erros léxicos
-- [x] Testes unitários de erros sintáticos
-- [ ] Mensagens padronizadas para fim de linha e fim de arquivo
-- [ ] Testes de erros em tempo de execução
-- [ ] Tratamento robusto e padronizado de erros
-- [ ] Testes de recuperação do Parser
-- [ ] Testes de resistência com entradas extremas
-- [ ] Testes de expressões profundamente aninhadas
-- [ ] Fuzz testing do Lexer e Parser
-
-**Testes e organização do projeto**
-
-- [x] Organização dos exemplos em `examples/`
-- [x] Separação dos testes em `tests/`
-- [x] Organização dos testes por categoria
-- [x] Testes manuais de regressão
-- [x] Testes de escopos
-- [x] Testes de funções e recursividade
-- [x] Testes de módulos
-- [x] Testes de sintaxe válida e inválida
-- [x] Testes automatizados de mensagens de erro
-- [x] Testes unitários do Lexer
-- [x] Testes unitários do Parser
-- [x] Integração do CTest no `CMakeLists.txt`
-- [x] Cadastro dos testes no `tests/CMakeLists.txt`
-- [x] Execução automatizada de toda a suíte com CTest
-- [x] 13 verificações unitárias do Lexer aprovadas
-- [x] 40 verificações unitárias do Parser aprovadas
-- [x] 23 testes registrados e aprovados pelo CTest
-
-**Biblioteca e ferramentas**
-
-- [ ] Biblioteca padrão
-- [x] Estrutura inicial de CLI
-- [ ] CLI / tooling avançado
-- [ ] Sistema de documentação
-- [ ] Gerenciador de pacotes
-- [ ] Ferramentas de depuração
-
-**Recursos de baixo nível e hardware**
-
-- [ ] Controle de memória
-- [ ] Tipos de dados de baixo nível
-- [ ] Ponteiros e referências
-- [ ] Acesso a recursos do sistema
-- [ ] Interação com bibliotecas C/C++
-- [ ] Comunicação com microcontroladores
-- [ ] Suporte ao ESP32
-
----
-
-## 16. Direção futura
-
-A Hurtip começa como um interpretador experimental, mas sua visão vai além de
-executar pequenos programas.
-
-A intenção é construir uma linguagem que combine uma sintaxe acessível com
-recursos técnicos capazes de atender a diferentes cenários de desenvolvimento.
-
-Uma das direções prioritárias é explorar programação de baixo nível e sistemas
-embarcados, permitindo que a linguagem possa futuramente interagir diretamente
-com hardware e microcontroladores.
-
-### Evolução do ecossistema
-
-A evolução da Hurtip também envolve a construção de um ecossistema próprio.
-
-A separação entre `load` e `import` faz parte dessa visão:
-
-- `load` permite organizar e reutilizar arquivos `.hurtip` dentro de um projeto.
-- `import` deverá permitir incorporar bibliotecas externas.
-- A biblioteca padrão deverá oferecer funcionalidades essenciais.
-- Um futuro gerenciador de pacotes poderá facilitar a instalação e o
-  compartilhamento de bibliotecas.
-
-Essa arquitetura poderá abrir caminho para um ecossistema de bibliotecas e
-ferramentas construído em torno da Hurtip.
-
-### Possibilidades futuras
-
-A partir dessa base, o projeto poderá evoluir para:
-
-- Desenvolvimento de aplicações.
-- Programação de baixo nível.
-- Sistemas embarcados.
-- Jogos.
-- Inteligência artificial.
-- Integração com bibliotecas nativas.
-- Comunicação com microcontroladores, especialmente ESP32.
-
-A evolução será gradual, priorizando uma arquitetura bem estruturada,
-previsibilidade e controle sobre o funcionamento interno da linguagem.
+| Componente                                | Estado        |
+| ----------------------------------------- | ------------- |
+| Lexer                                     | Implementado  |
+| Reconhecimento de palavras reservadas     | Implementado  |
+| Reconhecimento de operadores              | Implementado  |
+| Rastreamento de linha e coluna dos tokens | Implementado  |
+| Parser                                    | Implementado  |
+| AST                                       | Implementada  |
+| Interpreter                               | Implementado  |
+| Variáveis e valores no runtime            | Implementados |
+| Expressões                                | Implementadas |
+| Operações aritméticas                     | Implementadas |
+| Comparações                               | Implementadas |
+| Operadores lógicos                        | Implementados |
+| Estruturas condicionais                   | Implementadas |
+| Loops e controle de fluxo                 | Implementados |
+| Funções e parâmetros                      | Implementados |
+| Recursividade                             | Implementada  |
+| Escopos                                   | Implementados |
+| Sistema de módulos                        | Implementado  |
+| `load` de arquivos `.hurtip`              | Implementado  |
+| `import` de bibliotecas nativas           | Implementado  |
+| Registro centralizado de bibliotecas      | Implementado  |
+| Biblioteca nativa `math`                  | Implementada  |
+| Diagnósticos iniciais                     | Implementados |
+| Execução de arquivos `.hurtip` pela CLI   | Implementada  |
+| Extensão inicial para VS Code             | Implementada  |
+| Testes unitários do Lexer e Parser        | Implementados |
+| Testes automatizados com CTest            | Integrados    |
 
 ---
 

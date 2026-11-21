@@ -60,6 +60,44 @@ namespace hurtip
         executeStatements(statements);
     }
 
+    // Native library registration
+
+    void Interpreter::registerLibrary(
+        const std::string &name,
+        NativeFunctionRegistry nativeFunctions)
+    {
+        if (name.empty())
+        {
+            throw std::runtime_error(
+                "Library name cannot be empty");
+        }
+
+        if (nativeFunctions.empty())
+        {
+            throw std::runtime_error(
+                "Library cannot be empty: " + name);
+        }
+
+        for (const auto &function : nativeFunctions)
+        {
+            if (function.first.empty() || !function.second)
+            {
+                throw std::runtime_error(
+                    "Invalid native function in library: " + name);
+            }
+        }
+
+        if (nativeLibraries.find(name) != nativeLibraries.end())
+        {
+            throw std::runtime_error(
+                "Library already registered: " + name);
+        }
+
+        nativeLibraries.emplace(
+            name,
+            std::move(nativeFunctions));
+    }
+
     // Statement execution
 
     void Interpreter::executeStatements(
@@ -125,6 +163,16 @@ namespace hurtip
                 dynamic_cast<const LoadStatement *>(&statement))
         {
             executeLoad(*load);
+
+            return;
+        }
+
+        // Import statement
+
+        if (const auto *import =
+                dynamic_cast<const ImportStatement *>(&statement))
+        {
+            executeImport(*import);
 
             return;
         }
@@ -356,6 +404,17 @@ namespace hurtip
                 ? modulePath.stem().string()
                 : statement.alias;
 
+        // A module cannot reuse an alias assigned to a native library.
+
+        auto existingImport = importedLibraries.find(alias);
+
+        if (existingImport != importedLibraries.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Namespace already imported: " + alias);
+        }
+
         // A namespace cannot be reused for a different module.
 
         auto existingNamespace = namespaces.find(alias);
@@ -478,5 +537,50 @@ namespace hurtip
 
             throw;
         }
+    }
+
+    // Native library importing
+
+    void Interpreter::executeImport(
+        const ImportStatement &statement)
+    {
+        auto library = nativeLibraries.find(statement.name);
+
+        if (library == nativeLibraries.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Unknown native library: " + statement.name);
+        }
+
+        const std::string alias =
+            statement.alias.empty()
+                ? statement.name
+                : statement.alias;
+
+        // A native library cannot reuse an alias assigned to a module.
+
+        if (namespaces.find(alias) != namespaces.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Namespace already declared: " + alias);
+        }
+
+        auto existingImport = importedLibraries.find(alias);
+
+        if (existingImport != importedLibraries.end())
+        {
+            if (existingImport->second == statement.name)
+            {
+                return;
+            }
+
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Namespace already imported: " + alias);
+        }
+
+        importedLibraries.emplace(alias, statement.name);
     }
 }

@@ -1,0 +1,5 @@
+import "math" as mathematics
+
+create result = mathematics.sum(10, 20)
+
+view(result)

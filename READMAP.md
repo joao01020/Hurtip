@@ -65,7 +65,30 @@
 - [x] Detecção de dependências circulares
 - [x] Teste de integração entre módulos
 - [ ] Isolamento completo de variáveis por módulo
-- [ ] Biblioteca padrão
+
+## Sistema de importação de bibliotecas nativas
+
+- [x] Palavra-chave `import` no Lexer
+- [x] Token `Import`
+- [x] Token `As` para aliases
+- [x] Análise sintática de declarações `import`
+- [x] Importação de bibliotecas nativas por nome
+- [x] Importação com alias
+- [x] Acesso a funções nativas por namespace
+- [x] Registro de funções nativas no Interpreter
+- [x] Registro centralizado das bibliotecas padrão
+- [x] Estrutura inicial para cadastro de novas bibliotecas
+- [x] Biblioteca nativa `math`
+- [x] Função matemática `math.sum()`
+- [x] Validação de quantidade de argumentos
+- [x] Validação de tipos dos argumentos
+- [x] Detecção de bibliotecas inexistentes
+- [x] Detecção de funções inexistentes em bibliotecas
+- [x] Tratamento de erros em funções nativas
+- [ ] Testes automatizados de conflitos entre aliases de módulos e bibliotecas
+- [ ] Carregamento dinâmico de bibliotecas externas
+- [ ] API pública para desenvolvimento de bibliotecas por terceiros
+- [ ] Documentação da API de bibliotecas nativas
 
 ## Parser, diagnósticos e confiabilidade
 
@@ -84,7 +107,7 @@
 - [ ] Mensagens padronizadas para fim de linha e fim de arquivo
 - [x] Testes de erros léxicos
 - [x] Testes de erros sintáticos
-- [ ] Testes de erros em tempo de execução
+- [ ] Testes abrangentes de erros em tempo de execução
 - [ ] Tratamento robusto e padronizado de erros
 - [ ] Testes de recuperação do parser
 - [ ] Testes de resistência com entradas extremas
@@ -108,11 +131,16 @@
 - [x] Testes unitários do Lexer
 - [x] Testes unitários do Parser
 - [x] 40 verificações unitárias do Parser aprovadas
-- [x] 23 testes registrados e aprovados pelo CTest
+- [x] 29 testes registrados e aprovados pelo CTest
+- [x] Testes de importação de bibliotecas nativas
+- [x] Testes de importação com alias
+- [x] Testes de bibliotecas e funções inexistentes
+- [x] Testes de argumentos e tipos inválidos em funções nativas
 
 ## Biblioteca e ferramentas
 
-- [ ] Biblioteca padrão
+- [ ] Biblioteca padrão completa
+- [x] Estrutura inicial de registro centralizado da biblioteca padrão
 - [x] Estrutura inicial de CLI
 - [ ] CLI / tooling avançado
 - [ ] Sistema de documentação
@@ -136,15 +164,36 @@
 - `[x]` Implementado e validado por testes realizados.
 - `[ ]` Pendente de implementação ou validação.
 
-**Estado atual:**
+## Estado atual
 
-A Hurtip já possui um núcleo funcional, com controle de fluxo, funções,
-recursividade, escopos e sistema inicial de módulos.
+A Hurtip já possui um núcleo funcional desenvolvido em C++17, com Lexer, Parser,
+AST e Interpreter integrados.
 
-O Lexer e o Parser possuem testes unitários, e a suíte automatizada está
-integrada ao CTest. Atualmente, são 40 verificações unitárias do Parser e 23
-testes registrados no CTest, todos aprovados.
+A linguagem oferece variáveis, expressões, operadores, controle de fluxo,
+funções, recursividade, escopos e um sistema inicial de módulos.
 
-O foco atual é continuar fortalecendo o Parser e melhorar a confiabilidade dos
-diagnósticos. Testes avançados de resistência e fuzz testing ficam planejados
-para uma etapa posterior, sem impedir a evolução dos recursos da linguagem.
+O sistema de importação de bibliotecas nativas também foi implementado. Já é
+possível importar bibliotecas pelo nome, utilizar aliases e chamar funções
+nativas através de namespaces. A biblioteca `math` é a primeira implementação
+desse sistema.
+
+A arquitetura de registro das bibliotecas foi centralizada em
+`standard_library`, evitando que o `main.cpp` precise registrar individualmente
+cada biblioteca.
+
+O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
+integrada ao CTest. Atualmente, são **40 verificações unitárias do Parser e 29
+testes registrados no CTest**, todos aprovados na última execução.
+
+### Foco atual do desenvolvimento
+
+O próximo objetivo é fortalecer a confiabilidade do sistema de importação,
+especialmente a prevenção de conflitos entre aliases de módulos e bibliotecas
+nativas.
+
+Depois disso, o desenvolvimento poderá avançar na expansão da biblioteca padrão,
+na API para bibliotecas externas e no fortalecimento dos diagnósticos e testes
+de resistência.
+
+Os recursos avançados de baixo nível e suporte a microcontroladores continuam
+fazendo parte da visão de longo prazo da Hurtip.

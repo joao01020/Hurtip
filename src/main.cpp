@@ -5,16 +5,15 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <filesystem>
 
 #include "hurtip/lexer/lexer.hpp"
 #include "hurtip/parser/parser.hpp"
 #include "hurtip/interpreter/interpreter.hpp"
-
-#include <filesystem>
+#include "hurtip/libraries/standard_library.hpp"
 
 int main(int argc, char *argv[])
 {
-
     if (argc < 2)
     {
         std::cerr << "Usage: hurtip <file.hurtip>\n";
@@ -39,7 +38,6 @@ int main(int argc, char *argv[])
 
     try
     {
-
         // Lexer
         hurtip::Lexer lexer(source);
         std::vector<hurtip::Token> tokens = lexer.tokenize();
@@ -50,13 +48,16 @@ int main(int argc, char *argv[])
 
         // Interpreter
         hurtip::Interpreter interpreter;
+
+        // Register standard libraries
+        hurtip::registerStandardLibraries(interpreter);
+
         interpreter.interpret(
             statements,
             std::filesystem::absolute(filePath));
     }
     catch (const std::exception &error)
     {
-
         std::cerr << "Hurtip Error: "
                   << error.what() << '\n';
 
