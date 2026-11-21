@@ -1,3 +1,5 @@
 load "modules/math.hurtip" as math
 
-view("Programa principal")
+create result = sum(10, 20)
+
+view("Resultado:", result)
