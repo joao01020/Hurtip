@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "hurtip/token.hpp"
@@ -51,6 +50,18 @@ namespace hurtip
     struct BlockStatement : ASTNode
     {
         std::vector<std::unique_ptr<ASTNode>> statements;
+    };
+
+    struct FunctionDeclaration : ASTNode
+    {
+        std::string name;
+        std::vector<std::string> parameters;
+        std::unique_ptr<BlockStatement> body;
+    };
+
+    struct ReturnStatement : ASTNode
+    {
+        std::unique_ptr<Expression> value;
     };
 
     struct IfStatement : ASTNode

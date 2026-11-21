@@ -22,6 +22,7 @@ namespace hurtip
         std::size_t position = 0;
 
         int loopDepth = 0;
+        int functionDepth = 0;
 
         const Token &currentToken() const;
         const Token &advance();
@@ -35,6 +36,9 @@ namespace hurtip
         std::unique_ptr<CreateStatement> parseCreateStatement();
         std::unique_ptr<LoadStatement> parseLoadStatement();
         std::unique_ptr<AssignmentStatement> parseAssignmentStatement();
+
+        std::unique_ptr<FunctionDeclaration> parseFunctionDeclaration();
+        std::unique_ptr<ReturnStatement> parseReturnStatement();
 
         std::unique_ptr<IfStatement> parseIfStatement();
         std::unique_ptr<WhileStatement> parseWhileStatement();

@@ -97,6 +97,16 @@ namespace hurtip
             return parseLoadStatement();
         }
 
+        if (check(TokenType::Function))
+        {
+            return parseFunctionDeclaration();
+        }
+
+        if (check(TokenType::Return))
+        {
+            return parseReturnStatement();
+        }
+
         if (check(TokenType::If))
         {
             return parseIfStatement();
@@ -216,6 +226,126 @@ namespace hurtip
         }
 
         statement->value = parseExpression();
+
+        return statement;
+    }
+
+    // Function declaration
+
+    std::unique_ptr<FunctionDeclaration>
+    Parser::parseFunctionDeclaration()
+    {
+        const Token &functionToken = advance();
+
+        if (!check(TokenType::Identifier))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected a function name after 'function'");
+        }
+
+        auto statement = std::make_unique<FunctionDeclaration>();
+
+        statement->line = functionToken.line;
+        statement->name = advance().lexeme;
+
+        if (!match(TokenType::LeftParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected '(' after function name");
+        }
+
+        // Function parameters
+
+        if (!check(TokenType::RightParen))
+        {
+            if (!check(TokenType::Identifier))
+            {
+                throw parserError(
+                    currentToken(),
+                    "Expected a parameter name");
+            }
+
+            statement->parameters.push_back(advance().lexeme);
+
+            while (match(TokenType::Comma))
+            {
+                if (!check(TokenType::Identifier))
+                {
+                    throw parserError(
+                        currentToken(),
+                        "Expected a parameter name after ','");
+                }
+
+                statement->parameters.push_back(
+                    advance().lexeme);
+            }
+        }
+
+        if (!match(TokenType::RightParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected ')' after function parameters");
+        }
+
+        // Allow new lines before the function body.
+
+        while (match(TokenType::NewLine))
+        {
+        }
+
+        // A function has its own loop context.
+        // A break or continue cannot escape into an outer loop.
+
+        const int previousLoopDepth = loopDepth;
+
+        loopDepth = 0;
+        functionDepth++;
+
+        try
+        {
+            statement->body = parseBlockStatement();
+        }
+        catch (...)
+        {
+            functionDepth--;
+            loopDepth = previousLoopDepth;
+            throw;
+        }
+
+        functionDepth--;
+        loopDepth = previousLoopDepth;
+
+        return statement;
+    }
+
+    // Return statement
+
+    std::unique_ptr<ReturnStatement> Parser::parseReturnStatement()
+    {
+        const Token &returnToken = advance();
+
+        if (functionDepth <= 0)
+        {
+            throw parserError(
+                returnToken,
+                "'return' can only be used inside a function");
+        }
+
+        auto statement = std::make_unique<ReturnStatement>();
+
+        statement->line = returnToken.line;
+
+        // Return may have a value or be used without one.
+
+        if (!check(TokenType::NewLine) &&
+            !check(TokenType::RightBrace) &&
+            !check(TokenType::EndOfFile))
+        {
+            statement->value = parseExpression();
+        }
 
         return statement;
     }
