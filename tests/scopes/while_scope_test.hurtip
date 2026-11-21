@@ -1,0 +1,10 @@
+create counter = 0
+
+while (counter < 3) {
+    create localNumber = counter + 10
+    view(localNumber)
+
+    counter = counter + 1
+}
+
+view(counter)

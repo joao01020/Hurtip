@@ -1,0 +1,18 @@
+create number = 10
+
+function change()
+{
+    create number = 20
+    view(number)
+}
+
+function update()
+{
+    number = 30
+}
+
+change()
+view(number)
+
+update()
+view(number)

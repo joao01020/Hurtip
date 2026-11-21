@@ -1,0 +1,11 @@
+create number = 10
+
+if (false) {
+    create number = 20
+    view(number)
+} else {
+    create number = 30
+    view(number)
+}
+
+view(number)
