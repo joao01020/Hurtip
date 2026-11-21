@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "hurtip/parser.hpp"
@@ -29,6 +28,14 @@ namespace hurtip
     private:
         std::unordered_map<std::string, RuntimeValue> variables;
 
+        // Function registry
+        std::unordered_map<std::string, const FunctionDeclaration *> functions;
+
+        // Keeps module ASTs alive at stable addresses.
+        std::vector<
+            std::unique_ptr<std::vector<std::unique_ptr<ASTNode>>>>
+            moduleStatements;
+
         // Module loading
         std::filesystem::path currentFilePath;
 
@@ -48,7 +55,7 @@ namespace hurtip
 
         RuntimeValue evaluateUnary(const UnaryExpression &expression);
 
-        void executeCall(const CallExpression &expression);
+        RuntimeValue executeCall(const CallExpression &expression);
     };
 
 }
