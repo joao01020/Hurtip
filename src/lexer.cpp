@@ -1,4 +1,3 @@
-
 #include "hurtip/lexer.hpp"
 
 #include <cctype>
@@ -94,6 +93,14 @@ namespace hurtip
         else if (value == "as")
         {
             type = TokenType::As;
+        }
+        else if (value == "function")
+        {
+            type = TokenType::Function;
+        }
+        else if (value == "return")
+        {
+            type = TokenType::Return;
         }
         else if (value == "true")
         {

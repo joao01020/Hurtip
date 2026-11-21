@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <string>
@@ -11,6 +10,9 @@ namespace hurtip
         Create,
         Load,
         As,
+
+        Function,
+        Return,
 
         True,
         False,
