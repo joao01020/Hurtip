@@ -1,0 +1,4 @@
+load "modules/math.hurtip" as math
+
+view(math.sum(10, 20))
+view(math.doubleSum(10, 20))
