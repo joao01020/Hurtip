@@ -1,0 +1,6 @@
+view("Iniciando o programa principal...")
+
+load "modules/greeting.hurtip"
+
+view("O módulo foi carregado com sucesso!")
+view("Programa finalizado.")

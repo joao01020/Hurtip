@@ -1,0 +1,2 @@
+view("Olá! O módulo Greeting foi carregado.")
+view("Esta mensagem foi executada de outro arquivo.")
