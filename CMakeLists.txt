@@ -17,6 +17,7 @@ add_executable(hurtip
     src/parser/parser.cpp
     src/interpreter/interpreter.cpp
     src/interpreter/interpreter_expressions.cpp
+    src/environment/environment.cpp
 )
 
 target_include_directories(hurtip
@@ -36,3 +37,11 @@ install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/assets/
     DESTINATION share/hurtip/assets
 )
+
+# Sistema de testes
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

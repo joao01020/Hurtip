@@ -1,0 +1,234 @@
+
+# Testes automatizados da Hurtip
+
+set(HURTIP_TEST_RUNNER
+    "${CMAKE_CURRENT_SOURCE_DIR}/run_test.cmake"
+)
+
+function(add_hurtip_success_test test_name source_file expected_output)
+    add_test(
+        NAME ${test_name}
+        COMMAND
+            ${CMAKE_COMMAND}
+            "-DPROGRAM=$<TARGET_FILE:hurtip>"
+            "-DSOURCE=${PROJECT_SOURCE_DIR}/${source_file}"
+            "-DEXPECTED_OUTPUT=${expected_output}"
+            "-DEXPECTED_ERROR="
+            -P "${HURTIP_TEST_RUNNER}"
+    )
+endfunction()
+
+function(add_hurtip_error_test test_name source_file expected_error)
+    add_test(
+        NAME ${test_name}
+        COMMAND
+            ${CMAKE_COMMAND}
+            "-DPROGRAM=$<TARGET_FILE:hurtip>"
+            "-DSOURCE=${PROJECT_SOURCE_DIR}/${source_file}"
+            "-DEXPECTED_OUTPUT="
+            "-DEXPECTED_ERROR=${expected_error}"
+            -P "${HURTIP_TEST_RUNNER}"
+    )
+endfunction()
+
+# Environment
+
+add_hurtip_success_test(
+    environment
+    tests/environment/environment_test.hurtip
+    [=[20
+10
+30]=]
+)
+
+# Functions
+
+add_hurtip_success_test(
+    nested_functions
+    tests/functions/nested_functions_test.hurtip
+    [=[30
+30
+10]=]
+)
+
+add_hurtip_success_test(
+    recursion
+    tests/functions/recursion_test.hurtip
+    [=[120]=]
+)
+
+add_hurtip_success_test(
+    recursion_scope
+    tests/functions/recursion_scope_test.hurtip
+    [=[15]=]
+)
+
+# Modules
+
+add_hurtip_success_test(
+    module_system
+    tests/modules/module_test.hurtip
+    [=[30
+60]=]
+)
+
+# Parser - successful programs
+
+add_hurtip_success_test(
+    parser_function_braces
+    tests/parser/function_braces_test.hurtip
+    [=[30]=]
+)
+
+add_hurtip_success_test(
+    parser_braces
+    tests/parser/parser_braces_test.hurtip
+    [=[20
+10]=]
+)
+
+add_hurtip_success_test(
+    parser_while_braces
+    tests/parser/while_braces_test.hurtip
+    [=[0
+1
+2
+3]=]
+)
+
+# Parser - expected errors
+
+add_hurtip_error_test(
+    parser_duplicate_operator
+    tests/parser/parser_duplicate_operator_test.hurtip
+    "Expected an expression"
+)
+
+add_hurtip_error_test(
+    parser_incomplete_expression
+    tests/parser/parser_incomplete_expression_test.hurtip
+    "Expected an expression"
+)
+
+add_hurtip_error_test(
+    parser_invalid_argument
+    tests/parser/parser_invalid_argument_test.hurtip
+    "Expected an expression"
+)
+
+add_hurtip_error_test(
+    parser_invalid_block
+    tests/parser/parser_invalid_block_test.hurtip
+    "Expected '{' to begin block"
+)
+
+add_hurtip_error_test(
+    parser_invalid_call
+    tests/parser/parser_invalid_call_test.hurtip
+    "Expected ')' after function arguments"
+)
+
+add_hurtip_error_test(
+    parser_missing_brace
+    tests/parser/parser_missing_brace_test.hurtip
+    "Expected '}' to close block"
+)
+
+add_hurtip_error_test(
+    parser_missing_parenthesis
+    tests/parser/parser_missing_parenthesis_test.hurtip
+    "Expected ')' after if condition"
+)
+
+add_hurtip_error_test(
+    parser_trailing_comma
+    tests/parser/parser_trailing_comma_test.hurtip
+    "Expected an expression"
+)
+
+# Scopes
+
+add_hurtip_success_test(
+    block_assignment
+    tests/scopes/block_assignment_test.hurtip
+    [=[50
+50]=]
+)
+
+add_hurtip_success_test(
+    block_scope
+    tests/scopes/block_scope_test.hurtip
+    [=[20
+10]=]
+)
+
+add_hurtip_success_test(
+    else_scope
+    tests/scopes/else_scope_test.hurtip
+    [=[30
+10]=]
+)
+
+add_hurtip_success_test(
+    loop_control_scope
+    tests/scopes/loop_control_scope_test.hurtip
+    [=[10
+12
+4]=]
+)
+
+add_hurtip_success_test(
+    while_scope
+    tests/scopes/while_scope_test.hurtip
+    [=[10
+11
+12
+3]=]
+)
+
+# Lexer unit tests
+
+add_executable(lexer_tests
+    lexer/lexer_test.cpp
+    ${PROJECT_SOURCE_DIR}/src/lexer/lexer.cpp
+)
+
+target_include_directories(lexer_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+if(MSVC)
+    target_compile_options(lexer_tests PRIVATE /W4)
+else()
+    target_compile_options(lexer_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_test(
+    NAME lexer_unit_tests
+    COMMAND lexer_tests
+)
+
+# Parser unit tests
+
+add_executable(parser_tests
+    parser/parser_test.cpp
+    ${PROJECT_SOURCE_DIR}/src/lexer/lexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/parser/parser.cpp
+)
+
+target_include_directories(parser_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+if(MSVC)
+    target_compile_options(parser_tests PRIVATE /W4)
+else()
+    target_compile_options(parser_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_test(
+    NAME parser_unit_tests
+    COMMAND parser_tests
+)
