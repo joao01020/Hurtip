@@ -1,0 +1,12 @@
+function sum(a, b)
+{
+    return a + b
+}
+
+function main()
+{
+    create result = sum(10, 20)
+    view(result)
+}
+
+main()
