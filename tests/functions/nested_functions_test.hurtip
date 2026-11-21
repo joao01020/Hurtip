@@ -1,0 +1,28 @@
+
+create globalNumber = 10
+
+function sum(a, b)
+{
+    return a + b
+}
+
+function calculate()
+{
+    create localNumber = 20
+
+    create result = sum(localNumber, globalNumber)
+
+    view(result)
+
+    return result
+}
+
+function main()
+{
+    create value = calculate()
+
+    view(value)
+    view(globalNumber)
+}
+
+main()
