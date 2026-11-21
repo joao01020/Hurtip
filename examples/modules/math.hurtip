@@ -1,6 +1,9 @@
-view("Modulo Math carregado!")
-
 function sum(a, b)
 {
     return a + b
+}
+
+function doubleSum(a, b)
+{
+    return sum(a, b) * 2
 }
