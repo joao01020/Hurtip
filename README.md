@@ -15,7 +15,7 @@ sem abandonar a possibilidade de evoluir para recursos mais avançados.
 > funcional capaz de executar arquivos `.hurtip`, uma arquitetura composta por
 > Lexer, Parser, AST e Interpreter, suporte a variáveis, expressões, operações
 > matemáticas, lógica, estruturas de controle, funções, recursividade, escopos,
-> módulos e importação de bibliotecas nativas.
+> arrays, módulos e importação de bibliotecas nativas.
 
 ---
 
@@ -139,17 +139,27 @@ view("Language:", "Hurtip", "Version:", 1)
 
 ### Tipos atualmente suportados pelo interpretador
 
-| Tipo     | Exemplo    | Representação interna |
-| -------- | ---------- | --------------------- |
-| Texto    | `"Hurtip"` | `std::string`         |
-| Número   | `24`       | `double`              |
-| Booleano | `true`     | `bool`                |
+| Tipo     | Exemplo        | Representação interna         |
+| -------- | -------------- | ----------------------------- |
+| Texto    | `"Hurtip"`     | `std::string`                 |
+| Número   | `24`           | `double`                      |
+| Booleano | `true`         | `bool`                        |
+| Array    | `[10, 20, 30]` | `std::shared_ptr<ArrayValue>` |
 
 Internamente, os valores são armazenados utilizando `std::variant`.
 
 ```cpp
-using RuntimeValue = std::variant<std::string, double, bool>;
+using RuntimeValue = std::variant<
+    std::string,
+    double,
+    bool,
+    std::shared_ptr<ArrayValue>
+>;
 ```
+
+Os arrays utilizam uma estrutura própria chamada `ArrayValue`, que armazena uma
+coleção de valores `RuntimeValue`. Isso permite representar arrays com
+diferentes tipos de elementos e também arrays aninhados.
 
 **Observação:** o runtime utiliza `double` para representar números, mas a
 sintaxe numérica atual do Lexer ainda reconhece apenas números inteiros. O
@@ -600,7 +610,136 @@ recursos de um modelo lexical completo.
 
 ---
 
-## 7. Sistema de módulos e bibliotecas
+## 7. Arrays
+
+A Hurtip possui uma implementação inicial de arrays, permitindo armazenar
+coleções de valores em uma única variável.
+
+Os arrays podem conter números, textos, booleanos e diferentes tipos de valores
+na mesma estrutura.
+
+### Criação de arrays
+
+Os arrays são declarados utilizando colchetes `[]`, com seus elementos separados
+por vírgulas.
+
+```hurtip
+create numbers = [10, 20, 30, 40, 50]
+create names = ["Ana", "João", "Maria"]
+create states = [true, false, true]
+```
+
+Também é possível criar arrays vazios:
+
+```hurtip
+create empty_array = []
+```
+
+### Arrays com diferentes tipos
+
+A implementação permite armazenar valores de diferentes tipos em um mesmo array.
+
+```hurtip
+create mixed = [10, "Hurtip", true]
+
+view(mixed)
+```
+
+### Acesso por índice
+
+Os elementos podem ser acessados utilizando índices entre colchetes.
+
+O primeiro elemento ocupa o índice `0`.
+
+```hurtip
+create numbers = [10, 20, 30]
+
+view(numbers[0])
+view(numbers[1])
+view(numbers[2])
+```
+
+### Arrays aninhados
+
+Um array pode armazenar outros arrays como elementos.
+
+```hurtip
+create matrix = [
+    [1, 2],
+    [3, 4],
+    [5, 6]
+]
+```
+
+É possível acessar os arrays internos:
+
+```hurtip
+view(matrix[0])
+view(matrix[1])
+```
+
+Também é possível acessar diretamente os elementos de estruturas aninhadas:
+
+```hurtip
+view(matrix[0][0])
+view(matrix[0][1])
+view(matrix[1][0])
+view(matrix[1][1])
+```
+
+### Exibição de arrays
+
+A função `view()` permite exibir um array completo, incluindo estruturas
+aninhadas.
+
+```hurtip
+create numbers = [10, 20, 30]
+create matrix = [[1, 2], [3, 4]]
+
+view(numbers)
+view(matrix)
+```
+
+### Recursos de arrays
+
+| Recurso                                              | Estado            |
+| ---------------------------------------------------- | ----------------- |
+| Estrutura de arrays no runtime                       | Implementada      |
+| Criação de arrays                                    | Implementada      |
+| Arrays vazios                                        | Implementados     |
+| Arrays numéricos                                     | Implementados     |
+| Arrays de strings                                    | Implementados     |
+| Arrays booleanos                                     | Implementados     |
+| Arrays com diferentes tipos                          | Implementados     |
+| Arrays aninhados                                     | Implementados     |
+| Acesso por índice                                    | Implementado      |
+| Acesso encadeado                                     | Implementado      |
+| Exibição com `view()`                                | Implementada      |
+| Atribuição por índice                                | Não implementada  |
+| Propriedade `length`                                 | Não implementada  |
+| Métodos `push()`, `pop()`, `remove()` e `contains()` | Não implementados |
+| Iteração com `for`                                   | Não implementada  |
+| Concatenação de arrays                               | Não implementada  |
+| Comparação estrutural                                | Não implementada  |
+
+**Limitação atual:** os arrays podem ser criados, consultados e exibidos, mas
+ainda não é possível modificar individualmente seus elementos por índice.
+
+O próximo passo é permitir operações como:
+
+```hurtip
+create numbers = [10, 20, 30]
+
+numbers[0] = 50
+
+view(numbers)
+```
+
+Esse comportamento ainda está em desenvolvimento.
+
+---
+
+## 8. Sistema de módulos e bibliotecas
 
 A Hurtip possui mecanismos separados para carregar arquivos da própria linguagem
 e importar bibliotecas nativas.
@@ -608,7 +747,7 @@ e importar bibliotecas nativas.
 Essa separação utiliza duas instruções com responsabilidades distintas: `load` e
 `import`.
 
-### 7.1. Load — arquivos da própria linguagem
+### 8.1. Load — arquivos da própria linguagem
 
 A instrução `load` é destinada ao carregamento de outros arquivos `.hurtip`.
 
@@ -641,7 +780,7 @@ funções por meio de um namespace.
 - Detecção de dependências circulares.
 - Testes de integração entre arquivos.
 
-### 7.2. Import — bibliotecas nativas
+### 8.2. Import — bibliotecas nativas
 
 A instrução `import` permite incorporar bibliotecas nativas registradas no
 interpretador.
@@ -745,7 +884,7 @@ linguagem com o mecanismo de integração de bibliotecas nativas.
 
 ---
 
-## 8. Arquitetura atual
+## 9. Arquitetura atual
 
 A Hurtip está sendo desenvolvida em C++17 e utiliza uma arquitetura dividida em
 etapas.
@@ -802,7 +941,7 @@ create name = "Hurtip"
 | Atribuição               | `Equal` (`=`)                                                                                                                           |
 | Operadores aritméticos   | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`)                                                                                |
 | Operadores de comparação | `EqualEqual`, `BangEqual`, `Greater`, `Less`, `GreaterEqual`, `LessEqual`                                                               |
-| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `Comma`                                                                           |
+| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `LeftBracket`, `RightBracket`, `Comma`                                            |
 | Estrutura do código      | `NewLine`, `EndOfFile`                                                                                                                  |
 | Controle de fluxo        | `Break`, `Continue`, `Return`                                                                                                           |
 
@@ -847,8 +986,12 @@ Atualmente, o Parser possui suporte para:
 - Blocos de código.
 - Loops `while`.
 - Instruções `break` e `continue`.
-- Verificação de uso de `break` e `continue` dentro de loops.
-- Abertura de blocos na mesma linha ou na linha seguinte.
+- Arrays literais com `[]`.
+- Arrays vazios.
+- Elementos separados por vírgulas.
+- Vírgula final opcional em arrays.
+- Acesso a elementos por índice.
+- Acesso encadeado a arrays aninhados.
 
 O Parser possui mecanismos de diagnóstico que identificam diferentes estruturas
 sintáticas inválidas, mas ainda existem situações que precisam de tratamento
@@ -869,6 +1012,8 @@ Atualmente, existem estruturas para representar:
 - Expressões unárias.
 - Chamadas de funções.
 - Acesso a membros.
+- Arrays literais (`ArrayExpression`).
+- Acesso a índices (`IndexExpression`).
 - Declarações de funções.
 - Instruções de retorno.
 - Declarações de carregamento de módulos.
@@ -889,6 +1034,14 @@ Atualmente, ele consegue:
 - Armazenar e recuperar valores.
 - Atualizar variáveis existentes.
 - Trabalhar com strings, números e booleanos.
+- Criar arrays em tempo de execução.
+- Armazenar valores de diferentes tipos em arrays.
+- Criar arrays aninhados.
+- Avaliar acesso a elementos por índice.
+- Validar o tipo do objeto acessado.
+- Validar índices numéricos, inteiros e não negativos.
+- Verificar os limites dos arrays.
+- Exibir arrays completos e aninhados com `view()`.
 - Avaliar expressões matemáticas.
 - Realizar comparações.
 - Avaliar expressões lógicas.
@@ -913,12 +1066,26 @@ O interpretador utiliza `std::variant` para representar os valores em tempo de
 execução.
 
 ```cpp
-using RuntimeValue = std::variant<std::string, double, bool>;
+using RuntimeValue = std::variant<
+    std::string,
+    double,
+    bool,
+    std::shared_ptr<ArrayValue>
+>;
+
+struct ArrayValue
+{
+    std::vector<RuntimeValue> elements;
+};
 ```
+
+A estrutura `ArrayValue` utiliza `std::vector` para armazenar os elementos e
+`std::shared_ptr` para permitir que arrays sejam representados e compartilhados
+como valores do runtime.
 
 ---
 
-## 9. Sistema de diagnóstico
+## 10. Sistema de diagnóstico
 
 A Hurtip possui uma implementação de mensagens de erro com identificação de
 linha e coluna em diferentes situações.
@@ -992,9 +1159,12 @@ O sistema de importação de bibliotecas nativas também apresenta mensagens
 específicas para bibliotecas inexistentes, funções não registradas e argumentos
 inválidos.
 
+O acesso a arrays também possui validações iniciais para objetos que não são
+arrays, índices inválidos e posições fora dos limites.
+
 ---
 
-## 10. Testes e confiabilidade
+## 11. Testes e confiabilidade
 
 A Hurtip possui uma estrutura de testes organizada por responsabilidade,
 separando programas demonstrativos dos testes de comportamento.
@@ -1077,6 +1247,9 @@ Foram executados testes para verificar:
 - Erros léxicos.
 - Validação de entradas recebidas pelo Parser.
 
+A implementação inicial de arrays já foi adicionada, mas ainda precisa de uma
+categoria própria de testes automatizados.
+
 ### Testes unitários
 
 O Lexer possui 13 verificações unitárias, cobrindo palavras reservadas,
@@ -1122,6 +1295,19 @@ executáveis de testes unitários.
 Os 40 testes do Parser são verificações internas de um único executável
 registrado no CTest, e não 40 testes CTest independentes.
 
+### Próximos testes de arrays
+
+- Testes unitários de criação de arrays.
+- Testes de arrays vazios.
+- Testes de arrays com tipos diferentes.
+- Testes de arrays aninhados.
+- Testes de acesso por índice.
+- Testes de acesso encadeado.
+- Testes de índices inválidos e fora dos limites.
+- Testes de exibição recursiva.
+- Testes de atribuição e modificação de elementos.
+- Testes de regressão para arrays.
+
 ### Executar os testes
 
 Para executar toda a suíte:
@@ -1139,7 +1325,7 @@ Para executar os testes unitários individualmente:
 
 ---
 
-## 11. Suporte ao Visual Studio Code
+## 12. Suporte ao Visual Studio Code
 
 A Hurtip possui uma extensão inicial para o Visual Studio Code, criada para
 reconhecer a linguagem e facilitar a edição de arquivos `.hurtip`.
@@ -1193,7 +1379,7 @@ em um marketplace ainda não foi realizada.
 
 ---
 
-## 12. Tecnologias utilizadas
+## 13. Tecnologias utilizadas
 
 | Tecnologia       | Utilização                                     |
 | ---------------- | ---------------------------------------------- |
@@ -1213,7 +1399,7 @@ com compiladores e sistemas embarcados.
 
 ---
 
-## 13. Estrutura do projeto
+## 14. Estrutura do projeto
 
 A organização do repositório separa os componentes da linguagem por
 responsabilidade.
@@ -1293,7 +1479,7 @@ Hurtip/
 
 ---
 
-## 14. Compilação e execução
+## 15. Compilação e execução
 
 O projeto utiliza CMake para configurar e compilar a implementação em C++.
 
@@ -1339,7 +1525,7 @@ ctest --test-dir build --output-on-failure
 
 ---
 
-## 15. Estado atual do desenvolvimento
+## 16. Estado atual do desenvolvimento
 
 A Hurtip possui um núcleo funcional implementado em C++17, com Lexer, Parser,
 AST e Interpreter integrados.
@@ -1357,6 +1543,27 @@ incorporar bibliotecas registradas no interpretador, incluindo a biblioteca
 
 A inicialização das bibliotecas é centralizada em `standard_library`, mantendo o
 registro separado do ponto de entrada da aplicação.
+
+### Arrays: estágio atual
+
+A Hurtip já possui uma implementação inicial de arrays distribuída entre AST,
+Parser, Environment e Interpreter.
+
+Atualmente, é possível:
+
+- Criar arrays vazios e preenchidos.
+- Armazenar números, strings e booleanos.
+- Combinar diferentes tipos em um mesmo array.
+- Criar arrays aninhados.
+- Acessar elementos por índice.
+- Acessar elementos de arrays aninhados com índices encadeados.
+- Exibir arrays completos com `view()`.
+
+O próximo passo é implementar a atribuição por índice, permitindo modificar
+elementos individuais e também elementos de arrays aninhados.
+
+Depois disso, serão desenvolvidos recursos como `length`, métodos de manipulação
+e iteração com `for`.
 
 ### Componentes principais
 
@@ -1379,6 +1586,8 @@ registro separado do ponto de entrada da aplicação.
 | Funções e parâmetros                      | Implementados |
 | Recursividade                             | Implementada  |
 | Escopos                                   | Implementados |
+| Criação e leitura de arrays               | Implementadas |
+| Arrays aninhados                          | Implementados |
 | Sistema de módulos                        | Implementado  |
 | `load` de arquivos `.hurtip`              | Implementado  |
 | `import` de bibliotecas nativas           | Implementado  |

@@ -52,7 +52,24 @@
 - [x] Recursividade
 - [x] Isolamento de variáveis locais entre chamadas
 - [ ] Closures
-- [ ] Arrays e listas
+- [x] Estrutura inicial de arrays no runtime
+- [x] Criação de arrays
+- [x] Arrays vazios
+- [x] Arrays numéricos
+- [x] Arrays de strings
+- [x] Arrays booleanos
+- [x] Arrays com diferentes tipos de valores
+- [x] Arrays aninhados
+- [x] Acesso a elementos por índice
+- [x] Acesso encadeado a elementos de arrays aninhados
+- [x] Exibição de arrays com `view()`
+- [ ] Atribuição e modificação de elementos por índice
+- [ ] Propriedade `length`
+- [ ] Métodos de manipulação (`push`, `pop`, `remove`, `contains`)
+- [ ] Iteração de arrays com `for`
+- [ ] Concatenação de arrays
+- [ ] Comparação estrutural de arrays
+- [ ] Definição da semântica de cópia e referência
 - [ ] Estruturas de dados adicionais
 
 ## Sistema de módulos
@@ -136,6 +153,12 @@
 - [x] Testes de importação com alias
 - [x] Testes de bibliotecas e funções inexistentes
 - [x] Testes de argumentos e tipos inválidos em funções nativas
+- [ ] Testes unitários de criação de arrays
+- [ ] Testes de acesso por índice
+- [ ] Testes de arrays aninhados
+- [ ] Testes de índices inválidos e fora dos limites
+- [ ] Testes de atribuição e modificação de elementos
+- [ ] Testes de regressão para arrays
 
 ## Biblioteca e ferramentas
 
@@ -159,10 +182,14 @@
 
 ---
 
-**Legenda:**
+## Legenda
 
-- `[x]` Implementado e validado por testes realizados.
+- `[x]` Implementado e validado conforme o estágio indicado.
 - `[ ]` Pendente de implementação ou validação.
+
+**Observação:** os recursos iniciais de arrays já foram adicionados ao código,
+mas ainda precisam de testes automatizados específicos. Por isso, sua
+implementação não deve ser confundida com validação completa.
 
 ## Estado atual
 
@@ -185,11 +212,52 @@ O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
 integrada ao CTest. Atualmente, são **40 verificações unitárias do Parser e 29
 testes registrados no CTest**, todos aprovados na última execução.
 
+### Arrays: estágio atual
+
+A Hurtip já possui uma implementação inicial de arrays no AST, Parser e runtime.
+
+É possível criar arrays vazios, numéricos, de strings, booleanos, mistos e
+aninhados. Também é possível acessar elementos por índice, inclusive em
+estruturas aninhadas, e exibir arrays completos com `view()`.
+
+Exemplo:
+
+```hurtip
+create numbers = [10, 20, 30, 40]
+
+view(numbers)
+view(numbers[0])
+
+create matrix = [
+    [1, 2],
+    [3, 4]
+]
+
+view(matrix[1][0])
+```
+
+O próximo avanço será implementar a modificação de elementos por índice,
+permitindo operações como:
+
+```hurtip
+create numbers = [10, 20, 30]
+
+numbers[0] = 50
+
+view(numbers)
+```
+
+Depois disso, serão desenvolvidos o tamanho dos arrays, os métodos de
+manipulação e a iteração com `for`.
+
 ### Foco atual do desenvolvimento
 
 O próximo objetivo é fortalecer a confiabilidade do sistema de importação,
 especialmente a prevenção de conflitos entre aliases de módulos e bibliotecas
 nativas.
+
+Na evolução dos arrays, o próximo passo técnico é implementar a atribuição por
+índice, incluindo a modificação de arrays aninhados.
 
 Depois disso, o desenvolvimento poderá avançar na expansão da biblioteca padrão,
 na API para bibliotecas externas e no fortalecimento dos diagnósticos e testes
