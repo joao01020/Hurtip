@@ -1,3 +1,4 @@
+
 // Meu primeiro programa em Hurtip
 
 // Variáveis
@@ -330,28 +331,82 @@ view(matrix[0][0])
 view(matrix[1][1])
 view(matrix[2][0])
 
+// Tamanho dos arrays: length
+create length_numbers = [10, 20, 30]
+create length_empty = []
+create length_matrix = [[1, 2], [3, 4]]
+
+view(length_numbers.length)
+view(length_empty.length)
+view(length_matrix.length)
+view(length_matrix[0].length)
+
+// Adicionando elementos: push()
+create push_numbers = [10, 20]
+
+push_numbers.push(30)
+
+view(push_numbers)
+view(push_numbers.length)
+
+// Arrays com tipos diferentes
+create push_mixed = ["Hurtip", 10, true]
+
+push_mixed.push("C++")
+
+view(push_mixed)
+
+// Removendo o último elemento: pop()
+create pop_numbers = [10, 20, 30]
+
+create last_element = pop_numbers.pop()
+
+view(last_element)
+view(pop_numbers)
+view(pop_numbers.length)
+
+// Removendo elementos por índice: remove()
+create remove_numbers = [10, 20, 30, 40]
+
+create removed_element = remove_numbers.remove(1)
+
+view(removed_element)
+view(remove_numbers)
+view(remove_numbers.length)
+
+// Inserindo elementos por índice: insert()
+create insert_numbers = [10, 30, 40]
+
+insert_numbers.insert(1, 20)
+
+view(insert_numbers)
+
+// Inserindo no início
+insert_numbers.insert(0, 5)
+
+view(insert_numbers)
+
+// Inserindo no final
+insert_numbers.insert(insert_numbers.length, 50)
+
+view(insert_numbers)
+
+// Inserindo em um array vazio
+create insert_empty = []
+
+insert_empty.insert(0, "Hurtip")
+
+view(insert_empty)
+
+// Inserindo diferentes tipos
+create insert_mixed = [10, true]
+
+insert_mixed.insert(1, "Hello")
+
+view(insert_mixed)
+
+// Fim dos arrays
 view("Arrays finished")
-
-
-
-
-// length 
-
-
-create numbers = [10, 20, 30]
-create empty = []
-create matrix = [[1, 2], [3, 4]]
-
-view(numbers.length)
-view(empty.length)
-view(matrix.length)
-view(matrix[0].length)
-
-
 
 // Fim do programa
 view("Hello Hurtip!")
-
-
-
-
