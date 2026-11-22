@@ -598,7 +598,7 @@ namespace hurtip
                         "Function 'atan2' expects numeric arguments");
                 }
 
-                return std::atan2(*second, *first);
+                return std::atan2(*first, *second);
             });
 
         functions.emplace(
