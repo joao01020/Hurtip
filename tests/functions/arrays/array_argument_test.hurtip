@@ -1,0 +1,10 @@
+function showNumbers(numbers) {
+    view("FUNCAO EXECUTADA")
+    view(numbers)
+}
+
+create values = [10, 20, 30]
+
+view("ANTES DA FUNCAO")
+showNumbers(values)
+view("DEPOIS DA FUNCAO")

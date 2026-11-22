@@ -1,0 +1,27 @@
+function combine(first, second) {
+    view("FUNCAO EXECUTADA")
+    view(first)
+    view(second)
+
+    create result = []
+
+    view("CRIANDO RESULTADO")
+
+    result.push(first[0])
+    result.push(second[0])
+
+    view("RESULTADO INTERMEDIARIO")
+    view(result)
+
+    return result
+}
+
+create numbersA = [10, 20, 30]
+create numbersB = [40, 50, 60]
+
+view("ANTES DA CHAMADA")
+
+create combined = combine(numbersA, numbersB)
+
+view("DEPOIS DA CHAMADA")
+view(combined)

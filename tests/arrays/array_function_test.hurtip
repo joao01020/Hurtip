@@ -1,0 +1,7 @@
+function showNumbers(numbers) {
+    view(numbers)
+}
+
+create values = [10, 20, 30]
+
+showNumbers(values)

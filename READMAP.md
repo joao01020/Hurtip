@@ -51,6 +51,12 @@
 - [x] Funções aninhadas
 - [x] Recursividade
 - [x] Isolamento de variáveis locais entre chamadas
+- [x] Recebimento de arrays como argumentos
+- [x] Recebimento de múltiplos arrays na mesma função
+- [x] Retorno de arrays por funções
+- [x] Criação e retorno de novos arrays dentro de funções
+- [x] Modificação de arrays recebidos como argumentos
+- [x] Testes automatizados de integração entre funções e arrays
 - [ ] Closures
 
 ## Arrays
@@ -81,6 +87,9 @@
 - [x] `indexOf(value)` — encontra a posição de um valor
 - [x] `clear()` — esvazia o array
 - [x] `reverse()` — inverte a ordem dos elementos
+- [x] Passagem de arrays para funções
+- [x] Retorno de arrays por funções
+- [x] Modificação de arrays compartilhados entre chamadas de função
 - [ ] Iteração de arrays com `for`
 - [ ] Concatenação de arrays
 - [ ] Comparação estrutural de arrays
@@ -183,8 +192,12 @@
 - [x] Testes de `contains()`, `indexOf()`, `clear()` e `reverse()`
 - [x] Testes de argumentos inválidos nos métodos de arrays
 - [x] Testes de regressão para arrays
-- [x] 55 testes registrados no CTest
-- [x] 55 testes aprovados na última execução confirmada
+- [x] Testes automatizados de arrays como argumentos de funções
+- [x] Testes automatizados de retorno de arrays por funções
+- [x] Testes automatizados de passagem de dois arrays para uma função
+- [x] Testes automatizados de modificação de arrays recebidos por funções
+- [x] 59 testes registrados no CTest
+- [x] 59 testes aprovados na última execução confirmada
 
 ## Biblioteca e ferramentas
 
@@ -238,8 +251,8 @@ A arquitetura de registro das bibliotecas foi centralizada em
 cada biblioteca.
 
 O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
-integrada ao CTest. São 40 verificações unitárias do Parser e 55 testes
-registrados no CTest. Na última execução informada, todos os 55 testes passaram.
+integrada ao CTest. São 40 verificações unitárias do Parser e 59 testes
+registrados no CTest. Na última execução informada, todos os 59 testes passaram.
 
 ## Arrays: estágio atual
 
@@ -310,6 +323,67 @@ aplicável, de índices.
 A suíte automatizada também cobre os comportamentos principais desses métodos,
 incluindo argumentos inválidos.
 
+### Arrays e funções
+
+A Hurtip permite utilizar arrays como argumentos e valores de retorno de
+funções.
+
+É possível receber um ou mais arrays em uma função, acessar seus elementos,
+criar um novo array e retorná-lo.
+
+Exemplo:
+
+```hurtip
+function combine(first, second) {
+    create result = []
+
+    result.push(first[0])
+    result.push(second[0])
+
+    return result
+}
+
+create numbersA = [10, 20, 30]
+create numbersB = [40, 50, 60]
+
+create combined = combine(numbersA, numbersB)
+
+view(combined)
+```
+
+Resultado:
+
+```text
+[10, 40]
+```
+
+Também é possível modificar um array recebido como argumento:
+
+```hurtip
+function modify(numbers) {
+    numbers.push(40)
+    return numbers
+}
+
+create values = [10, 20, 30]
+
+create result = modify(values)
+
+view(result)
+view(values)
+```
+
+Resultado:
+
+```text
+[10, 20, 30, 40]
+[10, 20, 30, 40]
+```
+
+Nesse comportamento, a função e a variável original compartilham o mesmo array.
+A definição formal da semântica de cópia e referência continua como uma etapa
+pendente da linguagem.
+
 Os testes de arrays foram organizados em quatro categorias:
 
 - `basics/` — criação, tipos, atribuição, tamanho e arrays aninhados.
@@ -317,10 +391,14 @@ Os testes de arrays foram organizados em quatro categorias:
 - `mutation/` — inserção, remoção, limpeza e inversão.
 - `search/` — busca e localização de elementos.
 
+Os testes de integração entre funções e arrays estão organizados em
+`tests/functions/arrays/`.
+
 ## Foco atual do desenvolvimento
 
-Com os principais métodos de arrays implementados, o próximo passo é ampliar as
-capacidades da linguagem e fortalecer sua arquitetura.
+Com os principais métodos de arrays implementados e a integração com funções
+validada, o próximo passo é ampliar as capacidades da linguagem e fortalecer sua
+arquitetura.
 
 As prioridades sugeridas são:
 

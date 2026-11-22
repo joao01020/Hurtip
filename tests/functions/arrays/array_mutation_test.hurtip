@@ -1,0 +1,11 @@
+function modify(numbers) {
+    numbers.push(40)
+    return numbers
+}
+
+create values = [10, 20, 30]
+
+create result = modify(values)
+
+view(result)
+view(values)

@@ -1,3 +1,4 @@
+
 # Automated Hurtip tests
 
 set(HURTIP_TEST_RUNNER
@@ -60,6 +61,44 @@ add_hurtip_success_test(
     recursion_scope
     tests/functions/recursion_scope_test.hurtip
     [=[15]=]
+)
+
+# Functions - arrays
+
+add_hurtip_success_test(
+    array_argument
+    tests/functions/arrays/array_argument_test.hurtip
+    [=[ANTES DA FUNCAO
+FUNCAO EXECUTADA
+[10, 20, 30]
+DEPOIS DA FUNCAO]=]
+)
+
+add_hurtip_success_test(
+    array_return
+    tests/functions/arrays/array_return_test.hurtip
+    [=[[10, 20, 30]]=]
+)
+
+add_hurtip_success_test(
+    two_arrays
+    tests/functions/arrays/two_arrays_test.hurtip
+    [=[ANTES DA CHAMADA
+FUNCAO EXECUTADA
+[10, 20, 30]
+[40, 50, 60]
+CRIANDO RESULTADO
+RESULTADO INTERMEDIARIO
+[10, 40]
+DEPOIS DA CHAMADA
+[10, 40]]=]
+)
+
+add_hurtip_success_test(
+    array_mutation
+    tests/functions/arrays/array_mutation_test.hurtip
+    [=[[10, 20, 30, 40]
+[10, 20, 30, 40]]=]
 )
 
 # Modules

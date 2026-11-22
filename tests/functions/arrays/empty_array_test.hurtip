@@ -1,0 +1,13 @@
+function createEmpty() {
+    return []
+}
+
+function receiveEmpty(values) {
+    view(values)
+    return values
+}
+
+create first = createEmpty()
+create second = receiveEmpty(first)
+
+view(second)

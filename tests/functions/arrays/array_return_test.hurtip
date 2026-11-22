@@ -1,0 +1,8 @@
+function createNumbers() {
+    create values = [10, 20, 30]
+    return values
+}
+
+create result = createNumbers()
+
+view(result)
