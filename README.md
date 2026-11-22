@@ -1,1741 +1,215 @@
-# Hurtip
+# Hurtip — Sistema de Módulos
 
-**Uma linguagem de programação experimental, simples e intuitiva, desenvolvida
-em C++.**
+O sistema de módulos da Hurtip é responsável por permitir a organização,
+reutilização e integração de diferentes arquivos dentro de um mesmo projeto.
 
-A Hurtip é um projeto experimental de criação de uma linguagem de programação
-própria. Seu objetivo é explorar como uma linguagem pode tornar a programação
-mais acessível, reduzir a complexidade desnecessária e oferecer recursos para
-desenvolvimento de aplicações, sistemas e dispositivos embarcados.
+A branch `feature/module-system` é dedicada ao desenvolvimento de um sistema de
+módulos que permita dividir programas em arquivos independentes, estabelecer
+relações entre eles e reutilizar funcionalidades de maneira simples e
+organizada.
 
-A proposta é construir uma linguagem com sintaxe clara e fácil de compreender,
-sem abandonar a possibilidade de evoluir para recursos mais avançados.
+O objetivo é tornar a organização de projetos na Hurtip mais flexível,
+facilitando o desenvolvimento de aplicações pequenas e grandes.
 
-> A Hurtip está em desenvolvimento. Atualmente, possui um interpretador
-> funcional capaz de executar arquivos `.hurtip`, uma arquitetura composta por
-> Lexer, Parser, AST e Interpreter, suporte a variáveis, expressões, operações
-> matemáticas, lógica, estruturas de controle, funções, recursividade, escopos,
-> arrays, módulos e importação de bibliotecas nativas.
+## Objetivo
 
----
+Construir um sistema de módulos consistente, previsível e fácil de utilizar,
+permitindo que diferentes arquivos `.hurtip` trabalhem em conjunto.
 
-## 1. Visão do projeto
+O sistema deve priorizar:
 
-Muitas linguagens de programação oferecem grande flexibilidade e desempenho, mas
-podem apresentar uma curva de aprendizado complexa para iniciantes.
+- Simplicidade na importação de módulos.
+- Organização e reutilização de código.
+- Resolução previsível de caminhos.
+- Separação entre módulos.
+- Controle de dependências.
+- Prevenção de carregamentos duplicados.
+- Facilidade de manutenção.
+- Possibilidade de expansão futura.
 
-A Hurtip nasce da ideia de experimentar uma abordagem diferente: criar uma
-linguagem em que as instruções sejam intuitivas, legíveis e próximas da intenção
-de quem está programando.
+## Funcionalidades implementadas
 
-A intenção não é simplesmente criar outra linguagem, mas investigar como podemos
-simplificar a experiência de desenvolvimento sem limitar sua evolução técnica.
+Os seguintes recursos já estão implementados.
 
-### Objetivos principais
+### Carregamento de módulos
 
-- Criar uma sintaxe simples e intuitiva.
-- Facilitar o aprendizado de programação.
-- Desenvolver uma linguagem própria, com estrutura e identidade.
-- Explorar interpretação e compilação.
-- Investigar possibilidades de uso em sistemas embarcados.
-- Buscar eficiência e simplicidade na implementação.
-- Construir uma arquitetura que permita adicionar recursos gradualmente.
-- Permitir integração com bibliotecas externas e recursos de baixo nível.
+- Carregamento de arquivos `.hurtip` utilizando `load`.
+- Execução de módulos externos.
+- Resolução de caminhos relativos ao arquivo que realiza o carregamento.
 
----
+### Aliases
 
-## 2. Filosofia da linguagem
+- Utilização de `as` para definir aliases.
+- Acesso aos módulos através de seus aliases.
 
-A Hurtip segue alguns princípios:
+### Namespaces
 
-**Simplicidade:** comandos devem ser fáceis de compreender.
+- Organização de módulos em namespaces.
+- Acesso a funcionalidades através de seus respectivos namespaces.
+- Separação entre identificadores de diferentes módulos.
 
-**Legibilidade:** o código deve comunicar claramente sua intenção.
+### Gerenciamento de dependências
 
-**Evolução:** a linguagem deve começar pequena, mas possuir uma arquitetura que
-permita crescer.
-
-**Eficiência:** o desempenho deve ser considerado desde a concepção,
-especialmente pensando em possíveis aplicações embarcadas.
-
-**Acessibilidade:** reduzir barreiras para quem está começando a programar.
-
-**Controle:** oferecer recursos que permitam ao programador compreender e
-controlar o funcionamento dos programas.
-
----
-
-## 3. Sintaxe inicial
-
-A sintaxe da Hurtip busca utilizar palavras intuitivas.
-
-Exemplo:
-
-```hurtip
-create name = "Hurtip"
-create age = 24
-create is_active = true
-
-view("Minha primeira execução!")
-view(name)
-view(age)
-view(is_active)
-```
-
-### Declaração de variáveis
-
-A palavra-chave `create` é utilizada para criar variáveis.
-
-```hurtip
-create name = "Hurtip"
-create age = 24
-create is_active = true
-```
-
-A escolha de `create` busca tornar a declaração mais compreensível e intuitiva.
-
-As variáveis podem armazenar valores e ser utilizadas posteriormente em
-expressões, operações, funções e decisões.
-
-### Atribuição de valores
-
-É possível atualizar o valor de uma variável já declarada.
-
-```hurtip
-create counter = 0
-
-counter = counter + 1
-counter = counter + 1
-
-view(counter)
-```
-
-A atribuição permite modificar o conteúdo armazenado em uma variável durante a
-execução do programa.
-
-### Exibição de valores
-
-A função nativa `view()` permite exibir valores no terminal.
-
-```hurtip
-view("Hello, Hurtip!")
-```
-
-Também é possível exibir variáveis:
-
-```hurtip
-create language = "Hurtip"
-create version = 1
-
-view(language)
-view(version)
-```
-
-Atualmente, `view()` aceita múltiplos argumentos.
-
-```hurtip
-view("Language:", "Hurtip", "Version:", 1)
-```
-
-### Tipos atualmente suportados pelo interpretador
-
-| Tipo     | Exemplo        | Representação interna         |
-| -------- | -------------- | ----------------------------- |
-| Texto    | `"Hurtip"`     | `std::string`                 |
-| Número   | `24` ou `1.5`  | `double`                      |
-| Booleano | `true`         | `bool`                        |
-| Array    | `[10, 20, 30]` | `std::shared_ptr<ArrayValue>` |
-
-Internamente, os valores são armazenados utilizando `std::variant`.
-
-```cpp
-using RuntimeValue = std::variant<
-    std::string,
-    double,
-    bool,
-    std::shared_ptr<ArrayValue>
->;
-```
-
-Os arrays utilizam uma estrutura própria chamada `ArrayValue`, que armazena uma
-coleção de valores `RuntimeValue`. Isso permite representar arrays com
-diferentes tipos de elementos e também arrays aninhados.
-
-**Observação:** o runtime utiliza `double` para representar números. O Lexer
-reconhece números inteiros e decimais, como `10`, `1.5` e `100.25`.
-
-### Comentários
-
-A Hurtip permite comentários de linha utilizando `//`.
-
-```hurtip
-// Este é um comentário
-
-create age = 24 // Comentário na mesma linha
-
-view(age)
-```
-
-Os comentários são ignorados durante a execução do programa.
-
----
-
-## 4. Operadores e expressões
-
-A Hurtip possui suporte a diferentes operadores para realizar cálculos,
-comparações e operações lógicas.
-
-### Operadores aritméticos
-
-| Operador | Operação      | Exemplo  |
-| -------- | ------------- | -------- |
-| `+`      | Adição        | `10 + 5` |
-| `-`      | Subtração     | `10 - 5` |
-| `*`      | Multiplicação | `10 * 5` |
-| `/`      | Divisão       | `10 / 5` |
-
-Exemplo:
-
-```hurtip
-create sum = 10 + 5
-create subtraction = 10 - 5
-create multiplication = 10 * 5
-create division = 10 / 5
-
-view(sum)
-view(subtraction)
-view(multiplication)
-view(division)
-```
-
-### Números decimais
-
-O Lexer reconhece números com parte decimal.
-
-```hurtip
-create price = 19.90
-create tax = 2.50
-
-create total = price + tax
-
-view(total)
-```
-
-Os números inteiros e decimais utilizam o tipo interno `double`.
-
-### Precedência matemática
-
-O interpretador respeita a precedência dos operadores matemáticos.
-
-```hurtip
-create result = 10 + 5 * 2
-create grouped_result = (10 + 5) * 2
-
-view(result)
-view(grouped_result)
-```
-
-A multiplicação é realizada antes da adição, enquanto os parênteses permitem
-agrupar expressões.
-
-### Operadores unários
-
-A Hurtip possui suporte aos operadores unários positivos e negativos.
-
-```hurtip
-create negative = -10
-create positive = +10
-
-view(negative)
-view(positive)
-```
-
-### Operadores de comparação
-
-| Operador | Significado    |
-| -------- | -------------- |
-| `==`     | Igual          |
-| `!=`     | Diferente      |
-| `>`      | Maior que      |
-| `<`      | Menor que      |
-| `>=`     | Maior ou igual |
-| `<=`     | Menor ou igual |
-
-Exemplo:
-
-```hurtip
-create age = 24
-
-view(age == 24)
-view(age != 18)
-view(age > 18)
-view(age < 30)
-view(age >= 24)
-view(age <= 24)
-```
-
-As comparações produzem valores booleanos.
-
-### Operadores lógicos
-
-| Operador | Significado    |
-| -------- | -------------- |
-| `and`    | E lógico       |
-| `or`     | OU lógico      |
-| `not`    | Negação lógica |
-
-Exemplo:
-
-```hurtip
-view(true and true)
-view(true and false)
-
-view(false or true)
-view(false or false)
-
-view(not true)
-view(not false)
-```
-
-### Precedência lógica
-
-O interpretador considera a precedência entre os operadores lógicos e permite
-agrupamento com parênteses.
-
-```hurtip
-view(true or false and false)
-view((true or false) and false)
-view(not false and true)
-```
-
-### Avaliação de curto-circuito
-
-A Hurtip possui avaliação de curto-circuito nos operadores `and` e `or`.
-
-Isso significa que a segunda parte de uma expressão pode não ser avaliada quando
-o resultado já pode ser determinado pela primeira parte.
-
-```hurtip
-view(false and missing == 1)
-view(true or missing == 1)
-```
-
-Nos dois casos, a variável `missing` não precisa ser avaliada.
-
----
-
-## 5. Estruturas de controle
-
-A Hurtip possui estruturas condicionais e de repetição para controlar o fluxo de
-execução dos programas.
-
-### if e else
-
-A estrutura `if` permite executar instruções dependendo de uma condição.
-
-```hurtip
-create age = 24
-
-if (age >= 18) {
-    view("Maior de idade")
-} else {
-    view("Menor de idade")
-}
-```
-
-O `else` permite definir o que acontece quando a condição não é verdadeira.
-
-### Decisões aninhadas
-
-É possível utilizar estruturas condicionais dentro de outras estruturas
-condicionais.
-
-```hurtip
-create age = 24
-
-if (age >= 18) {
-    if (age >= 21) {
-        view("Idade igual ou superior a 21")
-    } else {
-        view("Idade entre 18 e 20")
-    }
-} else {
-    view("Menor de idade")
-}
-```
-
-Também é possível utilizar `if` sem `else`.
-
-### Blocos de código
-
-As instruções podem ser agrupadas utilizando chaves `{}`.
-
-Os blocos são utilizados nas estruturas condicionais, funções e loops.
-
-A Hurtip permite colocar a abertura do bloco na mesma linha da declaração ou na
-linha seguinte.
-
-```hurtip
-if (true)
-{
-    view("Bloco executado")
-}
-```
-
-Cada bloco possui seu próprio ambiente de variáveis, permitindo isolamento de
-declarações locais.
-
-### While
-
-O `while` executa um bloco de código enquanto sua condição permanecer
-verdadeira.
-
-```hurtip
-create counter = 0
-
-while (counter < 5) {
-    view(counter)
-    counter = counter + 1
-}
-```
-
-### Break
-
-O `break` encerra a execução do loop em que está inserido.
-
-```hurtip
-create counter = 0
-
-while (counter < 10) {
-    counter = counter + 1
-
-    if (counter == 5) {
-        break
-    }
-
-    view(counter)
-}
-```
-
-### Continue
-
-O `continue` interrompe a repetição atual e passa para a próxima iteração do
-loop.
-
-```hurtip
-create counter = 0
-
-while (counter < 5) {
-    counter = counter + 1
-
-    if (counter == 3) {
-        continue
-    }
-
-    view(counter)
-}
-```
-
-### Loops aninhados
-
-A Hurtip permite utilizar loops dentro de outros loops.
-
-Também foi testado o comportamento de `break` em loops aninhados, garantindo que
-a interrupção do loop interno não encerre automaticamente o loop externo.
-
-```hurtip
-create outer = 0
-
-while (outer < 3) {
-    outer = outer + 1
-
-    create inner = 0
-
-    while (inner < 5) {
-        inner = inner + 1
-
-        if (inner == 3) {
-            break
-        }
-
-        view(inner)
-    }
-
-    view(outer)
-}
-```
-
-### Recursos de controle de fluxo
-
-| Recurso                                | Estado           |
-| -------------------------------------- | ---------------- |
-| `if`                                   | Implementado     |
-| `else`                                 | Implementado     |
-| Decisões aninhadas                     | Implementadas    |
-| Blocos de código                       | Implementados    |
-| Escopo próprio para blocos de controle | Implementado     |
-| `while`                                | Implementado     |
-| `break`                                | Implementado     |
-| `continue`                             | Implementado     |
-| Loops aninhados                        | Implementados    |
-| `for`                                  | Não implementado |
-
----
-
-## 6. Funções e escopos
-
-A Hurtip possui suporte a funções definidas pelo programador.
-
-As funções permitem organizar instruções em blocos reutilizáveis, receber
-parâmetros e retornar valores.
-
-### Declaração de funções
-
-A palavra-chave `function` é utilizada para declarar uma função.
-
-```hurtip
-function greet()
-{
-    view("Hello, Hurtip!")
-}
-
-greet()
-```
-
-### Parâmetros
-
-As funções podem receber parâmetros para trabalhar com diferentes valores.
-
-```hurtip
-function sum(a, b)
-{
-    return a + b
-}
-
-view(sum(10, 20))
-```
-
-### Valores de retorno
-
-A instrução `return` permite devolver um resultado para quem chamou a função.
-
-```hurtip
-function double(number)
-{
-    return number * 2
-}
-
-create result = double(10)
-
-view(result)
-```
-
-### Funções aninhadas e chamadas sucessivas
-
-A Hurtip permite que funções chamem outras funções.
-
-```hurtip
-function sum(a, b)
-{
-    return a + b
-}
-
-function calculate()
-{
-    create result = sum(10, 20)
-    view(result)
-
-    return result
-}
-
-function main()
-{
-    create value = calculate()
-    view(value)
-}
-
-main()
-```
-
-### Recursividade
-
-Uma função pode chamar a si mesma, permitindo implementar algoritmos recursivos.
-
-```hurtip
-function factorial(n)
-{
-    if (n <= 1) {
-        return 1
-    }
-
-    return n * factorial(n - 1)
-}
-
-view(factorial(5))
-```
-
-Resultado:
-
-```text
-120
-```
-
-### Sistema de escopos
-
-A Hurtip utiliza ambientes para armazenar variáveis e controlar sua
-visibilidade.
-
-Atualmente, o sistema oferece:
-
-- Ambiente global.
-- Ambientes locais de funções.
-- Ambientes próprios para blocos.
-- Busca de variáveis nos ambientes ancestrais.
-- Atualização de variáveis existentes em ambientes superiores.
-- Restauração do ambiente anterior após a execução de blocos.
-- Isolamento de variáveis locais entre chamadas de funções.
-
-Exemplo:
-
-```hurtip
-create number = 10
-
-if (true) {
-    create number = 20
-    view(number)
-}
-
-view(number)
-```
-
-Resultado:
-
-```text
-20
-10
-```
-
-O bloco utiliza uma variável local sem substituir a variável existente no
-ambiente externo.
-
-**Limitações atuais:** closures e captura de ambientes léxicos ainda não foram
-implementados. O sistema de escopos das funções também não oferece todos os
-recursos de um modelo lexical completo.
-
----
-
-## 7. Arrays
-
-A Hurtip possui uma implementação funcional de arrays, permitindo armazenar
-coleções de valores em uma única variável.
-
-Os arrays podem conter números, textos, booleanos e diferentes tipos de valores
-na mesma estrutura. Também podem armazenar outros arrays, permitindo criar
-estruturas aninhadas.
-
-### Criação de arrays
-
-Os arrays são declarados utilizando colchetes `[]`, com seus elementos separados
-por vírgulas.
-
-```hurtip
-create numbers = [10, 20, 30, 40, 50]
-create names = ["Ana", "João", "Maria"]
-create states = [true, false, true]
-```
-
-Também é possível criar arrays vazios:
-
-```hurtip
-create empty_array = []
-```
-
-### Arrays com diferentes tipos
-
-A implementação permite armazenar valores de diferentes tipos em um mesmo array.
-
-```hurtip
-create mixed = [10, "Hurtip", true, false]
-
-view(mixed)
-```
-
-### Acesso por índice
-
-Os elementos podem ser acessados utilizando índices entre colchetes.
-
-O primeiro elemento ocupa o índice `0`.
-
-```hurtip
-create numbers = [10, 20, 30]
-
-view(numbers[0])
-view(numbers[1])
-view(numbers[2])
-```
-
-### Atribuição por índice
-
-É possível modificar diretamente o valor de um elemento utilizando seu índice.
-
-```hurtip
-create numbers = [10, 20, 30]
-
-numbers[0] = 50
-
-view(numbers)
-```
-
-Resultado:
-
-```text
-[50, 20, 30]
-```
-
-Essa funcionalidade também permite modificar elementos de arrays aninhados.
-
-```hurtip
-create matrix = [
-    [1, 2],
-    [3, 4]
-]
-
-matrix[1][0] = 99
-
-view(matrix)
-```
-
-### Arrays aninhados
-
-Um array pode armazenar outros arrays como elementos.
-
-```hurtip
-create matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6]
-]
-```
-
-É possível acessar os arrays internos:
-
-```hurtip
-view(matrix[0])
-view(matrix[1])
-```
-
-Também é possível acessar diretamente os elementos de estruturas aninhadas:
-
-```hurtip
-view(matrix[0][0])
-view(matrix[0][1])
-view(matrix[1][0])
-view(matrix[1][1])
-```
-
-### Propriedade length
-
-A propriedade `length` permite consultar a quantidade de elementos armazenados
-em um array.
-
-```hurtip
-create numbers = [10, 20, 30, 40]
-
-view(numbers.length)
-```
-
-Resultado:
-
-```text
-4
-```
-
-Também funciona com arrays vazios e arrays aninhados:
-
-```hurtip
-create empty = []
-create matrix = [[1, 2], [3, 4]]
-
-view(empty.length)
-view(matrix.length)
-view(matrix[0].length)
-```
-
-### Exibição de arrays
-
-A função `view()` permite exibir um array completo, incluindo estruturas
-aninhadas.
-
-```hurtip
-create numbers = [10, 20, 30]
-create matrix = [[1, 2], [3, 4]]
-
-view(numbers)
-view(matrix)
-```
-
-### Validação de índices
-
-O interpretador verifica se o acesso ao array utiliza um índice válido.
-
-Atualmente, são tratados casos como:
-
-- Índices negativos.
-- Índices fracionários.
-- Índices fora dos limites do array.
-- Tentativas de acessar índices em valores que não são arrays.
-- Índices que não são numéricos.
-
-### Recursos de arrays
-
-| Recurso                                              | Estado            |
-| ---------------------------------------------------- | ----------------- |
-| Estrutura de arrays no runtime                       | Implementada      |
-| Criação de arrays                                    | Implementada      |
-| Arrays vazios                                        | Implementados     |
-| Arrays numéricos                                     | Implementados     |
-| Arrays de strings                                    | Implementados     |
-| Arrays booleanos                                     | Implementados     |
-| Arrays com diferentes tipos                          | Implementados     |
-| Arrays aninhados                                     | Implementados     |
-| Acesso por índice                                    | Implementado      |
-| Acesso encadeado                                     | Implementado      |
-| Atribuição por índice                                | Implementada      |
-| Modificação de arrays aninhados                      | Implementada      |
-| Propriedade `length`                                 | Implementada      |
-| Exibição com `view()`                                | Implementada      |
-| Validação de índices                                 | Implementada      |
-| Métodos `push()`, `pop()`, `remove()` e `contains()` | Não implementados |
-| Iteração com `for`                                   | Não implementada  |
-| Concatenação de arrays                               | Não implementada  |
-| Comparação estrutural                                | Não implementada  |
-
-### Próximas funcionalidades
-
-Os próximos recursos planejados para arrays são:
-
-- `push()` — adicionar elementos ao final.
-- `pop()` — remover e retornar o último elemento.
-- `remove()` — remover um elemento pelo índice.
-- `contains()` — verificar se determinado valor está presente.
-- Concatenação de arrays.
-- Comparação estrutural.
-- Iteração com `for`.
-
----
-
-## 8. Sistema de módulos e bibliotecas
-
-A Hurtip possui mecanismos separados para carregar arquivos da própria linguagem
-e importar bibliotecas nativas.
-
-Essa separação utiliza duas instruções com responsabilidades distintas: `load` e
-`import`.
-
-### 8.1. Load — arquivos da própria linguagem
-
-A instrução `load` é destinada ao carregamento de outros arquivos `.hurtip`.
-
-Seu objetivo é permitir que um programa seja dividido em vários arquivos,
-mantendo cada parte organizada e reutilizável.
-
-Exemplo:
-
-```hurtip
-load "modules/greeting.hurtip"
-
-view("O módulo foi carregado com sucesso!")
-view("Programa finalizado.")
-```
-
-O alias `as` permite associar um nome ao módulo, possibilitando acessar suas
-funções por meio de um namespace.
-
-Exemplo:
-
-```hurtip
-load "modules/math.hurtip" as math
-
-view(math.sum(10, 20))
-```
-
-### Recursos de `load` implementados
-
-- Carregamento de arquivos `.hurtip`.
-- Associação de alias com `as`.
-- Registro de funções por namespace.
-- Chamadas de funções utilizando o namespace do módulo.
-- Resolução de caminhos relativos ao arquivo que executa `load`.
 - Cache de módulos carregados.
 - Detecção de dependências circulares.
-- Testes de integração entre arquivos.
+- Controle do processo de carregamento de módulos.
 
-### 8.2. Import — bibliotecas nativas
+## Funcionalidades planejadas
 
-A instrução `import` permite incorporar bibliotecas nativas registradas no
-interpretador.
+Os seguintes recursos poderão ser desenvolvidos para ampliar o sistema.
 
-Diferentemente de `load`, que carrega arquivos `.hurtip`, o `import` atual
-utiliza um sistema de registro de funções implementadas em C++.
+### Organização de módulos
 
-Exemplo:
+- Suporte a estruturas de diretórios mais complexas.
+- Organização de módulos em subdiretórios.
+- Padronização da resolução de módulos.
+- Melhor gerenciamento de caminhos.
+- Definição de regras para localização de módulos.
 
-```hurtip
-import "math"
+### Importação seletiva
 
-create result = math.sum(10, 20)
+- Possibilidade de carregar funcionalidades específicas de um módulo.
+- Importação de múltiplos identificadores.
+- Definição de aliases para identificadores individuais.
+- Controle de visibilidade dos elementos exportados.
 
-view(result)
-```
+### Exportação de funcionalidades
 
-Também é possível utilizar aliases:
+- Definição explícita de elementos públicos.
+- Separação entre elementos públicos e privados.
+- Controle sobre quais funções e variáveis podem ser acessadas externamente.
+- Organização das interfaces públicas dos módulos.
 
-```hurtip
-import "math" as mathematics
+### Gerenciamento de dependências
 
-create result = mathematics.sum(10, 20)
+- Melhor visualização das relações entre módulos.
+- Diagnósticos detalhados de dependências.
+- Identificação de dependências não utilizadas.
+- Melhor tratamento de erros durante o carregamento.
+- Controle de versões de módulos, caso necessário.
 
-view(result)
-```
+### Resolução avançada de módulos
 
-O alias permite escolher o nome utilizado para acessar a biblioteca dentro do
-programa.
+- Definição de diretórios de busca.
+- Suporte a caminhos absolutos e relativos.
+- Regras de prioridade na localização de módulos.
+- Possibilidade de bibliotecas locais reutilizáveis.
+- Padronização do comportamento em diferentes sistemas operacionais.
 
-### Biblioteca math
+### Melhorias futuras
 
-A primeira biblioteca nativa implementada é `math`.
+- Sistema de pacotes.
+- Gerenciamento de dependências externas.
+- Estrutura de projetos com configuração própria.
+- Distribuição e reutilização de módulos.
+- Ferramentas para análise da estrutura de dependências.
 
-Atualmente, ela disponibiliza a função:
+## Arquitetura
 
-| Função           | Descrição                   | Exemplo            |
-| ---------------- | --------------------------- | ------------------ |
-| `math.sum(a, b)` | Soma dois valores numéricos | `math.sum(10, 20)` |
+O sistema de módulos utiliza os componentes fundamentais do interpretador da
+Hurtip.
 
-Exemplo completo:
+| Componente    | Responsabilidade                                            |
+| ------------- | ----------------------------------------------------------- |
+| Lexer         | Reconhece os tokens utilizados na sintaxe dos módulos.      |
+| Parser        | Analisa as instruções de carregamento e seus aliases.       |
+| AST           | Representa as instruções relacionadas aos módulos.          |
+| Interpreter   | Coordena a execução e o carregamento dos módulos.           |
+| Environment   | Gerencia os ambientes e namespaces.                         |
+| Module System | Controla a resolução, o carregamento e o cache dos módulos. |
 
-```hurtip
-import "math"
+A implementação deve manter uma separação clara entre o sistema de módulos e o
+núcleo da linguagem.
 
-create result = math.sum(10, 20)
+## Exemplo de utilização
 
-view(result)
-```
-
-Resultado:
-
-```text
-30
-```
-
-A função valida a quantidade e os tipos dos argumentos recebidos. Quando a
-chamada é inválida, o interpretador apresenta uma mensagem de erro.
-
-### Registro de bibliotecas
-
-As bibliotecas nativas são registradas no interpretador por meio de uma
-interface interna.
-
-O registro centralizado é realizado por `registerStandardLibraries()`, que
-mantém a inicialização das bibliotecas separada do arquivo principal da
-aplicação.
-
-Essa estrutura permite adicionar novas bibliotecas sem concentrar toda a
-implementação no `main.cpp`.
-
-### Diferença entre load e import
-
-| Instrução | Finalidade                               | Origem                        |
-| --------- | ---------------------------------------- | ----------------------------- |
-| `load`    | Carregar módulos e arquivos do projeto   | Arquivos `.hurtip`            |
-| `import`  | Importar bibliotecas nativas registradas | Implementações nativas em C++ |
-
-Essa distinção evita misturar o mecanismo de organização de arquivos da própria
-linguagem com o mecanismo de integração de bibliotecas nativas.
-
-### Estado atual
-
-| Recurso                                     | Estado           |
-| ------------------------------------------- | ---------------- |
-| `load` de arquivos `.hurtip`                | Implementado     |
-| Alias de módulos com `as`                   | Implementado     |
-| Namespace de módulos                        | Implementado     |
-| Resolução de caminhos relativos             | Implementada     |
-| Cache de módulos                            | Implementado     |
-| Detecção de dependências circulares         | Implementada     |
-| `import` de bibliotecas nativas             | Implementado     |
-| Importação com alias                        | Implementada     |
-| Registro de funções nativas                 | Implementado     |
-| Registro centralizado de bibliotecas        | Implementado     |
-| Biblioteca nativa `math`                    | Implementada     |
-| Função `math.sum()`                         | Implementada     |
-| Carregamento dinâmico de bibliotecas        | Não implementado |
-| API pública para bibliotecas de terceiros   | Não implementada |
-| Isolamento completo de variáveis por módulo | Não implementado |
-
----
-
-## 9. Arquitetura atual
-
-A Hurtip está sendo desenvolvida em C++17 e utiliza uma arquitetura dividida em
-etapas.
-
-O fluxo atual de execução é:
+Considere a seguinte estrutura:
 
 ```text
-Arquivo .hurtip
-      |
-      v
-    Lexer
-      |
-      v
-    Tokens
-      |
-      v
-    Parser
-      |
-      v
-     AST
-      |
-      v
-  Interpreter
-      |
-      v
-   Execução
+project/
+├── main.hurtip
+└── modules/
+    ├── calculator.hurtip
+    └── messages.hurtip
 ```
 
-### Lexer — Análise léxica
-
-O Lexer lê o código-fonte e identifica os elementos da linguagem, transformando
-o texto em uma sequência de tokens.
-
-Por exemplo:
+Um arquivo principal poderá carregar módulos utilizando `load`:
 
 ```hurtip
-create name = "Hurtip"
+load "modules/calculator.hurtip" as calculator
+load "modules/messages.hurtip" as messages
 ```
 
-É transformado em tokens como:
+As funcionalidades dos módulos poderão ser acessadas através de seus respectivos
+namespaces, conforme os recursos já disponíveis na linguagem.
 
-- `Create`
-- `Identifier`
-- `Equal`
-- `String`
+Exemplo conceitual:
 
-#### Tokens reconhecidos
+```hurtip
+view(calculator.sum(10, 20))
+view(messages.greeting())
+```
 
-| Categoria                | Elementos                                                                                                                               |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Palavras reservadas      | `create`, `true`, `false`, `if`, `else`, `while`, `function`, `return`, `load`, `import`, `as`, `break`, `continue`, `and`, `or`, `not` |
-| Identificadores          | Nomes de variáveis e identificadores                                                                                                    |
-| Valores literais         | `String`, `Number`, `True`, `False`                                                                                                     |
-| Atribuição               | `Equal` (`=`)                                                                                                                           |
-| Operadores aritméticos   | `Plus` (`+`), `Minus` (`-`), `Star` (`*`), `Slash` (`/`)                                                                                |
-| Operadores de comparação | `EqualEqual`, `BangEqual`, `Greater`, `Less`, `GreaterEqual`, `LessEqual`                                                               |
-| Delimitadores            | `LeftParen`, `RightParen`, `LeftBrace`, `RightBrace`, `LeftBracket`, `RightBracket`, `Comma`                                            |
-| Estrutura do código      | `NewLine`, `EndOfFile`                                                                                                                  |
-| Controle de fluxo        | `Break`, `Continue`, `Return`                                                                                                           |
+## Tratamento de erros
 
-O Lexer também reconhece comentários de linha iniciados por `//` e números
-decimais.
+O sistema deverá fornecer diagnósticos claros para situações como:
 
-#### Rastreamento de posição
+- Arquivo de módulo não encontrado.
+- Caminho inválido.
+- Falha durante o carregamento.
+- Dependências circulares.
+- Namespace inexistente.
+- Identificador não encontrado.
+- Conflitos de nomes.
+- Erros de execução dentro de módulos.
 
-Cada token armazena informações sobre sua localização no código-fonte:
+As mensagens devem facilitar a identificação do arquivo e da origem do problema.
 
-- `line`: linha em que o token começa.
-- `column`: coluna em que o token começa.
+## Testes
 
-Essas informações formam a base para diagnósticos mais precisos.
+O sistema deve possuir testes automatizados para validar seu comportamento.
 
-### Parser — Análise sintática
+A cobertura deve incluir:
 
-O Parser recebe os tokens e verifica se eles seguem as regras gramaticais da
-linguagem.
-
-Ele também constrói a AST (_Abstract Syntax Tree_), uma representação
-estruturada do programa.
-
-Atualmente, o Parser possui suporte para:
-
-- Declarações com `create`.
-- Atribuição de variáveis.
-- Valores literais.
-- Referências a variáveis.
-- Chamadas de funções.
-- Declarações de funções.
-- Parâmetros e retornos.
 - Carregamento de módulos.
-- Importação de bibliotecas nativas.
-- Aliases com `as`.
-- Expressões aritméticas.
-- Expressões unárias.
-- Expressões agrupadas.
-- Operadores de comparação.
-- Operadores lógicos.
-- Precedência de operadores.
-- Estruturas condicionais.
-- Blocos de código.
-- Loops `while`.
-- Instruções `break` e `continue`.
-- Arrays literais com `[]`.
-- Arrays vazios.
-- Elementos separados por vírgulas.
-- Vírgula final opcional em arrays.
-- Acesso a elementos por índice.
-- Acesso encadeado a arrays aninhados.
-- Atribuição a elementos indexados.
+- Carregamento com aliases.
+- Acesso através de namespaces.
+- Resolução de caminhos relativos.
+- Carregamento de módulos em subdiretórios.
+- Cache de módulos.
+- Detecção de dependências circulares.
+- Arquivos inexistentes.
+- Erros durante o carregamento.
+- Dependências entre múltiplos módulos.
 
-O Parser possui mecanismos de diagnóstico que identificam diferentes estruturas
-sintáticas inválidas, mas ainda existem situações que precisam de tratamento
-mais abrangente.
+Novos recursos devem ser acompanhados de testes para evitar regressões.
 
-### AST — Árvore sintática abstrata
+## Diretrizes de desenvolvimento
 
-A AST representa a estrutura do código de maneira organizada.
+O desenvolvimento nesta branch deve seguir os seguintes princípios:
 
-Atualmente, existem estruturas para representar:
+1. Manter a sintaxe simples e intuitiva.
+2. Evitar complexidade desnecessária na importação de módulos.
+3. Garantir comportamento previsível na resolução de caminhos.
+4. Evitar carregamentos duplicados.
+5. Manter o isolamento e a organização dos namespaces.
+6. Fornecer diagnósticos claros.
+7. Preservar a compatibilidade com o núcleo da linguagem.
+8. Desenvolver testes automatizados para cada novo recurso.
 
-- Declarações de variáveis.
-- Atribuições.
-- Expressões.
-- Valores literais.
-- Referências a variáveis.
-- Expressões binárias.
-- Expressões unárias.
-- Chamadas de funções.
-- Acesso a membros.
-- Arrays literais (`ArrayExpression`).
-- Acesso a índices (`IndexExpression`).
-- Declarações de funções.
-- Instruções de retorno.
-- Declarações de carregamento de módulos.
-- Declarações de importação.
-- Decisões condicionais.
-- Blocos de código.
-- Loops.
-- Instruções de interrupção e continuação de loops.
+## Escopo da branch
 
-### Interpreter — Interpretador
+A `feature/module-system` é responsável exclusivamente pelo sistema de módulos
+da Hurtip.
 
-O interpretador percorre as estruturas produzidas pelo Parser e executa as
-instruções.
+Seu desenvolvimento deve permitir que programas sejam divididos em arquivos
+independentes, organizados em estruturas reutilizáveis e integrados de maneira
+consistente.
 
-Atualmente, ele consegue:
-
-- Criar variáveis.
-- Armazenar e recuperar valores.
-- Atualizar variáveis existentes.
-- Trabalhar com strings, números e booleanos.
-- Avaliar números inteiros e decimais.
-- Criar arrays em tempo de execução.
-- Armazenar valores de diferentes tipos em arrays.
-- Criar arrays aninhados.
-- Avaliar acesso a elementos por índice.
-- Modificar elementos por índice.
-- Modificar elementos de arrays aninhados.
-- Consultar a propriedade `length`.
-- Validar o tipo do objeto acessado.
-- Validar índices numéricos, inteiros e não negativos.
-- Verificar os limites dos arrays.
-- Exibir arrays completos e aninhados com `view()`.
-- Avaliar expressões matemáticas.
-- Realizar comparações.
-- Avaliar expressões lógicas.
-- Executar operações com curto-circuito.
-- Executar a função nativa `view()`.
-- Executar funções definidas pelo usuário.
-- Passar parâmetros para funções.
-- Retornar valores.
-- Executar funções recursivas.
-- Controlar ambientes e escopos.
-- Executar estruturas condicionais.
-- Executar loops `while`.
-- Interpretar `break` e `continue`.
-- Executar loops aninhados.
-- Carregar módulos e acessar funções por namespace.
-- Importar bibliotecas nativas.
-- Executar funções registradas em bibliotecas nativas.
-- Identificar variáveis não declaradas.
-- Informar a localização de determinados erros de execução.
-
-O interpretador utiliza `std::variant` para representar os valores em tempo de
-execução.
-
-```cpp
-using RuntimeValue = std::variant<
-    std::string,
-    double,
-    bool,
-    std::shared_ptr<ArrayValue>
->;
-
-struct ArrayValue
-{
-    std::vector<RuntimeValue> elements;
-};
-```
-
-A estrutura `ArrayValue` utiliza `std::vector` para armazenar os elementos e
-`std::shared_ptr` para permitir que arrays sejam representados e compartilhados
-como valores do runtime.
+O objetivo final é oferecer uma infraestrutura de módulos que acompanhe o
+crescimento da linguagem, sem comprometer sua simplicidade.
 
 ---
 
-## 10. Sistema de diagnóstico
-
-A Hurtip possui uma implementação de mensagens de erro com identificação de
-linha e coluna em diferentes situações.
-
-Exemplo de erro de sintaxe:
-
-```hurtip
-if (true)
-    view("Hello")
-```
-
-Resultado ilustrativo:
-
-```text
-Hurtip Error: Line 2, column 5: Expected '{' to begin block
-```
-
-Exemplo de bloco não fechado:
-
-```hurtip
-if (true) {
-    view("Hello")
-```
-
-Resultado ilustrativo:
-
-```text
-Hurtip Error: Line 3, column 1: Expected '}' to close block
-```
-
-Exemplo de argumento inválido:
-
-```hurtip
-view(10, )
-```
-
-Resultado ilustrativo:
-
-```text
-Hurtip Error: Line 1, column 10: Expected an expression, got: )
-```
-
-Exemplo de operador inválido:
-
-```hurtip
-create result = 10 + * 5
-```
-
-Resultado ilustrativo:
-
-```text
-Hurtip Error: Line 1, column 22: Expected an expression, got: *
-```
-
-Os testes realizados confirmam que o Parser consegue identificar diferentes
-situações de sintaxe inválida, incluindo:
-
-- Blocos sem abertura `{`.
-- Blocos sem fechamento `}`.
-- Condições com parênteses incompletos.
-- Chamadas de função incompletas.
-- Argumentos ausentes.
-- Vírgulas sobrando.
-- Expressões incompletas.
-- Sequências inválidas de operadores.
-
-O Lexer também possui testes para situações como caracteres inválidos e strings
-não terminadas.
-
-O sistema de importação de bibliotecas nativas também apresenta mensagens
-específicas para bibliotecas inexistentes, funções não registradas e argumentos
-inválidos.
-
-O acesso a arrays possui validações para objetos que não são arrays, índices
-inválidos e posições fora dos limites.
-
----
-
-## 11. Testes e confiabilidade
-
-A Hurtip possui uma estrutura de testes organizada por responsabilidade,
-separando programas demonstrativos dos testes de comportamento.
-
-### Organização atual
-
-```text
-tests/
-├── CMakeLists.txt
-├── run_test.cmake
-│
-├── arrays/
-│   ├── array_assignment_test.hurtip
-│   ├── array_creation_test.hurtip
-│   ├── array_fractional_index_test.hurtip
-│   ├── array_invalid_object_test.hurtip
-│   ├── array_length_test.hurtip
-│   ├── array_mixed_test.hurtip
-│   ├── array_negative_index_test.hurtip
-│   ├── array_nested_test.hurtip
-│   └── array_out_of_range_test.hurtip
-│
-├── environment/
-│   └── environment_test.hurtip
-│
-├── scopes/
-│   ├── block_assignment_test.hurtip
-│   ├── block_scope_test.hurtip
-│   ├── else_scope_test.hurtip
-│   ├── loop_control_scope_test.hurtip
-│   └── while_scope_test.hurtip
-│
-├── functions/
-│   ├── nested_functions_test.hurtip
-│   ├── recursion_scope_test.hurtip
-│   └── recursion_test.hurtip
-│
-├── modules/
-│   ├── module_test.hurtip
-│   └── modules/
-│       └── math.hurtip
-│
-├── import/
-│   ├── math_import_test.hurtip
-│   ├── math_alias_test.hurtip
-│   ├── unknown_import_test.hurtip
-│   ├── unknown_function_test.hurtip
-│   ├── invalid_native_arguments_test.hurtip
-│   └── invalid_native_types_test.hurtip
-│
-├── lexer/
-│   └── lexer_test.cpp
-│
-└── parser/
-    ├── function_braces_test.hurtip
-    ├── parser_braces_test.hurtip
-    ├── parser_duplicate_operator_test.hurtip
-    ├── parser_incomplete_expression_test.hurtip
-    ├── parser_invalid_argument_test.hurtip
-    ├── parser_invalid_block_test.hurtip
-    ├── parser_invalid_call_test.hurtip
-    ├── parser_missing_brace_test.hurtip
-    ├── parser_missing_parenthesis_test.hurtip
-    ├── parser_test.cpp
-    ├── parser_trailing_comma_test.hurtip
-    └── while_braces_test.hurtip
-```
-
-### Validações realizadas
-
-Foram executados testes para verificar:
-
-- Declaração e atualização de variáveis.
-- Escopos locais e globais.
-- Isolamento de variáveis em blocos.
-- Comportamento de `if` e `else`.
-- Execução de loops.
-- `break` e `continue`.
-- Funções e parâmetros.
-- Funções aninhadas.
-- Recursividade.
-- Sistema de módulos.
-- Importação de bibliotecas nativas.
-- Importação com alias.
-- Bibliotecas e funções inexistentes.
-- Argumentos e tipos inválidos em funções nativas.
-- Abertura de blocos em linhas separadas.
-- Delimitadores incompletos.
-- Argumentos inválidos.
-- Expressões e operadores inválidos.
-- Erros léxicos.
-- Validação de entradas recebidas pelo Parser.
-- Criação de arrays.
-- Arrays com tipos diferentes.
-- Arrays aninhados.
-- Acesso e atribuição por índice.
-- Propriedade `length`.
-- Índices inválidos e fora dos limites.
-- Tentativas de indexação de objetos que não são arrays.
-
-### Testes unitários
-
-O Lexer possui 13 verificações unitárias, cobrindo palavras reservadas,
-identificadores, valores, operadores, delimitadores, comentários, posições dos
-tokens e erros léxicos.
-
-O Parser possui 40 verificações unitárias, cobrindo declarações, expressões,
-precedência, funções, estruturas de controle, sintaxe inválida e validação da
-entrada de tokens.
-
-### CTest
-
-O projeto possui integração com CTest no CMake principal:
-
-```cmake
-include(CTest)
-
-if(BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
-```
-
-O arquivo `tests/CMakeLists.txt` cadastra os testes de integração e os
-executáveis de testes unitários.
-
-### Testes de arrays
-
-Foram adicionados nove testes automatizados específicos:
-
-| Teste                    | Validação                           |
-| ------------------------ | ----------------------------------- |
-| `array_creation`         | Criação de arrays                   |
-| `array_mixed`            | Elementos de diferentes tipos       |
-| `array_nested`           | Arrays aninhados e acesso encadeado |
-| `array_assignment`       | Modificação de elementos            |
-| `array_length`           | Propriedade `length`                |
-| `array_negative_index`   | Índice negativo                     |
-| `array_fractional_index` | Índice fracionário                  |
-| `array_out_of_range`     | Índice fora dos limites             |
-| `array_invalid_object`   | Acesso a objeto que não é array     |
-
-### Resultado mais recente confirmado
-
-Na última execução informada pelo usuário, todos os testes da suíte passaram,
-incluindo os testes específicos de arrays.
-
-O projeto possuía 29 testes registrados antes da inclusão dos nove testes de
-arrays. Com a inclusão desses novos casos, a suíte passou a ter 38 testes
-registrados, considerando que os demais registros permaneceram inalterados.
-
-Os 40 testes do Parser são verificações internas de um único executável
-registrado no CTest, e não 40 testes CTest independentes.
-
-**Resultado da execução completa informado:**
-
-```text
-Todos os testes passaram.
-```
-
-### Executar os testes
-
-Para executar toda a suíte:
-
-```bash
-ctest --test-dir build --output-on-failure
-```
-
-Para executar os testes de arrays:
-
-```bash
-ctest --test-dir build -R array --output-on-failure
-```
-
-Para executar os testes unitários individualmente:
-
-```bash
-./build/tests/lexer_tests
-./build/tests/parser_tests
-```
-
----
-
-## 12. Suporte ao Visual Studio Code
-
-A Hurtip possui uma extensão inicial para o Visual Studio Code, criada para
-reconhecer a linguagem e facilitar a edição de arquivos `.hurtip`.
-
-### Recursos disponíveis
-
-- Reconhecimento da extensão `.hurtip`.
-- Identificação da linguagem Hurtip.
-- Realce de sintaxe.
-- Destaque de palavras-chave.
-- Destaque da função `view()`.
-- Destaque de strings e números.
-- Destaque de operadores.
-- Fechamento automático de parênteses e aspas.
-- Tema de ícones personalizado.
-
-### Identidade visual
-
-O projeto possui uma identidade visual própria, incluindo ícone para a Hurtip e
-variações em diferentes resoluções.
-
-O ícone dos arquivos `.hurtip` foi integrado ao tema Seti do VS Code,
-preservando os ícones existentes para os demais tipos de arquivos.
-
-O tema personalizado é identificado como **Seti + Hurtip**.
-
-### Estrutura da extensão
-
-```text
-vscode-extension/
-├── package.json
-├── language-configuration.json
-│
-├── syntaxes/
-│   └── hurtip.tmLanguage.json
-│
-└── icons/
-    ├── hurtip-file.png
-    ├── hurtip-file.svg
-    ├── hurtip-icon-theme.json
-    │
-    └── seti/
-        ├── seti-circular-128x128.png
-        ├── seti.woff
-        ├── vs-seti-icon-theme.json
-        └── vs-seti-icon-theme.backup.json
-```
-
-A extensão ainda é experimental e está em desenvolvimento local. Sua publicação
-em um marketplace ainda não foi realizada.
-
----
-
-## 13. Tecnologias utilizadas
-
-| Tecnologia       | Utilização                                     |
-| ---------------- | ---------------------------------------------- |
-| C++              | Implementação da linguagem                     |
-| C++17            | Padrão da linguagem utilizada                  |
-| CMake            | Configuração e gerenciamento da compilação     |
-| GCC / G++        | Compilação do projeto                          |
-| CTest            | Infraestrutura de testes automatizados         |
-| VS Code          | Ambiente de desenvolvimento                    |
-| TextMate Grammar | Realce de sintaxe no VS Code                   |
-| JSON             | Configuração da extensão e dos temas de ícones |
-| Git              | Controle de versão                             |
-
-A escolha do C++ permite explorar estruturas de dados, gerenciamento de memória
-e desempenho, além de oferecer uma base interessante para futuras experiências
-com compiladores e sistemas embarcados.
-
----
-
-## 14. Estrutura do projeto
-
-A organização do repositório separa os componentes da linguagem por
-responsabilidade.
-
-```text
-Hurtip/
-├── CMakeLists.txt
-├── README.md
-├── .gitignore
-│
-├── assets/
-│   ├── icon.png
-│   ├── logo.png
-│   ├── icons/
-│   └── linux/
-│       └── hurtip.desktop
-│
-├── include/
-│   └── hurtip/
-│       ├── ast/
-│       │   └── ast.hpp
-│       ├── environment/
-│       │   └── environment.hpp
-│       ├── interpreter/
-│       │   └── interpreter.hpp
-│       ├── lexer/
-│       │   └── lexer.hpp
-│       ├── parser/
-│       │   └── parser.hpp
-│       ├── libraries/
-│       │   ├── math.hpp
-│       │   └── standard_library.hpp
-│       └── token.hpp
-│
-├── src/
-│   ├── main.cpp
-│   │
-│   ├── environment/
-│   │   └── environment.cpp
-│   │
-│   ├── interpreter/
-│   │   ├── interpreter.cpp
-│   │   ├── interpreter_expressions.cpp
-│   │   └── interpreter_signals.hpp
-│   │
-│   ├── lexer/
-│   │   └── lexer.cpp
-│   │
-│   ├── parser/
-│   │   └── parser.cpp
-│   │
-│   └── libraries/
-│       ├── math.cpp
-│       └── standard_library.cpp
-│
-├── examples/
-│   ├── hello.hurtip
-│   └── program.hurtip
-│
-├── tests/
-│   ├── CMakeLists.txt
-│   ├── run_test.cmake
-│   ├── arrays/
-│   ├── environment/
-│   ├── functions/
-│   ├── import/
-│   ├── lexer/
-│   ├── modules/
-│   ├── parser/
-│   └── scopes/
-│
-└── vscode-extension/
-    ├── package.json
-    ├── language-configuration.json
-    ├── syntaxes/
-    └── icons/
-```
-
----
-
-## 15. Compilação e execução
-
-O projeto utiliza CMake para configurar e compilar a implementação em C++.
-
-### Requisitos
-
-- GCC / G++ com suporte a C++17.
-- CMake 3.16 ou superior.
-- Sistema operacional Linux ou ambiente compatível.
-
-### Compilar
-
-Na raiz do projeto, execute:
-
-```bash
-cmake -S . -B build
-cmake --build build
-```
-
-### Executar
-
-Para executar um arquivo Hurtip:
-
-```bash
-./build/hurtip examples/program.hurtip
-```
-
-O interpretador recebe o caminho do arquivo `.hurtip` como argumento e executa
-as instruções presentes nele.
-
-### Executar testes
-
-Para executar um arquivo de teste manualmente:
-
-```bash
-./build/hurtip tests/arrays/array_creation_test.hurtip
-```
-
-Para executar toda a suíte automatizada:
-
-```bash
-ctest --test-dir build --output-on-failure
-```
-
----
-
-## 16. Estado atual do desenvolvimento
-
-A Hurtip possui um núcleo funcional implementado em C++17, com Lexer, Parser,
-AST e Interpreter integrados.
-
-A linguagem oferece suporte a variáveis, expressões, operadores aritméticos,
-números decimais, comparações, lógica, estruturas condicionais, loops, funções,
-parâmetros, retornos, recursividade e escopos.
-
-O sistema de módulos permite carregar arquivos `.hurtip` com `load`, utilizar
-aliases e acessar funções por namespace.
-
-O sistema de bibliotecas nativas também está implementado. O `import` permite
-incorporar bibliotecas registradas no interpretador, incluindo a biblioteca
-`math` e sua função `math.sum()`.
-
-A inicialização das bibliotecas é centralizada em `standard_library`, mantendo o
-registro separado do ponto de entrada da aplicação.
-
-### Arrays: estágio atual
-
-A Hurtip já possui uma implementação funcional de arrays integrada ao AST,
-Parser e runtime.
-
-Atualmente, é possível:
-
-- Criar arrays vazios e preenchidos.
-- Armazenar números, strings e booleanos.
-- Combinar diferentes tipos em um mesmo array.
-- Criar arrays aninhados.
-- Acessar elementos por índice.
-- Acessar elementos de arrays aninhados com índices encadeados.
-- Modificar elementos por índice.
-- Modificar elementos de arrays aninhados.
-- Consultar a quantidade de elementos com `length`.
-- Exibir arrays completos com `view()`.
-
-O sistema também possui validações para índices negativos, fracionários, fora
-dos limites e tentativas de acessar elementos em objetos que não são arrays.
-
-Foram adicionados nove testes automatizados específicos para arrays, cobrindo
-criação, tipos mistos, estruturas aninhadas, atribuição, tamanho e situações de
-erro.
-
-O próximo passo será implementar os métodos de manipulação:
-
-- `push()` — adicionar elementos ao final.
-- `pop()` — remover e retornar o último elemento.
-- `remove()` — remover um elemento pelo índice.
-- `contains()` — verificar se determinado valor está presente.
-
-Depois disso, a evolução poderá avançar para concatenação, comparação estrutural
-e iteração com `for`.
-
-### Componentes principais
-
-| Componente                                | Estado        |
-| ----------------------------------------- | ------------- |
-| Lexer                                     | Implementado  |
-| Reconhecimento de palavras reservadas     | Implementado  |
-| Reconhecimento de operadores              | Implementado  |
-| Reconhecimento de números decimais        | Implementado  |
-| Rastreamento de linha e coluna dos tokens | Implementado  |
-| Parser                                    | Implementado  |
-| AST                                       | Implementada  |
-| Interpreter                               | Implementado  |
-| Variáveis e valores no runtime            | Implementados |
-| Expressões                                | Implementadas |
-| Operações aritméticas                     | Implementadas |
-| Comparações                               | Implementadas |
-| Operadores lógicos                        | Implementados |
-| Estruturas condicionais                   | Implementadas |
-| Loops e controle de fluxo                 | Implementados |
-| Funções e parâmetros                      | Implementados |
-| Recursividade                             | Implementada  |
-| Escopos                                   | Implementados |
-| Criação e leitura de arrays               | Implementadas |
-| Modificação de elementos por índice       | Implementada  |
-| Arrays aninhados                          | Implementados |
-| Propriedade `length`                      | Implementada  |
-| Métodos de manipulação de arrays          | Pendentes     |
-| Sistema de módulos                        | Implementado  |
-| `load` de arquivos `.hurtip`              | Implementado  |
-| `import` de bibliotecas nativas           | Implementado  |
-| Registro centralizado de bibliotecas      | Implementado  |
-| Biblioteca nativa `math`                  | Implementada  |
-| Diagnósticos iniciais                     | Implementados |
-| Execução de arquivos `.hurtip` pela CLI   | Implementada  |
-| Extensão inicial para VS Code             | Implementada  |
-| Testes unitários do Lexer e Parser        | Implementados |
-| Testes automatizados com CTest            | Integrados    |
-
----
-
-**Hurtip — Simples para começar. Flexível para evoluir.**
+**Hurtip — Uma linguagem de programação construída em torno da simplicidade,
+clareza e versatilidade.**
