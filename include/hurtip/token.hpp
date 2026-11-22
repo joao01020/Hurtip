@@ -52,6 +52,8 @@ namespace hurtip
         RightParen,
         LeftBrace,
         RightBrace,
+        LeftBracket,
+        RightBracket,
         Comma,
         Dot,
 

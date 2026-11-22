@@ -230,7 +230,26 @@ namespace hurtip
         int tokenColumn = column;
 
         switch (character)
+
         {
+        case '[':
+            advance();
+
+            tokens.push_back({TokenType::LeftBracket,
+                              "[",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case ']':
+            advance();
+
+            tokens.push_back({TokenType::RightBracket,
+                              "]",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
         case '"':
             scanString();
             break;
