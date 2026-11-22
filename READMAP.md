@@ -53,9 +53,9 @@
 - [x] Isolamento de variáveis locais entre chamadas
 - [ ] Closures
 
-### Arrays
+## Arrays
 
-- [x] Estrutura inicial de arrays no runtime
+- [x] Estrutura de arrays no runtime
 - [x] Criação de arrays
 - [x] Arrays vazios
 - [x] Arrays numéricos
@@ -73,7 +73,14 @@
 - [x] Validação de índices fracionários
 - [x] Validação de índices fora dos limites
 - [x] Validação de objetos que não são arrays
-- [ ] Métodos de manipulação (`push`, `pop`, `remove`, `contains`)
+- [x] `push(value)` — adiciona elementos ao final
+- [x] `pop()` — remove e retorna o último elemento
+- [x] `remove(index)` — remove e retorna um elemento por índice
+- [x] `insert(index, value)` — insere um elemento em determinada posição
+- [x] `contains(value)` — verifica se um valor existe
+- [x] `indexOf(value)` — encontra a posição de um valor
+- [x] `clear()` — esvazia o array
+- [x] `reverse()` — inverte a ordem dos elementos
 - [ ] Iteração de arrays com `for`
 - [ ] Concatenação de arrays
 - [ ] Comparação estrutural de arrays
@@ -145,6 +152,8 @@
 - [x] Organização dos exemplos em `examples/`
 - [x] Separação dos testes em `tests/`
 - [x] Organização dos testes por categoria
+- [x] Organização dos testes de arrays em subpastas (`basics`, `indexing`,
+      `mutation` e `search`)
 - [x] Testes manuais de regressão
 - [x] Testes de escopos
 - [x] Testes de funções e recursividade
@@ -157,8 +166,6 @@
 - [x] Testes unitários do Lexer
 - [x] Testes unitários do Parser
 - [x] 40 verificações unitárias do Parser aprovadas
-- [x] 38 testes registrados no CTest, considerando os 29 anteriores e os 9 novos
-      testes de arrays
 - [x] Testes de importação de bibliotecas nativas
 - [x] Testes de importação com alias
 - [x] Testes de bibliotecas e funções inexistentes
@@ -172,7 +179,12 @@
 - [x] Testes de índices negativos e fracionários
 - [x] Testes de índices fora dos limites
 - [x] Testes de acesso a objetos que não são arrays
+- [x] Testes de `push()`, `pop()`, `remove()` e `insert()`
+- [x] Testes de `contains()`, `indexOf()`, `clear()` e `reverse()`
+- [x] Testes de argumentos inválidos nos métodos de arrays
 - [x] Testes de regressão para arrays
+- [x] 55 testes registrados no CTest
+- [x] 55 testes aprovados na última execução confirmada
 
 ## Biblioteca e ferramentas
 
@@ -183,6 +195,9 @@
 - [ ] Sistema de documentação
 - [ ] Gerenciador de pacotes
 - [ ] Ferramentas de depuração
+- [x] Extensão experimental para VS Code
+- [x] Syntax highlighting para arquivos `.hurtip`
+- [x] Configuração inicial do IntelliSense para o projeto
 
 ## Recursos de baixo nível e hardware
 
@@ -223,11 +238,10 @@ A arquitetura de registro das bibliotecas foi centralizada em
 cada biblioteca.
 
 O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
-integrada ao CTest. São 40 verificações unitárias do Parser e 38 testes
-registrados no CTest, considerando a suíte anterior e os nove novos testes de
-arrays. Na última execução informada, todos os testes passaram.
+integrada ao CTest. São 40 verificações unitárias do Parser e 55 testes
+registrados no CTest. Na última execução informada, todos os 55 testes passaram.
 
-### Arrays: estágio atual
+## Arrays: estágio atual
 
 A Hurtip já possui uma implementação funcional de arrays integrada ao AST,
 Parser e runtime.
@@ -265,39 +279,62 @@ numbers[0] = 50
 view(numbers)
 ```
 
-O sistema já possui validações para índices negativos, fracionários, fora dos
-limites e tentativas de acessar elementos em objetos que não são arrays.
+A linguagem possui oito métodos de arrays implementados:
 
-Foram adicionados nove testes automatizados específicos para arrays, cobrindo
-criação, tipos mistos, estruturas aninhadas, atribuição, tamanho e situações de
-erro.
+```hurtip
+create numbers = [10, 20, 30]
 
-O próximo avanço será desenvolver os métodos de manipulação:
+numbers.push(40)
+view(numbers)
 
-- `push()` — adicionar elementos ao final.
-- `pop()` — remover e retornar o último elemento.
-- `remove()` — remover um elemento pelo índice.
-- `contains()` — verificar se determinado valor está presente.
+view(numbers.pop())
 
-Depois disso, a evolução poderá avançar para concatenação, comparação estrutural
-e iteração com `for`.
+view(numbers.contains(20))
+view(numbers.indexOf(20))
+
+numbers.insert(1, 15)
+view(numbers)
+
+view(numbers.remove(0))
+
+numbers.reverse()
+view(numbers)
+
+view(numbers.clear())
+view(numbers)
+```
+
+Os métodos contam com validações de quantidade de argumentos e, quando
+aplicável, de índices.
+
+A suíte automatizada também cobre os comportamentos principais desses métodos,
+incluindo argumentos inválidos.
+
+Os testes de arrays foram organizados em quatro categorias:
+
+- `basics/` — criação, tipos, atribuição, tamanho e arrays aninhados.
+- `indexing/` — acesso e validação de índices.
+- `mutation/` — inserção, remoção, limpeza e inversão.
+- `search/` — busca e localização de elementos.
 
 ## Foco atual do desenvolvimento
 
-O próximo objetivo é fortalecer a confiabilidade do sistema de importação,
-especialmente a prevenção de conflitos entre aliases de módulos e bibliotecas
-nativas.
+Com os principais métodos de arrays implementados, o próximo passo é ampliar as
+capacidades da linguagem e fortalecer sua arquitetura.
 
-Na evolução dos arrays, o próximo passo será implementar os métodos de
-manipulação (`push`, `pop`, `remove` e `contains`), mantendo a validação de
-tipos e índices e adicionando testes automatizados para cada operação.
+As prioridades sugeridas são:
 
-Em seguida, o desenvolvimento poderá avançar para a implementação de `for`,
-permitindo percorrer arrays e outras estruturas iteráveis.
+1. Implementar `for`, começando pela iteração de arrays.
+2. Desenvolver métodos adicionais de arrays, como `concat()` e `slice()`.
+3. Expandir as funcionalidades de strings.
+4. Fortalecer os diagnósticos e o tratamento de erros em tempo de execução.
+5. Desenvolver mais funções para a biblioteca padrão.
+6. Investigar e testar conflitos entre aliases de módulos e bibliotecas nativas.
+7. Avançar na definição da semântica de cópia e referência dos arrays.
 
-Outros objetivos importantes são a expansão da biblioteca padrão, a API para
-bibliotecas externas e o fortalecimento dos diagnósticos e testes de
-resistência.
+Em paralelo, continuam como objetivos de longo prazo a criação de uma API para
+bibliotecas externas, o desenvolvimento de ferramentas de depuração e a
+preparação da arquitetura para programação de baixo nível e microcontroladores.
 
-Os recursos avançados de baixo nível e suporte a microcontroladores continuam
-fazendo parte da visão de longo prazo da Hurtip.
+Os recursos de hardware, especialmente o suporte ao ESP32, permanecem parte da
+visão de longo prazo da Hurtip.
