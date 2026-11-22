@@ -2,6 +2,7 @@
 #include "hurtip/interpreter/interpreter.hpp"
 #include "interpreter_signals.hpp"
 
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -10,6 +11,55 @@
 
 namespace hurtip
 {
+    namespace
+    {
+        // Runtime value output
+
+        void printRuntimeValue(const RuntimeValue &value)
+        {
+            std::visit(
+                [](const auto &result)
+                {
+                    using T = std::decay_t<decltype(result)>;
+
+                    if constexpr (std::is_same_v<T, bool>)
+                    {
+                        std::cout << (result ? "true" : "false");
+                    }
+                    else if constexpr (
+                        std::is_same_v<T, std::shared_ptr<ArrayValue>>)
+                    {
+                        if (!result)
+                        {
+                            std::cout << "[]";
+                            return;
+                        }
+
+                        std::cout << "[";
+
+                        for (std::size_t i = 0;
+                             i < result->elements.size();
+                             ++i)
+                        {
+                            if (i > 0)
+                            {
+                                std::cout << ", ";
+                            }
+
+                            printRuntimeValue(result->elements[i]);
+                        }
+
+                        std::cout << "]";
+                    }
+                    else
+                    {
+                        std::cout << result;
+                    }
+                },
+                value);
+        }
+    }
+
     // Expression evaluation
 
     RuntimeValue Interpreter::evaluate(const Expression &expression)
@@ -53,6 +103,71 @@ namespace hurtip
             }
 
             return value;
+        }
+
+        // Array creation
+
+        if (const auto *array =
+                dynamic_cast<const ArrayExpression *>(&expression))
+        {
+            auto result = std::make_shared<ArrayValue>();
+
+            result->elements.reserve(array->elements.size());
+
+            for (const auto &element : array->elements)
+            {
+                result->elements.push_back(evaluate(*element));
+            }
+
+            return result;
+        }
+
+        // Array indexing
+
+        if (const auto *index =
+                dynamic_cast<const IndexExpression *>(&expression))
+        {
+            RuntimeValue object = evaluate(*index->object);
+            RuntimeValue indexValue = evaluate(*index->index);
+
+            const auto *array =
+                std::get_if<std::shared_ptr<ArrayValue>>(&object);
+
+            if (!array || !*array)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(index->line) +
+                    ": Index access requires an array");
+            }
+
+            const auto *number =
+                std::get_if<double>(&indexValue);
+
+            if (!number)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(index->line) +
+                    ": Array index must be a number");
+            }
+
+            if (!std::isfinite(*number) ||
+                *number < 0.0 ||
+                std::floor(*number) != *number)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(index->line) +
+                    ": Array index must be a non-negative integer");
+            }
+
+            if (*number >= static_cast<double>(
+                               (*array)->elements.size()))
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(index->line) +
+                    ": Array index out of range");
+            }
+
+            return (*array)->elements[static_cast<std::size_t>(*number)];
         }
 
         // Member expression
@@ -355,22 +470,7 @@ namespace hurtip
                     RuntimeValue value =
                         evaluate(*expression.arguments[i]);
 
-                    std::visit(
-                        [](const auto &result)
-                        {
-                            using T = std::decay_t<decltype(result)>;
-
-                            if constexpr (std::is_same_v<T, bool>)
-                            {
-                                std::cout
-                                    << (result ? "true" : "false");
-                            }
-                            else
-                            {
-                                std::cout << result;
-                            }
-                        },
-                        value);
+                    printRuntimeValue(value);
 
                     if (i + 1 < expression.arguments.size())
                     {

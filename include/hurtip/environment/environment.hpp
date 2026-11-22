@@ -5,10 +5,22 @@
 #include <string>
 #include <unordered_map>
 #include <variant>
+#include <vector>
 
 namespace hurtip
 {
-    using RuntimeValue = std::variant<std::string, double, bool>;
+    struct ArrayValue;
+
+    using RuntimeValue = std::variant<
+        std::string,
+        double,
+        bool,
+        std::shared_ptr<ArrayValue>>;
+
+    struct ArrayValue
+    {
+        std::vector<RuntimeValue> elements;
+    };
 
     class Environment
     {
