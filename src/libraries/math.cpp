@@ -601,6 +601,206 @@ namespace hurtip
                 return std::atan2(*second, *first);
             });
 
+        functions.emplace(
+            "floor",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 1)
+                {
+                    throw std::runtime_error(
+                        "Function 'floor' expects exactly 1 argument");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                if (!first)
+                {
+                    throw std::runtime_error(
+                        "Function 'floor' expects numeric argument");
+                }
+
+                return std::floor(*first);
+            });
+
+        functions.emplace(
+            "ceil",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 1)
+                {
+                    throw std::runtime_error(
+                        "Function 'ceil' expects exactly 1 argument");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                if (!first)
+                {
+                    throw std::runtime_error(
+                        "Function 'ceil' expects numeric argument");
+                }
+
+                return std::ceil(*first);
+            });
+
+        functions.emplace(
+            "mod",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 2)
+                {
+                    throw std::runtime_error(
+                        "Function 'mod' expects exactly 2 arguments");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                const double *second =
+                    std::get_if<double>(&arguments[1]);
+
+                if (!first || !second)
+                {
+                    throw std::runtime_error(
+                        "Function 'mod' expects numeric arguments");
+                }
+
+                return std::fmod(*first, *second);
+            });
+
+        functions.emplace(
+            "round",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 1)
+                {
+                    throw std::runtime_error(
+                        "Function 'round' expects exactly 1 argument");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                if (!first)
+                {
+                    throw std::runtime_error(
+                        "Function 'round' expects numeric argument");
+                }
+
+                return std::round(*first);
+            });
+        
+        functions.emplace(
+            "trunc",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 1)
+                {
+                    throw std::runtime_error(
+                        "Function 'trunc' expects exactly 1 argument");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                if (!first)
+                {
+                    throw std::runtime_error(
+                        "Function 'trunc' expects numeric argument");
+                }
+
+                return std::trunc(*first);
+            });
+
+        functions.emplace(
+            "hypot",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 2)
+                {
+                    throw std::runtime_error(
+                        "Function 'hypot' expects exactly 2 arguments");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                const double *second =
+                    std::get_if<double>(&arguments[1]);
+
+                if (!first || !second)
+                {
+                    throw std::runtime_error(
+                        "Function 'hypot' expects numeric arguments");
+                }
+
+                return std::hypot(*first, *second);
+            });
+
+        functions.emplace(
+            "logHypot",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 2)
+                {
+                    throw std::runtime_error(
+                        "Function 'logHypot' expects exactly 2 arguments");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                const double *second =
+                    std::get_if<double>(&arguments[1]);
+
+                if (!first || !second)
+                {
+                    throw std::runtime_error(
+                        "Function 'logHypot' expects numeric arguments");
+                }
+
+                return std::log(std::hypot(*first, *second));
+            });
+
+        functions.emplace(
+            "sign",
+            [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue
+            {
+                if (arguments.size() != 1)
+                {
+                    throw std::runtime_error(
+                        "Function 'sign' expects exactly 1 argument");
+                }
+
+                const double *first =
+                    std::get_if<double>(&arguments[0]);
+
+                if (!first)
+                {
+                    throw std::runtime_error(
+                        "Function 'sign' expects numeric argument");
+                }
+
+                 return (*first > 0) ? 1.0 : ((*first < 0) ? -1.0 : 0.0);
+            });
+
+        functions.emplace("PI", [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue {
+            if (arguments.size() != 0) throw std::runtime_error("PI takes no arguments");
+            return 3.14159265358979323846;
+        });
+
+        functions.emplace("E", [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue {
+            if (arguments.size() != 0) throw std::runtime_error("E takes no arguments");
+            return 2.71828182845904523;
+        });
+
+        functions.emplace("PHI", [](const std::vector<RuntimeValue> &arguments) -> RuntimeValue {
+            if (arguments.size() != 0) throw std::runtime_error("PHI takes no arguments");
+            return 1.61803398874989484;
+        });
+    
         interpreter.registerLibrary(
             "math",
             std::move(functions));
