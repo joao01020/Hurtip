@@ -241,5 +241,68 @@ while (outer < 3) {
 
 view("Nested loops finished")
 
+// Arrays
+
+// Criando arrays
+create numbers = [10, 20, 30, 40, 50]
+create names = ["Ana", "João", "Maria"]
+create active_states = [true, false, true]
+
+// Criando um array vazio
+create empty_array = []
+
+// Exibindo arrays completos
+view(numbers)
+view(names)
+view(active_states)
+view(empty_array)
+
+// Acessando elementos por índice
+view(numbers[0])
+view(numbers[1])
+view(numbers[2])
+
+view(names[0])
+view(names[1])
+view(names[2])
+
+view(active_states[0])
+view(active_states[1])
+
+// Arrays com diferentes tipos de valores
+create mixed_array = [10, "Hurtip", true]
+
+view(mixed_array)
+
+// Acessando elementos de um array misto
+view(mixed_array[0])
+view(mixed_array[1])
+view(mixed_array[2])
+
+// Arrays aninhados
+create matrix = [
+    [1, 2],
+    [3, 4],
+    [5, 6]
+]
+
+// Exibindo o array aninhado
+view(matrix)
+
+// Acessando arrays internos
+view(matrix[0])
+view(matrix[1])
+view(matrix[2])
+
+// Acessando elementos de arrays aninhados
+view(matrix[0][0])
+view(matrix[0][1])
+view(matrix[1][0])
+view(matrix[1][1])
+view(matrix[2][0])
+view(matrix[2][1])
+
+view("Arrays finished")
+
 // Finalizando programa
 view("Hello Hurtip!")
