@@ -227,7 +227,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_pop
-    tests/arrays/array_pop_test.hurtip
+    tests/arrays/mutation/array_pop_test.hurtip
     [=[30
 [10, 20]
 2
@@ -237,13 +237,13 @@ add_hurtip_success_test(
 
 add_hurtip_error_test(
     array_pop_empty
-    tests/arrays/array_pop_empty_test.hurtip
+    tests/arrays/mutation/array_pop_empty_test.hurtip
     "Cannot pop from an empty array"
 )
 
 add_hurtip_success_test(
     array_push
-    tests/arrays/array_push_test.hurtip
+    tests/arrays/mutation/array_push_test.hurtip
     [=[[10, 20, 30]
 3
 [Hurtip, 10, true, C++]]=]
@@ -251,7 +251,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_creation
-    tests/arrays/array_creation_test.hurtip
+    tests/arrays/basics/array_creation_test.hurtip
     [=[[10, 20, 30]
 [Ana, João, Maria]
 []]=]
@@ -259,7 +259,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_mixed
-    tests/arrays/array_mixed_test.hurtip
+    tests/arrays/basics/array_mixed_test.hurtip
     [=[[10, Hurtip, true, false]
 10
 Hurtip
@@ -269,7 +269,7 @@ false]=]
 
 add_hurtip_success_test(
     array_nested
-    tests/arrays/array_nested_test.hurtip
+    tests/arrays/basics/array_nested_test.hurtip
     [=[[[1, 2], [3, 4]]
 [1, 2]
 [3, 4]
@@ -279,14 +279,14 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_assignment
-    tests/arrays/array_assignment_test.hurtip
+    tests/arrays/basics/array_assignment_test.hurtip
     [=[[100, 20, 30]
 [[1, 99], [3, 4]]]=]
 )
 
 add_hurtip_success_test(
     array_length
-    tests/arrays/array_length_test.hurtip
+    tests/arrays/basics/array_length_test.hurtip
     [=[3
 0
 2
@@ -295,7 +295,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_remove
-    tests/arrays/array_remove_test.hurtip
+    tests/arrays/mutation/array_remove_test.hurtip
     [=[20
 [10, 30, 40]
 3
@@ -305,37 +305,37 @@ Hurtip
 
 add_hurtip_error_test(
     array_remove_invalid
-    tests/arrays/array_remove_invalid_test.hurtip
+    tests/arrays/mutation/array_remove_invalid_test.hurtip
     "Array remove index out of range"
 )
 
 add_hurtip_error_test(
     array_negative_index
-    tests/arrays/array_negative_index_test.hurtip
+    tests/arrays/indexing/array_negative_index_test.hurtip
     "Array index must be a non-negative integer"
 )
 
 add_hurtip_error_test(
     array_fractional_index
-    tests/arrays/array_fractional_index_test.hurtip
+    tests/arrays/indexing/array_fractional_index_test.hurtip
     "Array index must be a non-negative integer"
 )
 
 add_hurtip_error_test(
     array_out_of_range
-    tests/arrays/array_out_of_range_test.hurtip
+    tests/arrays/indexing/array_out_of_range_test.hurtip
     "Array index out of range"
 )
 
 add_hurtip_error_test(
     array_invalid_object
-    tests/arrays/array_invalid_object_test.hurtip
+    tests/arrays/indexing/array_invalid_object_test.hurtip
     "Index access requires an array"
 )
 
 add_hurtip_success_test(
     array_insert
-    tests/arrays/array_insert_test.hurtip
+    tests/arrays/mutation/array_insert_test.hurtip
     [=[4
 [10, 20, 30, 40]
 [5, 10, 20, 30, 40, 50]
@@ -346,25 +346,25 @@ add_hurtip_success_test(
 
 add_hurtip_error_test(
     array_insert_invalid
-    tests/arrays/array_insert_invalid_test.hurtip
+    tests/arrays/mutation/array_insert_invalid_test.hurtip
     "Array insert index out of range"
 )
 
 add_hurtip_error_test(
     array_insert_negative
-    tests/arrays/array_insert_negative_test.hurtip
+    tests/arrays/mutation/array_insert_negative_test.hurtip
     "Array insert index must be a non-negative integer"
 )
 
 add_hurtip_error_test(
     array_insert_arguments
-    tests/arrays/array_insert_arguments_test.hurtip
+    tests/arrays/mutation/array_insert_arguments_test.hurtip
     "Array method 'insert' expects exactly 2 arguments"
 )
 
 add_hurtip_success_test(
     array_contains
-    tests/arrays/array_contains_test.hurtip
+    tests/arrays/search/array_contains_test.hurtip
     [=[true
 true
 false
@@ -377,7 +377,7 @@ false]=]
 
 add_hurtip_success_test(
     array_index_of
-    tests/arrays/array_index_of_test.hurtip
+    tests/arrays/search/array_index_of_test.hurtip
     [=[0
 1
 2
@@ -389,7 +389,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_clear
-    tests/arrays/array_clear_test.hurtip
+    tests/arrays/mutation/array_clear_test.hurtip
     [=[0
 []
 0
@@ -400,7 +400,7 @@ add_hurtip_success_test(
 
 add_hurtip_success_test(
     array_reverse
-    tests/arrays/array_reverse_test.hurtip
+    tests/arrays/mutation/array_reverse_test.hurtip
     [=[[40, 30, 20, 10]
 [40, 30, 20, 10]
 [true, 10, Hurtip]
@@ -411,25 +411,25 @@ add_hurtip_success_test(
 
 add_hurtip_error_test(
     array_contains_arguments
-    tests/arrays/array_contains_arguments_test.hurtip
+    tests/arrays/search/array_contains_arguments_test.hurtip
     "Array method 'contains' expects exactly 1 argument"
 )
 
 add_hurtip_error_test(
     array_index_of_arguments
-    tests/arrays/array_index_of_arguments_test.hurtip
+    tests/arrays/search/array_index_of_arguments_test.hurtip
     "Array method 'indexOf' expects exactly 1 argument"
 )
 
 add_hurtip_error_test(
     array_clear_arguments
-    tests/arrays/array_clear_arguments_test.hurtip
+    tests/arrays/mutation/array_clear_arguments_test.hurtip
     "Array method 'clear' expects no arguments"
 )
 
 add_hurtip_error_test(
     array_reverse_arguments
-    tests/arrays/array_reverse_arguments_test.hurtip
+    tests/arrays/mutation/array_reverse_arguments_test.hurtip
     "Array method 'reverse' expects no arguments"
 )
 
