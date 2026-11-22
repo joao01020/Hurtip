@@ -1,0 +1,12 @@
+create numbers = [10, 20]
+
+numbers.push(30)
+
+view(numbers)
+view(numbers.length)
+
+create mixed = ["Hurtip", 10, true]
+
+mixed.push("C++")
+
+view(mixed)

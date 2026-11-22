@@ -537,12 +537,200 @@ namespace hurtip
             }
         }
 
-        // Qualified function call: namespace.function()
+        // Qualified function call or array method
 
         else if (const auto *member =
                      dynamic_cast<const MemberExpression *>(
                          expression.callee.get()))
         {
+            functionName = member->member;
+
+            // Check whether the member object is an array.
+
+            RuntimeValue objectValue;
+            bool objectExists = false;
+
+            if (const auto *identifier =
+                    dynamic_cast<const IdentifierExpression *>(
+                        member->object.get()))
+            {
+                objectExists =
+                    currentEnvironment->get(
+                        identifier->name,
+                        objectValue);
+            }
+            else
+            {
+                objectValue = evaluate(*member->object);
+                objectExists = true;
+            }
+
+            if (objectExists)
+            {
+                const auto *array =
+                    std::get_if<std::shared_ptr<ArrayValue>>(
+                        &objectValue);
+
+                if (array)
+                {
+                    if (!*array)
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(expression.line) +
+                            ": Cannot call array methods on an invalid array");
+                    }
+
+                    // Array method: push
+
+                    if (functionName == "push")
+                    {
+                        if (expression.arguments.size() != 1)
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array method 'push' expects exactly 1 argument");
+                        }
+
+                        RuntimeValue value =
+                            evaluate(*expression.arguments[0]);
+
+                        (*array)->elements.push_back(
+                            std::move(value));
+
+                        return static_cast<double>(
+                            (*array)->elements.size());
+                    }
+
+                    // Array method: pop
+
+                    if (functionName == "pop")
+                    {
+                        if (!expression.arguments.empty())
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array method 'pop' expects no arguments");
+                        }
+
+                        if ((*array)->elements.empty())
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Cannot pop from an empty array");
+                        }
+
+                        RuntimeValue value =
+                            std::move((*array)->elements.back());
+
+                        (*array)->elements.pop_back();
+
+                        return value;
+                    }
+
+                    // Array method: remove
+
+                    if (functionName == "remove")
+                    {
+                        if (expression.arguments.size() != 1)
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array method 'remove' expects exactly 1 argument");
+                        }
+
+                        RuntimeValue indexValue =
+                            evaluate(*expression.arguments[0]);
+
+                        const double *number =
+                            std::get_if<double>(&indexValue);
+
+                        if (!number ||
+                            !std::isfinite(*number) ||
+                            *number < 0.0 ||
+                            std::floor(*number) != *number)
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array remove index must be a non-negative integer");
+                        }
+
+                        if (*number >= static_cast<double>(
+                                           (*array)->elements.size()))
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array remove index out of range");
+                        }
+
+                        const std::size_t index =
+                            static_cast<std::size_t>(*number);
+
+                        RuntimeValue removed =
+                            std::move((*array)->elements[index]);
+
+                        (*array)->elements.erase(
+                            (*array)->elements.begin() + index);
+
+                        return removed;
+                    }
+
+                    // Array method: insert
+
+                    if (functionName == "insert")
+                    {
+                        if (expression.arguments.size() != 2)
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array method 'insert' expects exactly 2 arguments");
+                        }
+
+                        RuntimeValue indexValue =
+                            evaluate(*expression.arguments[0]);
+
+                        const double *number =
+                            std::get_if<double>(&indexValue);
+
+                        if (!number ||
+                            !std::isfinite(*number) ||
+                            *number < 0.0 ||
+                            std::floor(*number) != *number)
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array insert index must be a non-negative integer");
+                        }
+
+                        if (*number > static_cast<double>(
+                                          (*array)->elements.size()))
+                        {
+                            throw std::runtime_error(
+                                "Line " + std::to_string(expression.line) +
+                                ": Array insert index out of range");
+                        }
+
+                        const std::size_t index =
+                            static_cast<std::size_t>(*number);
+
+                        RuntimeValue value =
+                            evaluate(*expression.arguments[1]);
+
+                        (*array)->elements.insert(
+                            (*array)->elements.begin() + index,
+                            std::move(value));
+
+                        return static_cast<double>(
+                            (*array)->elements.size());
+                    }
+
+                    throw std::runtime_error(
+                        "Line " + std::to_string(expression.line) +
+                        ": Unknown array method: " + functionName);
+                }
+            }
+
+            // Existing namespace function call.
+
             const auto *object =
                 dynamic_cast<const IdentifierExpression *>(
                     member->object.get());
@@ -555,7 +743,6 @@ namespace hurtip
             }
 
             targetNamespace = object->name;
-            functionName = member->member;
 
             // Check imported native libraries first.
 

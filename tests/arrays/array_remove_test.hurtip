@@ -1,0 +1,12 @@
+create numbers = [10, 20, 30, 40]
+
+create removed = numbers.remove(1)
+
+view(removed)
+view(numbers)
+view(numbers.length)
+
+create mixed = ["Hurtip", true, 42]
+
+view(mixed.remove(0))
+view(mixed)

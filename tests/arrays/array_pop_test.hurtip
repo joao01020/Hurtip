@@ -1,0 +1,12 @@
+create numbers = [10, 20, 30]
+
+create removed = numbers.pop()
+
+view(removed)
+view(numbers)
+view(numbers.length)
+
+create mixed = ["Hurtip", true, 42]
+
+view(mixed.pop())
+view(mixed)

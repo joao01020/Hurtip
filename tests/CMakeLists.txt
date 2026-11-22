@@ -1,5 +1,5 @@
 
-# Testes automatizados da Hurtip
+# Automated Hurtip tests
 
 set(HURTIP_TEST_RUNNER
     "${CMAKE_CURRENT_SOURCE_DIR}/run_test.cmake"
@@ -224,8 +224,31 @@ add_hurtip_success_test(
 3]=]
 )
 
-
 # Arrays
+
+add_hurtip_success_test(
+    array_pop
+    tests/arrays/array_pop_test.hurtip
+    [=[30
+[10, 20]
+2
+42
+[Hurtip, true]]=]
+)
+
+add_hurtip_error_test(
+    array_pop_empty
+    tests/arrays/array_pop_empty_test.hurtip
+    "Cannot pop from an empty array"
+)
+
+add_hurtip_success_test(
+    array_push
+    tests/arrays/array_push_test.hurtip
+    [=[[10, 20, 30]
+3
+[Hurtip, 10, true, C++]]=]
+)
 
 add_hurtip_success_test(
     array_creation
@@ -271,6 +294,22 @@ add_hurtip_success_test(
 2]=]
 )
 
+add_hurtip_success_test(
+    array_remove
+    tests/arrays/array_remove_test.hurtip
+    [=[20
+[10, 30, 40]
+3
+Hurtip
+[true, 42]]=]
+)
+
+add_hurtip_error_test(
+    array_remove_invalid
+    tests/arrays/array_remove_invalid_test.hurtip
+    "Array remove index out of range"
+)
+
 add_hurtip_error_test(
     array_negative_index
     tests/arrays/array_negative_index_test.hurtip
@@ -296,6 +335,34 @@ add_hurtip_error_test(
 )
 
 
+add_hurtip_success_test(
+    array_insert
+    tests/arrays/array_insert_test.hurtip
+    [=[4
+[10, 20, 30, 40]
+[5, 10, 20, 30, 40, 50]
+1
+[Hurtip]
+[10, Hello, true]]=]
+)
+
+add_hurtip_error_test(
+    array_insert_invalid
+    tests/arrays/array_insert_invalid_test.hurtip
+    "Array insert index out of range"
+)
+
+add_hurtip_error_test(
+    array_insert_negative
+    tests/arrays/array_insert_negative_test.hurtip
+    "Array insert index must be a non-negative integer"
+)
+
+add_hurtip_error_test(
+    array_insert_arguments
+    tests/arrays/array_insert_arguments_test.hurtip
+    "Array method 'insert' expects exactly 2 arguments"
+)
 
 # Lexer unit tests
 

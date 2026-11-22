@@ -1,0 +1,20 @@
+create numbers = [10, 30, 40]
+
+view(numbers.insert(1, 20))
+view(numbers)
+
+numbers.insert(0, 5)
+numbers.insert(numbers.length, 50)
+
+view(numbers)
+
+create empty = []
+
+view(empty.insert(0, "Hurtip"))
+view(empty)
+
+create mixed = [10, true]
+
+mixed.insert(1, "Hello")
+
+view(mixed)
