@@ -52,6 +52,9 @@
 - [x] Recursividade
 - [x] Isolamento de variáveis locais entre chamadas
 - [ ] Closures
+
+### Arrays
+
 - [x] Estrutura inicial de arrays no runtime
 - [x] Criação de arrays
 - [x] Arrays vazios
@@ -62,14 +65,19 @@
 - [x] Arrays aninhados
 - [x] Acesso a elementos por índice
 - [x] Acesso encadeado a elementos de arrays aninhados
+- [x] Atribuição e modificação de elementos por índice
+- [x] Modificação de elementos em arrays aninhados
 - [x] Exibição de arrays com `view()`
-- [ ] Atribuição e modificação de elementos por índice
-- [ ] Propriedade `length`
+- [x] Propriedade `length`
+- [x] Validação de índices negativos
+- [x] Validação de índices fracionários
+- [x] Validação de índices fora dos limites
+- [x] Validação de objetos que não são arrays
 - [ ] Métodos de manipulação (`push`, `pop`, `remove`, `contains`)
 - [ ] Iteração de arrays com `for`
 - [ ] Concatenação de arrays
 - [ ] Comparação estrutural de arrays
-- [ ] Definição da semântica de cópia e referência
+- [ ] Definição formal da semântica de cópia e referência
 - [ ] Estruturas de dados adicionais
 
 ## Sistema de módulos
@@ -121,6 +129,7 @@
 - [x] Detecção de operadores inválidos em expressões
 - [x] Validação de lista de tokens vazia
 - [x] Validação da presença do token `EndOfFile`
+- [x] Reconhecimento de números decimais no Lexer
 - [ ] Mensagens padronizadas para fim de linha e fim de arquivo
 - [x] Testes de erros léxicos
 - [x] Testes de erros sintáticos
@@ -148,17 +157,22 @@
 - [x] Testes unitários do Lexer
 - [x] Testes unitários do Parser
 - [x] 40 verificações unitárias do Parser aprovadas
-- [x] 29 testes registrados e aprovados pelo CTest
+- [x] 38 testes registrados no CTest, considerando os 29 anteriores e os 9 novos
+      testes de arrays
 - [x] Testes de importação de bibliotecas nativas
 - [x] Testes de importação com alias
 - [x] Testes de bibliotecas e funções inexistentes
 - [x] Testes de argumentos e tipos inválidos em funções nativas
-- [ ] Testes unitários de criação de arrays
-- [ ] Testes de acesso por índice
-- [ ] Testes de arrays aninhados
-- [ ] Testes de índices inválidos e fora dos limites
-- [ ] Testes de atribuição e modificação de elementos
-- [ ] Testes de regressão para arrays
+- [x] Testes automatizados de criação de arrays
+- [x] Testes de arrays numéricos, strings e valores mistos
+- [x] Testes de arrays aninhados
+- [x] Testes de acesso por índice
+- [x] Testes de atribuição e modificação de elementos
+- [x] Testes da propriedade `length`
+- [x] Testes de índices negativos e fracionários
+- [x] Testes de índices fora dos limites
+- [x] Testes de acesso a objetos que não são arrays
+- [x] Testes de regressão para arrays
 
 ## Biblioteca e ferramentas
 
@@ -187,9 +201,9 @@
 - `[x]` Implementado e validado conforme o estágio indicado.
 - `[ ]` Pendente de implementação ou validação.
 
-**Observação:** os recursos iniciais de arrays já foram adicionados ao código,
-mas ainda precisam de testes automatizados específicos. Por isso, sua
-implementação não deve ser confundida com validação completa.
+**Observação:** os itens marcados como implementados representam os recursos que
+já foram desenvolvidos e testados no estágio atual. Isso não significa que todas
+as suas possíveis aplicações e situações extremas já foram validadas.
 
 ## Estado atual
 
@@ -209,16 +223,20 @@ A arquitetura de registro das bibliotecas foi centralizada em
 cada biblioteca.
 
 O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
-integrada ao CTest. Atualmente, são **40 verificações unitárias do Parser e 29
-testes registrados no CTest**, todos aprovados na última execução.
+integrada ao CTest. São 40 verificações unitárias do Parser e 38 testes
+registrados no CTest, considerando a suíte anterior e os nove novos testes de
+arrays. Na última execução informada, todos os testes passaram.
 
 ### Arrays: estágio atual
 
-A Hurtip já possui uma implementação inicial de arrays no AST, Parser e runtime.
+A Hurtip já possui uma implementação funcional de arrays integrada ao AST,
+Parser e runtime.
 
 É possível criar arrays vazios, numéricos, de strings, booleanos, mistos e
-aninhados. Também é possível acessar elementos por índice, inclusive em
-estruturas aninhadas, e exibir arrays completos com `view()`.
+aninhados. Também é possível acessar elementos por índice, modificar seus
+valores, acessar estruturas aninhadas e exibir arrays completos com `view()`.
+
+A propriedade `length` permite consultar a quantidade de elementos de um array.
 
 Exemplo:
 
@@ -227,6 +245,7 @@ create numbers = [10, 20, 30, 40]
 
 view(numbers)
 view(numbers[0])
+view(numbers.length)
 
 create matrix = [
     [1, 2],
@@ -236,8 +255,7 @@ create matrix = [
 view(matrix[1][0])
 ```
 
-O próximo avanço será implementar a modificação de elementos por índice,
-permitindo operações como:
+Também é possível modificar elementos diretamente por índice:
 
 ```hurtip
 create numbers = [10, 20, 30]
@@ -247,21 +265,39 @@ numbers[0] = 50
 view(numbers)
 ```
 
-Depois disso, serão desenvolvidos o tamanho dos arrays, os métodos de
-manipulação e a iteração com `for`.
+O sistema já possui validações para índices negativos, fracionários, fora dos
+limites e tentativas de acessar elementos em objetos que não são arrays.
 
-### Foco atual do desenvolvimento
+Foram adicionados nove testes automatizados específicos para arrays, cobrindo
+criação, tipos mistos, estruturas aninhadas, atribuição, tamanho e situações de
+erro.
+
+O próximo avanço será desenvolver os métodos de manipulação:
+
+- `push()` — adicionar elementos ao final.
+- `pop()` — remover e retornar o último elemento.
+- `remove()` — remover um elemento pelo índice.
+- `contains()` — verificar se determinado valor está presente.
+
+Depois disso, a evolução poderá avançar para concatenação, comparação estrutural
+e iteração com `for`.
+
+## Foco atual do desenvolvimento
 
 O próximo objetivo é fortalecer a confiabilidade do sistema de importação,
 especialmente a prevenção de conflitos entre aliases de módulos e bibliotecas
 nativas.
 
-Na evolução dos arrays, o próximo passo técnico é implementar a atribuição por
-índice, incluindo a modificação de arrays aninhados.
+Na evolução dos arrays, o próximo passo será implementar os métodos de
+manipulação (`push`, `pop`, `remove` e `contains`), mantendo a validação de
+tipos e índices e adicionando testes automatizados para cada operação.
 
-Depois disso, o desenvolvimento poderá avançar na expansão da biblioteca padrão,
-na API para bibliotecas externas e no fortalecimento dos diagnósticos e testes
-de resistência.
+Em seguida, o desenvolvimento poderá avançar para a implementação de `for`,
+permitindo percorrer arrays e outras estruturas iteráveis.
+
+Outros objetivos importantes são a expansão da biblioteca padrão, a API para
+bibliotecas externas e o fortalecimento dos diagnósticos e testes de
+resistência.
 
 Os recursos avançados de baixo nível e suporte a microcontroladores continuam
 fazendo parte da visão de longo prazo da Hurtip.

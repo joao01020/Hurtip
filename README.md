@@ -142,7 +142,7 @@ view("Language:", "Hurtip", "Version:", 1)
 | Tipo     | Exemplo        | Representação interna         |
 | -------- | -------------- | ----------------------------- |
 | Texto    | `"Hurtip"`     | `std::string`                 |
-| Número   | `24`           | `double`                      |
+| Número   | `24` ou `1.5`  | `double`                      |
 | Booleano | `true`         | `bool`                        |
 | Array    | `[10, 20, 30]` | `std::shared_ptr<ArrayValue>` |
 
@@ -161,9 +161,8 @@ Os arrays utilizam uma estrutura própria chamada `ArrayValue`, que armazena uma
 coleção de valores `RuntimeValue`. Isso permite representar arrays com
 diferentes tipos de elementos e também arrays aninhados.
 
-**Observação:** o runtime utiliza `double` para representar números, mas a
-sintaxe numérica atual do Lexer ainda reconhece apenas números inteiros. O
-suporte a literais decimais ainda não foi implementado.
+**Observação:** o runtime utiliza `double` para representar números. O Lexer
+reconhece números inteiros e decimais, como `10`, `1.5` e `100.25`.
 
 ### Comentários
 
@@ -208,6 +207,21 @@ view(subtraction)
 view(multiplication)
 view(division)
 ```
+
+### Números decimais
+
+O Lexer reconhece números com parte decimal.
+
+```hurtip
+create price = 19.90
+create tax = 2.50
+
+create total = price + tax
+
+view(total)
+```
+
+Os números inteiros e decimais utilizam o tipo interno `double`.
 
 ### Precedência matemática
 
@@ -612,11 +626,12 @@ recursos de um modelo lexical completo.
 
 ## 7. Arrays
 
-A Hurtip possui uma implementação inicial de arrays, permitindo armazenar
+A Hurtip possui uma implementação funcional de arrays, permitindo armazenar
 coleções de valores em uma única variável.
 
 Os arrays podem conter números, textos, booleanos e diferentes tipos de valores
-na mesma estrutura.
+na mesma estrutura. Também podem armazenar outros arrays, permitindo criar
+estruturas aninhadas.
 
 ### Criação de arrays
 
@@ -640,7 +655,7 @@ create empty_array = []
 A implementação permite armazenar valores de diferentes tipos em um mesmo array.
 
 ```hurtip
-create mixed = [10, "Hurtip", true]
+create mixed = [10, "Hurtip", true, false]
 
 view(mixed)
 ```
@@ -657,6 +672,37 @@ create numbers = [10, 20, 30]
 view(numbers[0])
 view(numbers[1])
 view(numbers[2])
+```
+
+### Atribuição por índice
+
+É possível modificar diretamente o valor de um elemento utilizando seu índice.
+
+```hurtip
+create numbers = [10, 20, 30]
+
+numbers[0] = 50
+
+view(numbers)
+```
+
+Resultado:
+
+```text
+[50, 20, 30]
+```
+
+Essa funcionalidade também permite modificar elementos de arrays aninhados.
+
+```hurtip
+create matrix = [
+    [1, 2],
+    [3, 4]
+]
+
+matrix[1][0] = 99
+
+view(matrix)
 ```
 
 ### Arrays aninhados
@@ -687,6 +733,34 @@ view(matrix[1][0])
 view(matrix[1][1])
 ```
 
+### Propriedade length
+
+A propriedade `length` permite consultar a quantidade de elementos armazenados
+em um array.
+
+```hurtip
+create numbers = [10, 20, 30, 40]
+
+view(numbers.length)
+```
+
+Resultado:
+
+```text
+4
+```
+
+Também funciona com arrays vazios e arrays aninhados:
+
+```hurtip
+create empty = []
+create matrix = [[1, 2], [3, 4]]
+
+view(empty.length)
+view(matrix.length)
+view(matrix[0].length)
+```
+
 ### Exibição de arrays
 
 A função `view()` permite exibir um array completo, incluindo estruturas
@@ -699,6 +773,18 @@ create matrix = [[1, 2], [3, 4]]
 view(numbers)
 view(matrix)
 ```
+
+### Validação de índices
+
+O interpretador verifica se o acesso ao array utiliza um índice válido.
+
+Atualmente, são tratados casos como:
+
+- Índices negativos.
+- Índices fracionários.
+- Índices fora dos limites do array.
+- Tentativas de acessar índices em valores que não são arrays.
+- Índices que não são numéricos.
 
 ### Recursos de arrays
 
@@ -714,28 +800,27 @@ view(matrix)
 | Arrays aninhados                                     | Implementados     |
 | Acesso por índice                                    | Implementado      |
 | Acesso encadeado                                     | Implementado      |
+| Atribuição por índice                                | Implementada      |
+| Modificação de arrays aninhados                      | Implementada      |
+| Propriedade `length`                                 | Implementada      |
 | Exibição com `view()`                                | Implementada      |
-| Atribuição por índice                                | Não implementada  |
-| Propriedade `length`                                 | Não implementada  |
+| Validação de índices                                 | Implementada      |
 | Métodos `push()`, `pop()`, `remove()` e `contains()` | Não implementados |
 | Iteração com `for`                                   | Não implementada  |
 | Concatenação de arrays                               | Não implementada  |
 | Comparação estrutural                                | Não implementada  |
 
-**Limitação atual:** os arrays podem ser criados, consultados e exibidos, mas
-ainda não é possível modificar individualmente seus elementos por índice.
+### Próximas funcionalidades
 
-O próximo passo é permitir operações como:
+Os próximos recursos planejados para arrays são:
 
-```hurtip
-create numbers = [10, 20, 30]
-
-numbers[0] = 50
-
-view(numbers)
-```
-
-Esse comportamento ainda está em desenvolvimento.
+- `push()` — adicionar elementos ao final.
+- `pop()` — remover e retornar o último elemento.
+- `remove()` — remover um elemento pelo índice.
+- `contains()` — verificar se determinado valor está presente.
+- Concatenação de arrays.
+- Comparação estrutural.
+- Iteração com `for`.
 
 ---
 
@@ -757,17 +842,22 @@ mantendo cada parte organizada e reutilizável.
 Exemplo:
 
 ```hurtip
-load "modules/math.hurtip" as math
+load "modules/greeting.hurtip"
 
-view(math.sum(10, 20))
-view(math.doubleSum(10, 20))
+view("O módulo foi carregado com sucesso!")
+view("Programa finalizado.")
 ```
-
-Nesse modelo, o arquivo carregado pertence ao próprio projeto e também utiliza a
-sintaxe da Hurtip.
 
 O alias `as` permite associar um nome ao módulo, possibilitando acessar suas
 funções por meio de um namespace.
+
+Exemplo:
+
+```hurtip
+load "modules/math.hurtip" as math
+
+view(math.sum(10, 20))
+```
 
 ### Recursos de `load` implementados
 
@@ -945,7 +1035,8 @@ create name = "Hurtip"
 | Estrutura do código      | `NewLine`, `EndOfFile`                                                                                                                  |
 | Controle de fluxo        | `Break`, `Continue`, `Return`                                                                                                           |
 
-O Lexer também reconhece comentários de linha iniciados por `//`.
+O Lexer também reconhece comentários de linha iniciados por `//` e números
+decimais.
 
 #### Rastreamento de posição
 
@@ -992,6 +1083,7 @@ Atualmente, o Parser possui suporte para:
 - Vírgula final opcional em arrays.
 - Acesso a elementos por índice.
 - Acesso encadeado a arrays aninhados.
+- Atribuição a elementos indexados.
 
 O Parser possui mecanismos de diagnóstico que identificam diferentes estruturas
 sintáticas inválidas, mas ainda existem situações que precisam de tratamento
@@ -1034,10 +1126,14 @@ Atualmente, ele consegue:
 - Armazenar e recuperar valores.
 - Atualizar variáveis existentes.
 - Trabalhar com strings, números e booleanos.
+- Avaliar números inteiros e decimais.
 - Criar arrays em tempo de execução.
 - Armazenar valores de diferentes tipos em arrays.
 - Criar arrays aninhados.
 - Avaliar acesso a elementos por índice.
+- Modificar elementos por índice.
+- Modificar elementos de arrays aninhados.
+- Consultar a propriedade `length`.
 - Validar o tipo do objeto acessado.
 - Validar índices numéricos, inteiros e não negativos.
 - Verificar os limites dos arrays.
@@ -1159,8 +1255,8 @@ O sistema de importação de bibliotecas nativas também apresenta mensagens
 específicas para bibliotecas inexistentes, funções não registradas e argumentos
 inválidos.
 
-O acesso a arrays também possui validações iniciais para objetos que não são
-arrays, índices inválidos e posições fora dos limites.
+O acesso a arrays possui validações para objetos que não são arrays, índices
+inválidos e posições fora dos limites.
 
 ---
 
@@ -1175,6 +1271,17 @@ separando programas demonstrativos dos testes de comportamento.
 tests/
 ├── CMakeLists.txt
 ├── run_test.cmake
+│
+├── arrays/
+│   ├── array_assignment_test.hurtip
+│   ├── array_creation_test.hurtip
+│   ├── array_fractional_index_test.hurtip
+│   ├── array_invalid_object_test.hurtip
+│   ├── array_length_test.hurtip
+│   ├── array_mixed_test.hurtip
+│   ├── array_negative_index_test.hurtip
+│   ├── array_nested_test.hurtip
+│   └── array_out_of_range_test.hurtip
 │
 ├── environment/
 │   └── environment_test.hurtip
@@ -1246,9 +1353,13 @@ Foram executados testes para verificar:
 - Expressões e operadores inválidos.
 - Erros léxicos.
 - Validação de entradas recebidas pelo Parser.
-
-A implementação inicial de arrays já foi adicionada, mas ainda precisa de uma
-categoria própria de testes automatizados.
+- Criação de arrays.
+- Arrays com tipos diferentes.
+- Arrays aninhados.
+- Acesso e atribuição por índice.
+- Propriedade `length`.
+- Índices inválidos e fora dos limites.
+- Tentativas de indexação de objetos que não são arrays.
 
 ### Testes unitários
 
@@ -1275,38 +1386,39 @@ endif()
 O arquivo `tests/CMakeLists.txt` cadastra os testes de integração e os
 executáveis de testes unitários.
 
+### Testes de arrays
+
+Foram adicionados nove testes automatizados específicos:
+
+| Teste                    | Validação                           |
+| ------------------------ | ----------------------------------- |
+| `array_creation`         | Criação de arrays                   |
+| `array_mixed`            | Elementos de diferentes tipos       |
+| `array_nested`           | Arrays aninhados e acesso encadeado |
+| `array_assignment`       | Modificação de elementos            |
+| `array_length`           | Propriedade `length`                |
+| `array_negative_index`   | Índice negativo                     |
+| `array_fractional_index` | Índice fracionário                  |
+| `array_out_of_range`     | Índice fora dos limites             |
+| `array_invalid_object`   | Acesso a objeto que não é array     |
+
 ### Resultado mais recente confirmado
 
-| Categoria                        |       Testes |
-| -------------------------------- | -----------: |
-| Testes de integração `.hurtip`   |           27 |
-| Teste unitário do Lexer          | 1 executável |
-| Teste unitário do Parser         | 1 executável |
-| Total registrado no CTest        |           29 |
-| Verificações unitárias do Lexer  |           13 |
-| Verificações unitárias do Parser |           40 |
+Na última execução informada pelo usuário, todos os testes da suíte passaram,
+incluindo os testes específicos de arrays.
 
-**Último resultado confirmado:**
-
-```text
-100% tests passed, 0 tests failed out of 29
-```
+O projeto possuía 29 testes registrados antes da inclusão dos nove testes de
+arrays. Com a inclusão desses novos casos, a suíte passou a ter 38 testes
+registrados, considerando que os demais registros permaneceram inalterados.
 
 Os 40 testes do Parser são verificações internas de um único executável
 registrado no CTest, e não 40 testes CTest independentes.
 
-### Próximos testes de arrays
+**Resultado da execução completa informado:**
 
-- Testes unitários de criação de arrays.
-- Testes de arrays vazios.
-- Testes de arrays com tipos diferentes.
-- Testes de arrays aninhados.
-- Testes de acesso por índice.
-- Testes de acesso encadeado.
-- Testes de índices inválidos e fora dos limites.
-- Testes de exibição recursiva.
-- Testes de atribuição e modificação de elementos.
-- Testes de regressão para arrays.
+```text
+Todos os testes passaram.
+```
 
 ### Executar os testes
 
@@ -1314,6 +1426,12 @@ Para executar toda a suíte:
 
 ```bash
 ctest --test-dir build --output-on-failure
+```
+
+Para executar os testes de arrays:
+
+```bash
+ctest --test-dir build -R array --output-on-failure
 ```
 
 Para executar os testes unitários individualmente:
@@ -1462,6 +1580,7 @@ Hurtip/
 ├── tests/
 │   ├── CMakeLists.txt
 │   ├── run_test.cmake
+│   ├── arrays/
 │   ├── environment/
 │   ├── functions/
 │   ├── import/
@@ -1514,7 +1633,7 @@ as instruções presentes nele.
 Para executar um arquivo de teste manualmente:
 
 ```bash
-./build/hurtip tests/functions/recursion_test.hurtip
+./build/hurtip tests/arrays/array_creation_test.hurtip
 ```
 
 Para executar toda a suíte automatizada:
@@ -1531,8 +1650,8 @@ A Hurtip possui um núcleo funcional implementado em C++17, com Lexer, Parser,
 AST e Interpreter integrados.
 
 A linguagem oferece suporte a variáveis, expressões, operadores aritméticos,
-comparações, lógica, estruturas condicionais, loops, funções, parâmetros,
-retornos, recursividade e escopos.
+números decimais, comparações, lógica, estruturas condicionais, loops, funções,
+parâmetros, retornos, recursividade e escopos.
 
 O sistema de módulos permite carregar arquivos `.hurtip` com `load`, utilizar
 aliases e acessar funções por namespace.
@@ -1546,8 +1665,8 @@ registro separado do ponto de entrada da aplicação.
 
 ### Arrays: estágio atual
 
-A Hurtip já possui uma implementação inicial de arrays distribuída entre AST,
-Parser, Environment e Interpreter.
+A Hurtip já possui uma implementação funcional de arrays integrada ao AST,
+Parser e runtime.
 
 Atualmente, é possível:
 
@@ -1557,12 +1676,26 @@ Atualmente, é possível:
 - Criar arrays aninhados.
 - Acessar elementos por índice.
 - Acessar elementos de arrays aninhados com índices encadeados.
+- Modificar elementos por índice.
+- Modificar elementos de arrays aninhados.
+- Consultar a quantidade de elementos com `length`.
 - Exibir arrays completos com `view()`.
 
-O próximo passo é implementar a atribuição por índice, permitindo modificar
-elementos individuais e também elementos de arrays aninhados.
+O sistema também possui validações para índices negativos, fracionários, fora
+dos limites e tentativas de acessar elementos em objetos que não são arrays.
 
-Depois disso, serão desenvolvidos recursos como `length`, métodos de manipulação
+Foram adicionados nove testes automatizados específicos para arrays, cobrindo
+criação, tipos mistos, estruturas aninhadas, atribuição, tamanho e situações de
+erro.
+
+O próximo passo será implementar os métodos de manipulação:
+
+- `push()` — adicionar elementos ao final.
+- `pop()` — remover e retornar o último elemento.
+- `remove()` — remover um elemento pelo índice.
+- `contains()` — verificar se determinado valor está presente.
+
+Depois disso, a evolução poderá avançar para concatenação, comparação estrutural
 e iteração com `for`.
 
 ### Componentes principais
@@ -1572,6 +1705,7 @@ e iteração com `for`.
 | Lexer                                     | Implementado  |
 | Reconhecimento de palavras reservadas     | Implementado  |
 | Reconhecimento de operadores              | Implementado  |
+| Reconhecimento de números decimais        | Implementado  |
 | Rastreamento de linha e coluna dos tokens | Implementado  |
 | Parser                                    | Implementado  |
 | AST                                       | Implementada  |
@@ -1587,7 +1721,10 @@ e iteração com `for`.
 | Recursividade                             | Implementada  |
 | Escopos                                   | Implementados |
 | Criação e leitura de arrays               | Implementadas |
+| Modificação de elementos por índice       | Implementada  |
 | Arrays aninhados                          | Implementados |
+| Propriedade `length`                      | Implementada  |
+| Métodos de manipulação de arrays          | Pendentes     |
 | Sistema de módulos                        | Implementado  |
 | `load` de arquivos `.hurtip`              | Implementado  |
 | `import` de bibliotecas nativas           | Implementado  |
