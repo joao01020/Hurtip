@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "hurtip/token.hpp"
@@ -120,6 +121,21 @@ namespace hurtip
     struct GroupingExpression : Expression
     {
         std::unique_ptr<Expression> expression;
+    };
+
+    // Array expression
+
+    struct ArrayExpression : Expression
+    {
+        std::vector<std::unique_ptr<Expression>> elements;
+    };
+
+    // Array index expression
+
+    struct IndexExpression : Expression
+    {
+        std::unique_ptr<Expression> object;
+        std::unique_ptr<Expression> index;
     };
 
     struct CallExpression : Expression

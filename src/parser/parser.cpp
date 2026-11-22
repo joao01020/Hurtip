@@ -816,6 +816,13 @@ namespace hurtip
             expression = std::move(identifier);
         }
 
+        // Array expression
+
+        else if (check(TokenType::LeftBracket))
+        {
+            expression = parseArrayExpression();
+        }
+
         // Grouped expression
 
         else if (match(TokenType::LeftParen))
@@ -844,7 +851,7 @@ namespace hurtip
         }
 
         // Postfix expressions:
-        // member access and function calls
+        // member access, function calls and array indexing
 
         while (true)
         {
@@ -882,7 +889,94 @@ namespace hurtip
                 continue;
             }
 
+            // Array indexing: expression[index]
+
+            if (match(TokenType::LeftBracket))
+            {
+                const Token &indexToken = tokens[position - 1];
+
+                skipNewLines();
+
+                if (check(TokenType::RightBracket))
+                {
+                    throw parserError(
+                        currentToken(),
+                        "Expected an index expression inside '[' and ']'");
+                }
+
+                auto index = std::make_unique<IndexExpression>();
+
+                index->line = indexToken.line;
+                index->object = std::move(expression);
+                index->index = parseExpression();
+
+                skipNewLines();
+
+                if (!match(TokenType::RightBracket))
+                {
+                    throw parserError(
+                        currentToken(),
+                        "Expected ']' after array index");
+                }
+
+                expression = std::move(index);
+
+                continue;
+            }
+
             break;
+        }
+
+        return expression;
+    }
+
+    // Array expressions
+
+    std::unique_ptr<ArrayExpression> Parser::parseArrayExpression()
+    {
+        const Token &arrayToken = advance();
+
+        auto expression = std::make_unique<ArrayExpression>();
+
+        expression->line = arrayToken.line;
+
+        // Allow empty arrays.
+
+        skipNewLines();
+
+        if (match(TokenType::RightBracket))
+        {
+            return expression;
+        }
+
+        // Parse array elements.
+
+        while (true)
+        {
+            expression->elements.push_back(parseExpression());
+
+            skipNewLines();
+
+            if (match(TokenType::RightBracket))
+            {
+                break;
+            }
+
+            if (!match(TokenType::Comma))
+            {
+                throw parserError(
+                    currentToken(),
+                    "Expected ',' or ']' after array element");
+            }
+
+            skipNewLines();
+
+            // Allow a trailing comma.
+
+            if (match(TokenType::RightBracket))
+            {
+                break;
+            }
         }
 
         return expression;

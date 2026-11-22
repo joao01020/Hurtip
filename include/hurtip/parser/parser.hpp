@@ -70,6 +70,10 @@ namespace hurtip
         // Primary and postfix expressions
         std::unique_ptr<Expression> parsePrimaryExpression();
 
+        // Array expressions
+        std::unique_ptr<ArrayExpression> parseArrayExpression();
+
+        // Function calls
         std::unique_ptr<CallExpression> parseCallExpression(
             std::unique_ptr<Expression> callee);
     };
