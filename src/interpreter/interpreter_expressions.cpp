@@ -1,7 +1,7 @@
-
 #include "hurtip/interpreter/interpreter.hpp"
 #include "interpreter_signals.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
@@ -190,7 +190,8 @@ namespace hurtip
 
                 throw std::runtime_error(
                     "Line " + std::to_string(member->line) +
-                    ": Unknown array property: " + member->member);
+                    ": Unknown array property: " +
+                    member->member);
             }
 
             throw std::runtime_error(
@@ -244,7 +245,8 @@ namespace hurtip
 
         if (expression.operation == TokenType::And)
         {
-            const bool *leftBoolean = std::get_if<bool>(&left);
+            const bool *leftBoolean =
+                std::get_if<bool>(&left);
 
             if (!leftBoolean)
             {
@@ -258,7 +260,8 @@ namespace hurtip
                 return false;
             }
 
-            RuntimeValue right = evaluate(*expression.right);
+            RuntimeValue right =
+                evaluate(*expression.right);
 
             const bool *rightBoolean =
                 std::get_if<bool>(&right);
@@ -277,7 +280,8 @@ namespace hurtip
 
         if (expression.operation == TokenType::Or)
         {
-            const bool *leftBoolean = std::get_if<bool>(&left);
+            const bool *leftBoolean =
+                std::get_if<bool>(&left);
 
             if (!leftBoolean)
             {
@@ -291,7 +295,8 @@ namespace hurtip
                 return true;
             }
 
-            RuntimeValue right = evaluate(*expression.right);
+            RuntimeValue right =
+                evaluate(*expression.right);
 
             const bool *rightBoolean =
                 std::get_if<bool>(&right);
@@ -306,7 +311,8 @@ namespace hurtip
             return *rightBoolean;
         }
 
-        RuntimeValue right = evaluate(*expression.right);
+        RuntimeValue right =
+            evaluate(*expression.right);
 
         const double *leftNumber =
             std::get_if<double>(&left);
@@ -413,7 +419,8 @@ namespace hurtip
     RuntimeValue Interpreter::evaluateUnary(
         const UnaryExpression &expression)
     {
-        RuntimeValue operand = evaluate(*expression.operand);
+        RuntimeValue operand =
+            evaluate(*expression.operand);
 
         // Logical NOT
 
@@ -511,13 +518,16 @@ namespace hurtip
                 if (namespaceIterator != namespaces.end())
                 {
                     auto functionIterator =
-                        namespaceIterator->second.find(functionName);
+                        namespaceIterator->second.find(
+                            functionName);
 
                     if (functionIterator !=
                         namespaceIterator->second.end())
                     {
-                        function = functionIterator->second;
-                        targetNamespace = currentNamespace;
+                        function =
+                            functionIterator->second;
+                        targetNamespace =
+                            currentNamespace;
                     }
                 }
             }
@@ -531,7 +541,8 @@ namespace hurtip
 
                 if (functionIterator != functions.end())
                 {
-                    function = functionIterator->second;
+                    function =
+                        functionIterator->second;
                     targetNamespace.clear();
                 }
             }
@@ -561,14 +572,17 @@ namespace hurtip
             }
             else
             {
-                objectValue = evaluate(*member->object);
+                objectValue =
+                    evaluate(*member->object);
+
                 objectExists = true;
             }
 
             if (objectExists)
             {
                 const auto *array =
-                    std::get_if<std::shared_ptr<ArrayValue>>(
+                    std::get_if<
+                        std::shared_ptr<ArrayValue>>(
                         &objectValue);
 
                 if (array)
@@ -576,7 +590,8 @@ namespace hurtip
                     if (!*array)
                     {
                         throw std::runtime_error(
-                            "Line " + std::to_string(expression.line) +
+                            "Line " +
+                            std::to_string(expression.line) +
                             ": Cannot call array methods on an invalid array");
                     }
 
@@ -587,12 +602,14 @@ namespace hurtip
                         if (expression.arguments.size() != 1)
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array method 'push' expects exactly 1 argument");
                         }
 
                         RuntimeValue value =
-                            evaluate(*expression.arguments[0]);
+                            evaluate(
+                                *expression.arguments[0]);
 
                         (*array)->elements.push_back(
                             std::move(value));
@@ -608,19 +625,22 @@ namespace hurtip
                         if (!expression.arguments.empty())
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array method 'pop' expects no arguments");
                         }
 
                         if ((*array)->elements.empty())
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Cannot pop from an empty array");
                         }
 
                         RuntimeValue value =
-                            std::move((*array)->elements.back());
+                            std::move(
+                                (*array)->elements.back());
 
                         (*array)->elements.pop_back();
 
@@ -634,15 +654,18 @@ namespace hurtip
                         if (expression.arguments.size() != 1)
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array method 'remove' expects exactly 1 argument");
                         }
 
                         RuntimeValue indexValue =
-                            evaluate(*expression.arguments[0]);
+                            evaluate(
+                                *expression.arguments[0]);
 
                         const double *number =
-                            std::get_if<double>(&indexValue);
+                            std::get_if<double>(
+                                &indexValue);
 
                         if (!number ||
                             !std::isfinite(*number) ||
@@ -650,26 +673,32 @@ namespace hurtip
                             std::floor(*number) != *number)
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array remove index must be a non-negative integer");
                         }
 
-                        if (*number >= static_cast<double>(
-                                           (*array)->elements.size()))
+                        if (*number >=
+                            static_cast<double>(
+                                (*array)->elements.size()))
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array remove index out of range");
                         }
 
                         const std::size_t index =
-                            static_cast<std::size_t>(*number);
+                            static_cast<std::size_t>(
+                                *number);
 
                         RuntimeValue removed =
-                            std::move((*array)->elements[index]);
+                            std::move(
+                                (*array)->elements[index]);
 
                         (*array)->elements.erase(
-                            (*array)->elements.begin() + index);
+                            (*array)->elements.begin() +
+                            index);
 
                         return removed;
                     }
@@ -681,15 +710,18 @@ namespace hurtip
                         if (expression.arguments.size() != 2)
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array method 'insert' expects exactly 2 arguments");
                         }
 
                         RuntimeValue indexValue =
-                            evaluate(*expression.arguments[0]);
+                            evaluate(
+                                *expression.arguments[0]);
 
                         const double *number =
-                            std::get_if<double>(&indexValue);
+                            std::get_if<double>(
+                                &indexValue);
 
                         if (!number ||
                             !std::isfinite(*number) ||
@@ -697,35 +729,137 @@ namespace hurtip
                             std::floor(*number) != *number)
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array insert index must be a non-negative integer");
                         }
 
-                        if (*number > static_cast<double>(
-                                          (*array)->elements.size()))
+                        if (*number >
+                            static_cast<double>(
+                                (*array)->elements.size()))
                         {
                             throw std::runtime_error(
-                                "Line " + std::to_string(expression.line) +
+                                "Line " +
+                                std::to_string(expression.line) +
                                 ": Array insert index out of range");
                         }
 
                         const std::size_t index =
-                            static_cast<std::size_t>(*number);
+                            static_cast<std::size_t>(
+                                *number);
 
                         RuntimeValue value =
-                            evaluate(*expression.arguments[1]);
+                            evaluate(
+                                *expression.arguments[1]);
 
                         (*array)->elements.insert(
-                            (*array)->elements.begin() + index,
+                            (*array)->elements.begin() +
+                                index,
                             std::move(value));
 
                         return static_cast<double>(
                             (*array)->elements.size());
                     }
 
+                    // Array method: contains
+
+                    if (functionName == "contains")
+                    {
+                        if (expression.arguments.size() != 1)
+                        {
+                            throw std::runtime_error(
+                                "Line " +
+                                std::to_string(expression.line) +
+                                ": Array method 'contains' expects exactly 1 argument");
+                        }
+
+                        RuntimeValue value =
+                            evaluate(
+                                *expression.arguments[0]);
+
+                        for (const auto &element :
+                             (*array)->elements)
+                        {
+                            if (element == value)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    // Array method: indexOf
+
+                    if (functionName == "indexOf")
+                    {
+                        if (expression.arguments.size() != 1)
+                        {
+                            throw std::runtime_error(
+                                "Line " +
+                                std::to_string(expression.line) +
+                                ": Array method 'indexOf' expects exactly 1 argument");
+                        }
+
+                        RuntimeValue value =
+                            evaluate(
+                                *expression.arguments[0]);
+
+                        for (std::size_t i = 0;
+                             i < (*array)->elements.size();
+                             ++i)
+                        {
+                            if ((*array)->elements[i] ==
+                                value)
+                            {
+                                return static_cast<double>(i);
+                            }
+                        }
+
+                        return -1.0;
+                    }
+
+                    // Array method: clear
+
+                    if (functionName == "clear")
+                    {
+                        if (!expression.arguments.empty())
+                        {
+                            throw std::runtime_error(
+                                "Line " +
+                                std::to_string(expression.line) +
+                                ": Array method 'clear' expects no arguments");
+                        }
+
+                        (*array)->elements.clear();
+
+                        return 0.0;
+                    }
+
+                    // Array method: reverse
+
+                    if (functionName == "reverse")
+                    {
+                        if (!expression.arguments.empty())
+                        {
+                            throw std::runtime_error(
+                                "Line " +
+                                std::to_string(expression.line) +
+                                ": Array method 'reverse' expects no arguments");
+                        }
+
+                        std::reverse(
+                            (*array)->elements.begin(),
+                            (*array)->elements.end());
+
+                        return objectValue;
+                    }
+
                     throw std::runtime_error(
-                        "Line " + std::to_string(expression.line) +
-                        ": Unknown array method: " + functionName);
+                        "Line " +
+                        std::to_string(expression.line) +
+                        ": Unknown array method: " +
+                        functionName);
                 }
             }
 
@@ -738,23 +872,29 @@ namespace hurtip
             if (!object)
             {
                 throw std::runtime_error(
-                    "Line " + std::to_string(expression.line) +
+                    "Line " +
+                    std::to_string(expression.line) +
                     ": Invalid namespace expression");
             }
 
-            targetNamespace = object->name;
+            targetNamespace =
+                object->name;
 
             // Check imported native libraries first.
 
             auto imported =
-                importedLibraries.find(targetNamespace);
+                importedLibraries.find(
+                    targetNamespace);
 
-            if (imported != importedLibraries.end())
+            if (imported !=
+                importedLibraries.end())
             {
                 auto library =
-                    nativeLibraries.find(imported->second);
+                    nativeLibraries.find(
+                        imported->second);
 
-                if (library == nativeLibraries.end())
+                if (library ==
+                    nativeLibraries.end())
                 {
                     throw std::runtime_error(
                         "Native library not registered: " +
@@ -762,51 +902,69 @@ namespace hurtip
                 }
 
                 auto native =
-                    library->second.find(functionName);
+                    library->second.find(
+                        functionName);
 
-                if (native == library->second.end())
+                if (native ==
+                    library->second.end())
                 {
                     throw std::runtime_error(
-                        "Line " + std::to_string(expression.line) +
-                        ": Unknown function '" + functionName +
-                        "' in library '" + imported->second + "'");
+                        "Line " +
+                        std::to_string(expression.line) +
+                        ": Unknown function '" +
+                        functionName +
+                        "' in library '" +
+                        imported->second +
+                        "'");
                 }
 
-                nativeFunction = native->second;
+                nativeFunction =
+                    native->second;
             }
             else
             {
                 // Existing Hurtip module namespace.
 
                 auto namespaceIterator =
-                    namespaces.find(targetNamespace);
+                    namespaces.find(
+                        targetNamespace);
 
-                if (namespaceIterator == namespaces.end())
+                if (namespaceIterator ==
+                    namespaces.end())
                 {
                     throw std::runtime_error(
-                        "Line " + std::to_string(expression.line) +
-                        ": Unknown namespace: " + targetNamespace);
+                        "Line " +
+                        std::to_string(expression.line) +
+                        ": Unknown namespace: " +
+                        targetNamespace);
                 }
 
                 auto functionIterator =
-                    namespaceIterator->second.find(functionName);
+                    namespaceIterator->second.find(
+                        functionName);
 
                 if (functionIterator ==
                     namespaceIterator->second.end())
                 {
                     throw std::runtime_error(
-                        "Line " + std::to_string(expression.line) +
-                        ": Unknown function '" + functionName +
-                        "' in namespace '" + targetNamespace + "'");
+                        "Line " +
+                        std::to_string(expression.line) +
+                        ": Unknown function '" +
+                        functionName +
+                        "' in namespace '" +
+                        targetNamespace +
+                        "'");
                 }
 
-                function = functionIterator->second;
+                function =
+                    functionIterator->second;
             }
         }
         else
         {
             throw std::runtime_error(
-                "Line " + std::to_string(expression.line) +
+                "Line " +
+                std::to_string(expression.line) +
                 ": Invalid function call");
         }
 
@@ -816,11 +974,14 @@ namespace hurtip
         {
             std::vector<RuntimeValue> arguments;
 
-            arguments.reserve(expression.arguments.size());
+            arguments.reserve(
+                expression.arguments.size());
 
-            for (const auto &argument : expression.arguments)
+            for (const auto &argument :
+                 expression.arguments)
             {
-                arguments.push_back(evaluate(*argument));
+                arguments.push_back(
+                    evaluate(*argument));
             }
 
             try
@@ -830,17 +991,22 @@ namespace hurtip
             catch (const std::exception &error)
             {
                 throw std::runtime_error(
-                    "Line " + std::to_string(expression.line) +
-                    ": Native function '" + functionName +
-                    "' failed: " + error.what());
+                    "Line " +
+                    std::to_string(expression.line) +
+                    ": Native function '" +
+                    functionName +
+                    "' failed: " +
+                    error.what());
             }
         }
 
         if (!function)
         {
             throw std::runtime_error(
-                "Line " + std::to_string(expression.line) +
-                ": Unknown function: " + functionName);
+                "Line " +
+                std::to_string(expression.line) +
+                ": Unknown function: " +
+                functionName);
         }
 
         // Validate argument count.
@@ -849,42 +1015,55 @@ namespace hurtip
             function->parameters.size())
         {
             throw std::runtime_error(
-                "Line " + std::to_string(expression.line) +
-                ": Function '" + functionName +
+                "Line " +
+                std::to_string(expression.line) +
+                ": Function '" +
+                functionName +
                 "' expects " +
-                std::to_string(function->parameters.size()) +
+                std::to_string(
+                    function->parameters.size()) +
                 " argument(s), but received " +
-                std::to_string(expression.arguments.size()));
+                std::to_string(
+                    expression.arguments.size()));
         }
 
-        // Evaluate arguments before changing the function context.
+        // Evaluate arguments before changing
+        // the function context.
 
         std::vector<RuntimeValue> arguments;
 
-        arguments.reserve(expression.arguments.size());
+        arguments.reserve(
+            expression.arguments.size());
 
-        for (const auto &argument : expression.arguments)
+        for (const auto &argument :
+             expression.arguments)
         {
-            arguments.push_back(evaluate(*argument));
+            arguments.push_back(
+                evaluate(*argument));
         }
 
         // Preserve the current execution context.
 
-        auto previousEnvironment = currentEnvironment;
+        auto previousEnvironment =
+            currentEnvironment;
 
         const std::string previousNamespace =
             currentNamespace;
 
-        RuntimeValue returnValue = std::string("");
+        RuntimeValue returnValue =
+            std::string("");
 
         try
         {
-            // Create an isolated environment for this function call.
+            // Create an isolated environment
+            // for this function call.
 
             currentEnvironment =
-                std::make_shared<Environment>(globalEnvironment);
+                std::make_shared<Environment>(
+                    globalEnvironment);
 
-            currentNamespace = targetNamespace;
+            currentNamespace =
+                targetNamespace;
 
             // Bind arguments to function parameters.
 
@@ -903,20 +1082,27 @@ namespace hurtip
         }
         catch (const detail::ReturnSignal &signal)
         {
-            returnValue = signal.value;
+            returnValue =
+                signal.value;
         }
         catch (...)
         {
-            currentEnvironment = previousEnvironment;
-            currentNamespace = previousNamespace;
+            currentEnvironment =
+                previousEnvironment;
+
+            currentNamespace =
+                previousNamespace;
 
             throw;
         }
 
         // Restore the previous execution context.
 
-        currentEnvironment = previousEnvironment;
-        currentNamespace = previousNamespace;
+        currentEnvironment =
+            previousEnvironment;
+
+        currentNamespace =
+            previousNamespace;
 
         return returnValue;
     }

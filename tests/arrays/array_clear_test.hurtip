@@ -1,0 +1,11 @@
+create numbers = [10, 20, 30]
+
+view(numbers.clear())
+view(numbers)
+view(numbers.length)
+
+create empty = []
+
+view(empty.clear())
+view(empty)
+view(empty.length)

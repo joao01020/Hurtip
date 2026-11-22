@@ -1,0 +1,14 @@
+create numbers = [10, 20, 30, 40]
+
+view(numbers.reverse())
+view(numbers)
+
+create mixed = ["Hurtip", 10, true]
+
+view(mixed.reverse())
+view(mixed)
+
+create empty = []
+
+view(empty.reverse())
+view(empty)

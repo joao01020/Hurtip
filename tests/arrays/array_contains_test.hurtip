@@ -1,0 +1,16 @@
+create numbers = [10, 20, 30]
+
+view(numbers.contains(10))
+view(numbers.contains(20))
+view(numbers.contains(50))
+
+create mixed = [10, "Hurtip", true]
+
+view(mixed.contains(10))
+view(mixed.contains("Hurtip"))
+view(mixed.contains(true))
+view(mixed.contains(false))
+
+create empty = []
+
+view(empty.contains(10))

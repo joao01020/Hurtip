@@ -1,4 +1,3 @@
-
 # Automated Hurtip tests
 
 set(HURTIP_TEST_RUNNER
@@ -334,7 +333,6 @@ add_hurtip_error_test(
     "Index access requires an array"
 )
 
-
 add_hurtip_success_test(
     array_insert
     tests/arrays/array_insert_test.hurtip
@@ -362,6 +360,77 @@ add_hurtip_error_test(
     array_insert_arguments
     tests/arrays/array_insert_arguments_test.hurtip
     "Array method 'insert' expects exactly 2 arguments"
+)
+
+add_hurtip_success_test(
+    array_contains
+    tests/arrays/array_contains_test.hurtip
+    [=[true
+true
+false
+true
+true
+true
+false
+false]=]
+)
+
+add_hurtip_success_test(
+    array_index_of
+    tests/arrays/array_index_of_test.hurtip
+    [=[0
+1
+2
+-1
+0
+1
+2]=]
+)
+
+add_hurtip_success_test(
+    array_clear
+    tests/arrays/array_clear_test.hurtip
+    [=[0
+[]
+0
+0
+[]
+0]=]
+)
+
+add_hurtip_success_test(
+    array_reverse
+    tests/arrays/array_reverse_test.hurtip
+    [=[[40, 30, 20, 10]
+[40, 30, 20, 10]
+[true, 10, Hurtip]
+[true, 10, Hurtip]
+[]
+[]]=]
+)
+
+add_hurtip_error_test(
+    array_contains_arguments
+    tests/arrays/array_contains_arguments_test.hurtip
+    "Array method 'contains' expects exactly 1 argument"
+)
+
+add_hurtip_error_test(
+    array_index_of_arguments
+    tests/arrays/array_index_of_arguments_test.hurtip
+    "Array method 'indexOf' expects exactly 1 argument"
+)
+
+add_hurtip_error_test(
+    array_clear_arguments
+    tests/arrays/array_clear_arguments_test.hurtip
+    "Array method 'clear' expects no arguments"
+)
+
+add_hurtip_error_test(
+    array_reverse_arguments
+    tests/arrays/array_reverse_arguments_test.hurtip
+    "Array method 'reverse' expects no arguments"
 )
 
 # Lexer unit tests

@@ -1,0 +1,12 @@
+create numbers = [10, 20, 30, 20]
+
+view(numbers.indexOf(10))
+view(numbers.indexOf(20))
+view(numbers.indexOf(30))
+view(numbers.indexOf(50))
+
+create mixed = ["Hurtip", 10, true]
+
+view(mixed.indexOf("Hurtip"))
+view(mixed.indexOf(10))
+view(mixed.indexOf(true))
