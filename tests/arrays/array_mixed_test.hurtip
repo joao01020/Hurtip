@@ -1,0 +1,7 @@
+create values = [10, "Hurtip", true, false]
+
+view(values)
+view(values[0])
+view(values[1])
+view(values[2])
+view(values[3])

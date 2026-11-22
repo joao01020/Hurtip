@@ -33,6 +33,7 @@ namespace hurtip
     struct AssignmentStatement : ASTNode
     {
         std::string name;
+        std::unique_ptr<Expression> target;
         std::unique_ptr<Expression> value;
     };
 
@@ -123,14 +124,12 @@ namespace hurtip
         std::unique_ptr<Expression> expression;
     };
 
-    // Array expression
+    // Array expressions
 
     struct ArrayExpression : Expression
     {
         std::vector<std::unique_ptr<Expression>> elements;
     };
-
-    // Array index expression
 
     struct IndexExpression : Expression
     {

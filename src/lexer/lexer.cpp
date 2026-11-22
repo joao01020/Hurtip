@@ -198,9 +198,22 @@ namespace hurtip
 
         std::string value;
 
+        // Parte inteira
         while (std::isdigit(static_cast<unsigned char>(currentChar())))
         {
             value += advance();
+        }
+
+        // Parte decimal
+        if (currentChar() == '.' &&
+            std::isdigit(static_cast<unsigned char>(peekChar())))
+        {
+            value += advance();
+
+            while (std::isdigit(static_cast<unsigned char>(currentChar())))
+            {
+                value += advance();
+            }
         }
 
         tokens.push_back({TokenType::Number,
@@ -230,7 +243,6 @@ namespace hurtip
         int tokenColumn = column;
 
         switch (character)
-
         {
         case '[':
             advance();

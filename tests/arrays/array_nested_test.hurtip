@@ -1,0 +1,7 @@
+create matrix = [[1, 2], [3, 4]]
+
+view(matrix)
+view(matrix[0])
+view(matrix[1])
+view(matrix[0][0])
+view(matrix[1][1])

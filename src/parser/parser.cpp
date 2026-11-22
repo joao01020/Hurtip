@@ -150,15 +150,55 @@ namespace hurtip
             return parseContinueStatement();
         }
 
+        // Parse identifiers as expressions first.
+        // This allows both normal expressions and assignments
+        // to variables or array elements.
+
         if (check(TokenType::Identifier))
         {
-            if (position + 1 < tokens.size() &&
-                tokens[position + 1].type == TokenType::Equal)
+            auto expression = parseExpression();
+
+            if (match(TokenType::Equal))
             {
-                return parseAssignmentStatement();
+                // Only identifiers and array indexes can be assigned.
+
+                const bool isIdentifier =
+                    dynamic_cast<IdentifierExpression *>(
+                        expression.get()) != nullptr;
+
+                const bool isIndex =
+                    dynamic_cast<IndexExpression *>(
+                        expression.get()) != nullptr;
+
+                if (!isIdentifier && !isIndex)
+                {
+                    throw parserError(
+                        currentToken(),
+                        "Invalid assignment target");
+                }
+
+                // The assignment parser expects the target expression
+                // and consumes the right-hand expression.
+
+                auto assignment =
+                    std::make_unique<AssignmentStatement>();
+
+                assignment->line = expression->line;
+
+                if (auto *identifier =
+                        dynamic_cast<IdentifierExpression *>(
+                            expression.get()))
+                {
+                    assignment->name = identifier->name;
+                }
+
+                assignment->target = std::move(expression);
+                assignment->value = parseExpression();
+
+                return assignment;
             }
 
-            return parseExpression();
+            return expression;
         }
 
         throw parserError(
@@ -262,25 +302,30 @@ namespace hurtip
         return statement;
     }
 
-    // Variable assignment
+    // Assignment statement
 
     std::unique_ptr<AssignmentStatement>
-    Parser::parseAssignmentStatement()
+    Parser::parseAssignmentStatement(
+        std::unique_ptr<Expression> target)
     {
-        const Token &nameToken = advance();
-
-        auto statement = std::make_unique<AssignmentStatement>();
-
-        statement->line = nameToken.line;
-        statement->name = nameToken.lexeme;
-
-        if (!match(TokenType::Equal))
+        if (!target)
         {
             throw parserError(
                 currentToken(),
-                "Expected '=' after variable name");
+                "Invalid assignment target");
         }
 
+        auto statement = std::make_unique<AssignmentStatement>();
+
+        statement->line = target->line;
+
+        if (auto *identifier =
+                dynamic_cast<IdentifierExpression *>(target.get()))
+        {
+            statement->name = identifier->name;
+        }
+
+        statement->target = std::move(target);
         statement->value = parseExpression();
 
         return statement;
@@ -347,8 +392,6 @@ namespace hurtip
         }
 
         skipNewLines();
-
-        // A function has its own loop context.
 
         const int previousLoopDepth = loopDepth;
 
@@ -424,32 +467,22 @@ namespace hurtip
                 "Expected ')' after if condition");
         }
 
-        // Allow new lines before the if block.
-
         skipNewLines();
 
         statement->thenBranch = parseBlockStatement();
 
-        // Preserve the position immediately after the then block.
-
         const std::size_t afterThenBranch = position;
-
-        // Allow else on the same line or on a following line.
 
         skipNewLines();
 
         if (match(TokenType::Else))
         {
-            // Allow new lines before the else block.
-
             skipNewLines();
 
             statement->elseBranch = parseBlockStatement();
         }
         else
         {
-            // Do not consume new lines belonging to the outer parser.
-
             position = afterThenBranch;
         }
 
@@ -480,8 +513,6 @@ namespace hurtip
                 currentToken(),
                 "Expected ')' after while condition");
         }
-
-        // Allow new lines before the while block.
 
         skipNewLines();
 
@@ -524,7 +555,8 @@ namespace hurtip
 
     // Continue statement
 
-    std::unique_ptr<ContinueStatement> Parser::parseContinueStatement()
+    std::unique_ptr<ContinueStatement>
+    Parser::parseContinueStatement()
     {
         const Token &continueToken = advance();
 
@@ -734,7 +766,8 @@ namespace hurtip
 
     // Multiplication and division
 
-    std::unique_ptr<Expression> Parser::parseMultiplicativeExpression()
+    std::unique_ptr<Expression>
+    Parser::parseMultiplicativeExpression()
     {
         auto expression = parseUnaryExpression();
 
@@ -841,7 +874,6 @@ namespace hurtip
 
             expression = std::move(grouping);
         }
-
         else
         {
             throw parserError(
@@ -940,16 +972,16 @@ namespace hurtip
 
         expression->line = arrayToken.line;
 
-        // Allow empty arrays.
-
         skipNewLines();
+
+        // Empty arrays
 
         if (match(TokenType::RightBracket))
         {
             return expression;
         }
 
-        // Parse array elements.
+        // Array elements
 
         while (true)
         {
@@ -971,7 +1003,7 @@ namespace hurtip
 
             skipNewLines();
 
-            // Allow a trailing comma.
+            // Trailing comma
 
             if (match(TokenType::RightBracket))
             {

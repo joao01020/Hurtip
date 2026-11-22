@@ -1,9 +1,10 @@
-
+#include "hurtip/parser/parser.hpp"
 #include "hurtip/interpreter/interpreter.hpp"
 #include "interpreter_signals.hpp"
 
 #include "hurtip/lexer/lexer.hpp"
 
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -143,6 +144,90 @@ namespace hurtip
         if (const auto *assignment =
                 dynamic_cast<const AssignmentStatement *>(&statement))
         {
+            // Assignment using an expression target.
+
+            if (assignment->target)
+            {
+                // Direct variable assignment.
+
+                if (const auto *identifier =
+                        dynamic_cast<const IdentifierExpression *>(
+                            assignment->target.get()))
+                {
+                    if (!currentEnvironment->contains(identifier->name))
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(assignment->line) +
+                            ": Undefined variable: " + identifier->name);
+                    }
+
+                    RuntimeValue value = evaluate(*assignment->value);
+
+                    currentEnvironment->assign(identifier->name, value);
+
+                    return;
+                }
+
+                // Array element assignment.
+
+                if (const auto *index =
+                        dynamic_cast<const IndexExpression *>(
+                            assignment->target.get()))
+                {
+                    RuntimeValue object = evaluate(*index->object);
+                    RuntimeValue indexValue = evaluate(*index->index);
+
+                    const auto *array =
+                        std::get_if<std::shared_ptr<ArrayValue>>(&object);
+
+                    if (!array || !*array)
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(index->line) +
+                            ": Index assignment requires an array");
+                    }
+
+                    const auto *number =
+                        std::get_if<double>(&indexValue);
+
+                    if (!number)
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(index->line) +
+                            ": Array index must be a number");
+                    }
+
+                    if (!std::isfinite(*number) ||
+                        *number < 0.0 ||
+                        std::floor(*number) != *number)
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(index->line) +
+                            ": Array index must be a non-negative integer");
+                    }
+
+                    if (*number >= static_cast<double>(
+                                       (*array)->elements.size()))
+                    {
+                        throw std::runtime_error(
+                            "Line " + std::to_string(index->line) +
+                            ": Array index out of range");
+                    }
+
+                    RuntimeValue value = evaluate(*assignment->value);
+
+                    (*array)->elements[static_cast<std::size_t>(*number)] = value;
+
+                    return;
+                }
+
+                throw std::runtime_error(
+                    "Line " + std::to_string(assignment->line) +
+                    ": Invalid assignment target");
+            }
+
+            // Legacy assignment support.
+
             if (!currentEnvironment->contains(assignment->name))
             {
                 throw std::runtime_error(

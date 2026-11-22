@@ -1,0 +1,8 @@
+create numbers = [10, 20, 30]
+create matrix = [[1, 2], [3, 4]]
+
+numbers[0] = 100
+matrix[0][1] = 99
+
+view(numbers)
+view(matrix)

@@ -1,0 +1,8 @@
+create numbers = [10, 20, 30]
+create empty = []
+create matrix = [[1, 2], [3, 4]]
+
+view(numbers.length)
+view(empty.length)
+view(matrix.length)
+view(matrix[0].length)

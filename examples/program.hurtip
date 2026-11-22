@@ -1,7 +1,6 @@
-
 // Meu primeiro programa em Hurtip
 
-// Criando variáveis
+// Variáveis
 create language = "Hurtip"
 create version = 1
 create age = 24
@@ -40,7 +39,7 @@ create positive = +10
 view(negative)
 view(positive)
 
-// Operadores de comparação
+// Comparações
 view(age == 24)
 view(age != 18)
 view(age > 18)
@@ -61,33 +60,32 @@ view(age >= 18 and age <= 30)
 view(age < 18 or age == 24)
 view(not age > 18)
 
-// Testando precedência lógica
+// Precedência lógica
 view(true or false and false)
 view((true or false) and false)
 view(not false and true)
 
-// Testando avaliação de curto-circuito
+// Curto-circuito
 view(false and missing == 1)
 view(true or missing == 1)
 
-// Comentário na mesma linha de uma instrução
-create comment_test = 100 // Este comentário será ignorado
+// Comentários
+create comment_test = 100 // Comentário na mesma linha
 
 view(comment_test)
 
-// Decisões com if
+// Condicionais
 if (age >= 18) {
     view("Maior de idade")
 }
 
-// Decisões com if e else
 if (age < 18) {
     view("Menor de idade")
 } else {
     view("Maior de idade")
 }
 
-// Decisões com operadores lógicos
+// Condições lógicas
 create has_permission = true
 
 if (age >= 18 and has_permission) {
@@ -96,14 +94,14 @@ if (age >= 18 and has_permission) {
     view("Acesso negado")
 }
 
-// Decisões com not
+// Usando not
 if (not false) {
     view("A condição é verdadeira")
 } else {
     view("A condição é falsa")
 }
 
-// Decisões aninhadas
+// Condicionais aninhadas
 if (age >= 18) {
     if (age >= 21) {
         view("Idade igual ou superior a 21")
@@ -114,14 +112,14 @@ if (age >= 18) {
     view("Menor de idade")
 }
 
-// Decisão sem else
+// If sem else
 create number = 10
 
 if (number == 10) {
     view("O número é 10")
 }
 
-// Else em uma linha separada
+// Else em outra linha
 if (age == 18) {
     view("Tem 18 anos")
 }
@@ -129,7 +127,7 @@ else {
     view("Não tem 18 anos")
 }
 
-// Atribuição de variáveis
+// Atribuição
 create counter = 0
 
 view(counter)
@@ -159,7 +157,7 @@ if (counter == 2) {
 
 view(counter)
 
-// While loop
+// While
 create while_counter = 1
 
 while (while_counter <= 5) {
@@ -169,7 +167,7 @@ while (while_counter <= 5) {
 
 view("Loop finished")
 
-// Testando break
+// Break
 create break_counter = 0
 
 while (break_counter < 10) {
@@ -184,7 +182,7 @@ while (break_counter < 10) {
 
 view("Break finished")
 
-// Testando continue
+// Continue
 create continue_counter = 0
 
 while (continue_counter < 5) {
@@ -199,7 +197,7 @@ while (continue_counter < 5) {
 
 view("Continue finished")
 
-// Testando break e continue juntos
+// Break e continue
 create control_counter = 0
 
 while (control_counter < 10) {
@@ -218,7 +216,7 @@ while (control_counter < 10) {
 
 view("Control flow finished")
 
-// Testando loops aninhados
+// Loops aninhados
 create outer = 0
 
 while (outer < 3) {
@@ -242,22 +240,20 @@ while (outer < 3) {
 view("Nested loops finished")
 
 // Arrays
-
-// Criando arrays
 create numbers = [10, 20, 30, 40, 50]
 create names = ["Ana", "João", "Maria"]
 create active_states = [true, false, true]
 
-// Criando um array vazio
+// Array vazio
 create empty_array = []
 
-// Exibindo arrays completos
+// Exibindo arrays
 view(numbers)
 view(names)
 view(active_states)
 view(empty_array)
 
-// Acessando elementos por índice
+// Acessando elementos
 view(numbers[0])
 view(numbers[1])
 view(numbers[2])
@@ -269,12 +265,12 @@ view(names[2])
 view(active_states[0])
 view(active_states[1])
 
-// Arrays com diferentes tipos de valores
+// Tipos diferentes
 create mixed_array = [10, "Hurtip", true]
 
 view(mixed_array)
 
-// Acessando elementos de um array misto
+// Acessando elementos mistos
 view(mixed_array[0])
 view(mixed_array[1])
 view(mixed_array[2])
@@ -286,7 +282,6 @@ create matrix = [
     [5, 6]
 ]
 
-// Exibindo o array aninhado
 view(matrix)
 
 // Acessando arrays internos
@@ -294,7 +289,7 @@ view(matrix[0])
 view(matrix[1])
 view(matrix[2])
 
-// Acessando elementos de arrays aninhados
+// Acessando elementos internos
 view(matrix[0][0])
 view(matrix[0][1])
 view(matrix[1][0])
@@ -302,7 +297,61 @@ view(matrix[1][1])
 view(matrix[2][0])
 view(matrix[2][1])
 
+// Modificando arrays
+numbers[0] = 100
+numbers[1] = 200
+numbers[2] = 300
+
+view(numbers)
+
+// Modificando outros tipos
+names[0] = "Carlos"
+active_states[1] = true
+
+view(names)
+view(active_states)
+
+// Modificando array misto
+mixed_array[0] = 99
+mixed_array[1] = "Programming"
+mixed_array[2] = false
+
+view(mixed_array)
+
+// Modificando arrays aninhados
+matrix[0][0] = 10
+matrix[1][1] = 40
+matrix[2][0] = 50
+
+view(matrix)
+
+// Verificando alterações
+view(matrix[0][0])
+view(matrix[1][1])
+view(matrix[2][0])
+
 view("Arrays finished")
 
-// Finalizando programa
+
+
+
+// length 
+
+
+create numbers = [10, 20, 30]
+create empty = []
+create matrix = [[1, 2], [3, 4]]
+
+view(numbers.length)
+view(empty.length)
+view(matrix.length)
+view(matrix[0].length)
+
+
+
+// Fim do programa
 view("Hello Hurtip!")
+
+
+
+

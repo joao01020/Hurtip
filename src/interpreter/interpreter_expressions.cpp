@@ -175,9 +175,27 @@ namespace hurtip
         if (const auto *member =
                 dynamic_cast<const MemberExpression *>(&expression))
         {
+            RuntimeValue object = evaluate(*member->object);
+
+            const auto *array =
+                std::get_if<std::shared_ptr<ArrayValue>>(&object);
+
+            if (array && *array)
+            {
+                if (member->member == "length")
+                {
+                    return static_cast<double>(
+                        (*array)->elements.size());
+                }
+
+                throw std::runtime_error(
+                    "Line " + std::to_string(member->line) +
+                    ": Unknown array property: " + member->member);
+            }
+
             throw std::runtime_error(
                 "Line " + std::to_string(member->line) +
-                ": Member access is only supported for function calls");
+                ": Property access requires an array");
         }
 
         // Binary expression

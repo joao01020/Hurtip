@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "hurtip/parser/parser.hpp"
+#include "hurtip/ast/ast.hpp"
 #include "hurtip/environment/environment.hpp"
 
 #include <filesystem>

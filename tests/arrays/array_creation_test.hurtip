@@ -1,0 +1,7 @@
+create numbers = [10, 20, 30]
+create names = ["Ana", "João", "Maria"]
+create empty = []
+
+view(numbers)
+view(names)
+view(empty)

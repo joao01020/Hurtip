@@ -224,6 +224,79 @@ add_hurtip_success_test(
 3]=]
 )
 
+
+# Arrays
+
+add_hurtip_success_test(
+    array_creation
+    tests/arrays/array_creation_test.hurtip
+    [=[[10, 20, 30]
+[Ana, João, Maria]
+[]]=]
+)
+
+add_hurtip_success_test(
+    array_mixed
+    tests/arrays/array_mixed_test.hurtip
+    [=[[10, Hurtip, true, false]
+10
+Hurtip
+true
+false]=]
+)
+
+add_hurtip_success_test(
+    array_nested
+    tests/arrays/array_nested_test.hurtip
+    [=[[[1, 2], [3, 4]]
+[1, 2]
+[3, 4]
+1
+4]=]
+)
+
+add_hurtip_success_test(
+    array_assignment
+    tests/arrays/array_assignment_test.hurtip
+    [=[[100, 20, 30]
+[[1, 99], [3, 4]]]=]
+)
+
+add_hurtip_success_test(
+    array_length
+    tests/arrays/array_length_test.hurtip
+    [=[3
+0
+2
+2]=]
+)
+
+add_hurtip_error_test(
+    array_negative_index
+    tests/arrays/array_negative_index_test.hurtip
+    "Array index must be a non-negative integer"
+)
+
+add_hurtip_error_test(
+    array_fractional_index
+    tests/arrays/array_fractional_index_test.hurtip
+    "Array index must be a non-negative integer"
+)
+
+add_hurtip_error_test(
+    array_out_of_range
+    tests/arrays/array_out_of_range_test.hurtip
+    "Array index out of range"
+)
+
+add_hurtip_error_test(
+    array_invalid_object
+    tests/arrays/array_invalid_object_test.hurtip
+    "Index access requires an array"
+)
+
+
+
 # Lexer unit tests
 
 add_executable(lexer_tests
