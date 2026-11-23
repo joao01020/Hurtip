@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b10">
+<meta name="description" content="Consulte versões, alterações e os canais oficiais para acompanhar o desenvolvimento do Hurtip.">
+<title>Atualizações — Hurtip</title>
+<style>
+:root {
+    --bg:#090b10; --surface:#10141d; --text:#f2f5fa;
+    --muted:#929cad; --accent:#69d5e8; --border:rgba(255,255,255,.09);
+    --max:1000px;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+    background:var(--bg); color:var(--text);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.7;
+}
+a { color:inherit; text-decoration:none; }
+.container { width:min(var(--max),calc(100% - 44px)); margin:auto; }
+header {
+    position:sticky; top:0; z-index:5; background:rgba(9,11,16,.92);
+    backdrop-filter:blur(18px); border-bottom:1px solid var(--border);
+}
+nav {
+    min-height:72px; display:flex; align-items:center;
+    justify-content:space-between; gap:20px;
+}
+.brand { font-size:23px; font-weight:800; letter-spacing:-1px; }
+.nav-links { display:flex; flex-wrap:wrap; align-items:center; gap:18px; color:var(--muted); font-size:12px; }
+.nav-links a:hover { color:var(--accent); }
+main { padding:76px 0 100px; }
+.eyebrow {
+    color:var(--accent); font-size:11px; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;
+}
+h1 { font-size:clamp(38px,6vw,58px); line-height:1.1; letter-spacing:-2.5px; margin-bottom:20px; }
+h1 span { color:var(--accent); }
+.lead { color:var(--muted); font-size:16px; max-width:760px; margin-bottom:42px; }
+.content { max-width:800px; }
+.block { padding:26px 0; border-top:1px solid var(--border); }
+.block h2 { font-size:22px; letter-spacing:-.6px; margin-bottom:10px; }
+.block p, .block li { color:var(--muted); font-size:14px; }
+.block ul, .block ol { padding-left:22px; margin-top:12px; }
+.block li { margin:7px 0; }
+.code {
+    display:block; overflow-x:auto; white-space:pre; background:#0e121a;
+    border:1px solid var(--border); border-radius:10px; padding:20px;
+    margin:18px 0; color:#a7dca3; font:13px/1.8 Consolas,monospace;
+}
+.note {
+    border:1px solid var(--border); background:var(--surface);
+    border-radius:10px; padding:18px 20px; margin-top:18px;
+}
+.note p { margin:0; }
+.actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+.button {
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:8px; padding:12px 17px; font-size:13px; font-weight:700;
+    border:1px solid var(--border);
+}
+.primary { background:var(--accent); color:#071116; border-color:var(--accent); }
+.button:hover { border-color:var(--accent); }
+footer { border-top:1px solid var(--border); padding:26px 0; color:var(--muted); font-size:12px; }
+@media(max-width:720px) {
+    nav { align-items:flex-start; flex-direction:column; padding:15px 0; }
+    .nav-links { gap:12px; }
+    main { padding-top:55px; }
+}
+</style>
+</head>
+<body>
+
+    <header><nav class="container">
+      <a class="brand" href="index.html">Hurtip</a>
+      <div class="nav-links">
+        <a href="index.html">Início</a>
+        <a href="objectives.html">Objetivos</a>
+        <a href="getting-started.html">Instalação</a>
+        <a href="updates.html">Atualizações</a>
+        <a href="contribute.html">Contribuir</a>
+        <a href="https://github.com/joao01020/Hurtip" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </nav></header>
+<main class="container">
+  <div class="content">
+    <div class="eyebrow">06 — Atualizações</div>
+    <h1>Acompanhe a evolução <span>do projeto.</span></h1>
+    <p class="lead">Consulte versões, alterações e os canais oficiais para acompanhar o desenvolvimento do Hurtip.</p>
+    
+<section class="block">
+  <h2>Desenvolvimento contínuo</h2>
+  <p>
+    Esta página reúne o histórico de versões e mudanças do Hurtip.
+    As informações devem acompanhar os commits, tags e notas de versão
+    publicados no repositório.
+  </p>
+</section>
+<section class="block">
+  <h2>Versão de referência</h2>
+  <p>
+    O projeto possui a tag <code>v0.1.0-alpha.1</code>, uma versão
+    de pré-lançamento que identifica uma etapa inicial do desenvolvimento.
+    Por ser uma versão alpha, podem existir mudanças incompatíveis,
+    limitações e recursos ainda não implementados.
+  </p>
+</section>
+<section class="block">
+  <h2>Onde acompanhar mudanças</h2>
+  <ul>
+    <li>Commits: acompanhe alterações feitas no código-fonte.</li>
+    <li>Tags e releases: consulte versões identificadas do projeto.</li>
+    <li>Issues: veja problemas conhecidos e propostas em discussão.</li>
+  </ul>
+  <div class="actions">
+    <a class="button primary" href="https://github.com/joao01020/Hurtip/releases" target="_blank" rel="noopener">Versões e releases ↗</a>
+    <a class="button" href="https://github.com/joao01020/Hurtip/commits/main" target="_blank" rel="noopener">Histórico de commits ↗</a>
+  </div>
+</section>
+<div class="note"><p>Novas entradas devem ser adicionadas quando uma versão ou mudança relevante for publicada. Não há datas ou recursos futuros anunciados nesta página.</p></div>
+
+    <div class="actions">
+      <a class="button primary" href="index.html">Voltar ao início</a>
+      <a class="button" href="https://github.com/joao01020/Hurtip" target="_blank" rel="noopener">Abrir GitHub ↗</a>
+    </div>
+  </div>
+</main>
+<footer><div class="container">© 2026 Hurtip. Linguagem de programação independente.</div></footer>
+</body>
+</html>
