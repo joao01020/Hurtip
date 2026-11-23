@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Baixar código do repositório
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar CMake
         run: cmake -S . -B build
