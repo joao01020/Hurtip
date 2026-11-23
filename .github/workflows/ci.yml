@@ -1,0 +1,36 @@
+name: Hurtip - Integração Contínua
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+      - "fix/**"
+      - "refactor/**"
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Compilação e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar CMake
+        run: cmake -S . -B build
+
+      - name: Compilar Hurtip
+        run: cmake --build build --parallel
+
+      - name: Executar testes automatizados
+        run: ctest --test-dir build --output-on-failure

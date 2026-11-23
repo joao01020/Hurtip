@@ -1,0 +1,19 @@
+# Default owner
+
+- @joao01020
+
+# Core language implementation
+
+/src/
+
+# Tests
+
+/tests/
+
+# Documentation
+
+/docs/
+
+# GitHub configuration
+
+/.github/

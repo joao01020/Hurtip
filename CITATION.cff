@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use Hurtip in your research, please cite it as follows."
+title: "Hurtip"
+type: software
+authors:
+  given-names: "Joao Vitor"
+version: "0.1.0-alpha.1"
+repository-code: "https://github.com/joao01020/Hurtip"
+license: MIT
