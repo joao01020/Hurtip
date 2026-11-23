@@ -1,0 +1,21 @@
+function mul(a, b) {
+    return [
+        a[0] * b[0] - a[1] * b[1],
+        a[0] * b[1] + a[1] * b[0]
+    ]
+}
+
+function inv(a) {
+    create inv = 1 / sq2(a[0], a[1])
+    return [a[0] * inv, - a[1] * inv]
+}
+
+function sq2(a, b) {
+    return a * a + b * b
+}
+
+function div(a, b) {
+    return mul(a, inv(b))
+}
+
+view(div([1, 2], [1, 1]))
