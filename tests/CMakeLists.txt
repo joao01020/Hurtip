@@ -307,7 +307,25 @@ add_hurtip_error_test(
     "Index access requires an array"
 )
 
+# Dynamic array expansion
 
+add_hurtip_success_test(
+    array_dynamic_expansion
+    tests/arrays/dynamic_array_expansion.hurtip
+    [=[[1, 2, 3]]=]
+)
+
+add_hurtip_success_test(
+    array_dynamic_expansion_gap
+    tests/arrays/dynamic_array_expansion_gap.hurtip
+    [=[[1, 2, 0, 0, 0, 10]]=]
+)
+
+add_hurtip_error_test(
+    array_out_of_bounds_read
+    tests/arrays/array_out_of_bounds_read.hurtip
+    "Array index out of range"
+)
 
 # Lexer unit tests
 
