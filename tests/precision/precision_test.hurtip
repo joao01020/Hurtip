@@ -1,0 +1,7 @@
+create a = 3
+create b = 0.000001
+create c = a - b
+
+view(c)
+view(3 - 0.000001)
+view(1 / 3)
