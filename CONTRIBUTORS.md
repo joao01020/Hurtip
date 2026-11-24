@@ -10,7 +10,7 @@ project.
 People who help improve Hurtip through bug reports, pull requests, testing,
 suggestions, and feedback.
 
-- **[@joa_omatematico](https://github.com/joa_omatematico)** — Reported bugs and
+- **[@joa_omatematico](https://github.com/J9OOOO)** — Reported bugs and
   contributed to identifying and investigating floating-point output precision
   issues.
 
