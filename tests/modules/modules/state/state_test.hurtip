@@ -1,0 +1,5 @@
+load "counter.hurtip" as counter
+
+view(counter.increment())
+view(counter.increment())
+view(counter.increment())

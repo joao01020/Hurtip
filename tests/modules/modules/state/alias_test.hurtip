@@ -1,0 +1,6 @@
+load "counter.hurtip" as first
+load "counter.hurtip" as second
+
+view(first.increment())
+view(second.increment())
+view(first.increment())

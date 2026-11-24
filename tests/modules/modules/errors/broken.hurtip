@@ -1,0 +1,3 @@
+create value = 10
+
+load "missing.hurtip" as missing

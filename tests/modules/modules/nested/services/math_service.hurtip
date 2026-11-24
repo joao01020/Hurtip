@@ -1,0 +1,6 @@
+load "../helpers/calculator.hurtip" as calculator
+
+function sum(a, b)
+{
+    return calculator.add(a, b)
+}

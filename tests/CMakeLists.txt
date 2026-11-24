@@ -75,8 +75,6 @@ add_hurtip_success_test(
     [=[15]=]
 )
 
-# Modules
-
 add_hurtip_success_test(
     module_system
     tests/modules/module_test.hurtip
@@ -84,6 +82,54 @@ add_hurtip_success_test(
 60]=]
 )
 
+# Modules
+
+add_hurtip_success_test(
+    module_variable_isolation
+    tests/modules/modules/isolation/isolation_test.hurtip
+    [=[First
+Second]=]
+)
+
+
+add_hurtip_success_test(
+    module_state_persistence
+    tests/modules/modules/state/state_test.hurtip
+    [=[1
+2
+3]=]
+)
+
+
+add_hurtip_success_test(
+    module_alias_shared_state
+    tests/modules/modules/state/alias_test.hurtip
+    [=[1
+2
+3]=]
+)
+
+
+add_hurtip_success_test(
+    module_nested_loading
+    tests/modules/modules/nested/nested_test.hurtip
+    [=[15
+50]=]
+)
+
+
+add_hurtip_error_test(
+    module_circular_dependency
+    tests/modules/modules/circular/circular_test.hurtip
+    "Circular module dependency:"
+)
+
+
+add_hurtip_error_test(
+    module_missing_dependency
+    tests/modules/modules/errors/missing_dependency_test.hurtip
+    "Could not open module:"
+)
 # Native imports
 
 add_hurtip_success_test(
@@ -372,4 +418,39 @@ endif()
 add_test(
     NAME parser_unit_tests
     COMMAND parser_tests
+)
+
+
+# Interpreter module recovery tests
+
+add_executable(interpreter_module_recovery_tests
+    modules/interpreter_module_recovery_test.cpp
+    ${PROJECT_SOURCE_DIR}/src/lexer/lexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/parser/parser.cpp
+    ${PROJECT_SOURCE_DIR}/src/interpreter/interpreter.cpp
+    ${PROJECT_SOURCE_DIR}/src/interpreter/interpreter_expressions.cpp
+    ${PROJECT_SOURCE_DIR}/src/environment/environment.cpp
+    ${PROJECT_SOURCE_DIR}/src/libraries/math.cpp
+    ${PROJECT_SOURCE_DIR}/src/libraries/standard_library.cpp
+)
+
+target_include_directories(interpreter_module_recovery_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_definitions(interpreter_module_recovery_tests
+    PRIVATE
+        HURTIP_PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+if(MSVC)
+    target_compile_options(interpreter_module_recovery_tests PRIVATE /W4)
+else()
+    target_compile_options(interpreter_module_recovery_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_test(
+    NAME interpreter_module_recovery
+    COMMAND interpreter_module_recovery_tests
 )
