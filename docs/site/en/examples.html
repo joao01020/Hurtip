@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b10">
+
+<meta
+    name="description"
+    content="Examples dos recursos atualmente suportados pela linguagem Hurtip."
+>
+
+<title>Examples — Hurtip</title>
+
+
+<style>
+
+:root {
+    --bg: #090b10;
+    --surface: #10141d;
+    --surface2: #151b26;
+    --text: #f2f5fa;
+    --muted: #929cad;
+    --accent: #69d5e8;
+    --green: #71d6a0;
+    --border: rgba(255,255,255,.09);
+    --max: 1180px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.7;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.container {
+    width: min(var(--max), calc(100% - 44px));
+    margin: auto;
+}
+
+
+/* HEADER */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    background: rgba(9,11,16,.90);
+
+    backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid var(--border);
+}
+
+nav {
+    min-height: 72px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.brand {
+    font-size: 23px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+.nav-links {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.nav-button {
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 9px 15px;
+
+    color: var(--text);
+}
+
+
+/* HERO */
+
+.hero {
+    padding: 80px 0 60px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.label {
+    color: var(--accent);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: clamp(38px, 5vw, 58px);
+
+    line-height: 1.1;
+
+    letter-spacing: -2.5px;
+
+    margin-bottom: 20px;
+}
+
+.hero p {
+    max-width: 760px;
+
+    color: var(--muted);
+
+    font-size: 15px;
+}
+
+
+/* LAYOUT */
+
+.layout {
+    display: grid;
+
+    grid-template-columns: 230px minmax(0, 1fr);
+
+    gap: 42px;
+
+    padding-top: 50px;
+
+    padding-bottom: 90px;
+}
+
+
+/* SIDEBAR */
+
+.sidebar {
+    position: sticky;
+
+    top: 100px;
+
+    align-self: start;
+
+    max-height: calc(100vh - 120px);
+
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    color: var(--muted);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 14px;
+}
+
+.sidebar a {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    padding: 8px 10px;
+
+    border-radius: 6px;
+
+    margin-bottom: 3px;
+}
+
+.sidebar a:hover {
+    background: var(--surface2);
+
+    color: var(--accent);
+}
+
+
+/* CONTENT */
+
+.content {
+    min-width: 0;
+}
+
+.category {
+    margin-bottom: 58px;
+
+    scroll-margin-top: 100px;
+}
+
+.category h2 {
+    font-size: 24px;
+
+    letter-spacing: -.7px;
+
+    margin-bottom: 7px;
+}
+
+.category-description {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+}
+
+
+/* CODE BLOCK */
+
+.code-box {
+    background: #0d1118;
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.22);
+}
+
+.code-header {
+    min-height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 0 16px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.code-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.dot {
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+}
+
+.code-content {
+    padding: 22px 18px;
+
+    overflow-x: auto;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.85;
+}
+
+pre {
+    margin: 0;
+
+    white-space: pre;
+
+    color: #d7dee9;
+}
+
+
+/* SYNTAX */
+
+.comment {
+    color: #687384;
+}
+
+.keyword {
+    color: #c49bff;
+}
+
+.string {
+    color: #a7dca3;
+}
+
+.number {
+    color: #e6b66f;
+}
+
+.boolean {
+    color: #69d5e8;
+}
+
+.function {
+    color: #f4c779;
+}
+
+.operator {
+    color: #d28eea;
+}
+
+
+/* TAG */
+
+.supported {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 12px;
+
+    padding: 6px 10px;
+
+    border: 1px solid rgba(113,214,160,.2);
+
+    border-radius: 999px;
+
+    color: var(--green);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.supported::before {
+    content: "✓";
+
+    font-size: 10px;
+}
+
+
+/* BOTTOM */
+
+.bottom {
+    border-top: 1px solid var(--border);
+
+    padding-top: 45px;
+
+    margin-top: 15px;
+}
+
+.bottom p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+}
+
+.button {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    background: var(--accent);
+
+    color: #071116;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid var(--border);
+
+    padding: 28px 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.footer-inner {
+    display: flex;
+
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .layout {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+    .sidebar {
+        position: static;
+
+        max-height: none;
+
+        display: flex;
+
+        flex-wrap: wrap;
+
+        gap: 5px;
+    }
+
+    .sidebar-title {
+        width: 100%;
+    }
+
+    .sidebar a {
+        background: var(--surface);
+
+        border: 1px solid var(--border);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .nav-links a:not(.nav-button) {
+        display: none;
+    }
+
+    .hero {
+        padding-top: 55px;
+    }
+
+    .code-content {
+        font-size: 11px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<nav class="container">
+
+    <a href="index.html" class="brand">
+        Hurtip
+    </a>
+
+    <div class="nav-links">
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="examples.html">
+            Examples
+        </a>
+
+        <a href="roadmap.html">
+            Progress
+        </a>
+
+        <a href="../examples.html" class="nav-button">PT</a>
+
+        <a
+            href="https://github.com/joao01020/Hurtip"
+            class="nav-button"
+            target="_blank"
+            rel="noopener"
+        >
+            GitHub ↗
+        </a>
+
+    </div>
+
+</nav>
+
+</header>
+
+
+<main>
+
+
+<section class="hero container">
+
+    <div class="label">
+        Hurtip / Examples
+    </div>
+
+    <h1>
+        Features currently supported by Hurtip.
+    </h1>
+
+    <p>
+        Real examples of the language's syntax,
+        organized according to the features
+        currently implemented.
+    </p>
+
+</section>
+
+
+
+<div class="container layout">
+
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        Examples
+    </div>
+
+    <a href="#variaveis">
+        Variables and values
+    </a>
+
+    <a href="#matematica">
+        Mathematical operations
+    </a>
+
+    <a href="#comparacoes">
+        Comparisons and logic
+    </a>
+
+    <a href="#curto-circuito">
+        Short-circuit evaluation
+    </a>
+
+    <a href="#if">
+        if / else
+    </a>
+
+    <a href="#atribuicao">
+        Assignment
+    </a>
+
+    <a href="#while">
+        while
+    </a>
+
+    <a href="#break">
+        break
+    </a>
+
+    <a href="#continue">
+        continue
+    </a>
+
+    <a href="#nested">
+        Nested loops
+    </a>
+
+    <a href="#completo">
+        Complete example
+    </a>
+
+</aside>
+
+
+
+<div class="content">
+
+
+<!-- VARIABLES -->
+
+<section class="category" id="variaveis">
+
+    <h2>
+        Variables and values
+    </h2>
+
+    <p class="category-description">
+        Declaring variables with <code>create</code>
+        and using strings, numbers, and booleans.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                variables.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// My first Hurtip program</span>
+
+<span class="comment">// Creating variables</span>
+<span class="keyword">create</span> language = <span class="string">"Hurtip"</span>
+<span class="keyword">create</span> version = <span class="number">1</span>
+<span class="keyword">create</span> age = <span class="number">24</span>
+<span class="keyword">create</span> is_active = <span class="boolean">true</span>
+<span class="keyword">create</span> is_finished = <span class="boolean">false</span>
+
+<span class="comment">// Displaying values</span>
+<span class="function">view</span>(language)
+<span class="function">view</span>(version)
+<span class="function">view</span>(age)
+<span class="function">view</span>(is_active)
+<span class="function">view</span>(is_finished)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- MATHEMATICS -->
+
+<section class="category" id="matematica">
+
+    <h2>
+        Mathematical operations
+    </h2>
+
+    <p class="category-description">
+        Arithmetic operators, precedence, and grouping
+        expressions with parentheses.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                arithmetic.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Mathematical operations</span>
+<span class="keyword">create</span> sum = <span class="number">10</span> + <span class="number">5</span>
+<span class="keyword">create</span> subtraction = <span class="number">10</span> - <span class="number">5</span>
+<span class="keyword">create</span> multiplication = <span class="number">10</span> * <span class="number">5</span>
+<span class="keyword">create</span> division = <span class="number">10</span> / <span class="number">5</span>
+
+<span class="function">view</span>(sum)
+<span class="function">view</span>(subtraction)
+<span class="function">view</span>(multiplication)
+<span class="function">view</span>(division)
+
+<span class="comment">// Mathematical precedence</span>
+<span class="keyword">create</span> result = <span class="number">10</span> + <span class="number">5</span> * <span class="number">2</span>
+<span class="keyword">create</span> grouped_result = (<span class="number">10</span> + <span class="number">5</span>) * <span class="number">2</span>
+
+<span class="function">view</span>(result)
+<span class="function">view</span>(grouped_result)
+
+<span class="comment">// Unary operators</span>
+<span class="keyword">create</span> negative = -<span class="number">10</span>
+<span class="keyword">create</span> positive = +<span class="number">10</span>
+
+<span class="function">view</span>(negative)
+<span class="function">view</span>(positive)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- COMPARISONS -->
+
+<section class="category" id="comparacoes">
+
+    <h2>
+        Comparisons and logical operators
+    </h2>
+
+    <p class="category-description">
+        Comparison operators, Boolean logic, and
+        combining expressions.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                logic.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Comparison operators</span>
+<span class="function">view</span>(age == <span class="number">24</span>)
+<span class="function">view</span>(age != <span class="number">18</span>)
+<span class="function">view</span>(age &gt; <span class="number">18</span>)
+<span class="function">view</span>(age &lt; <span class="number">30</span>)
+<span class="function">view</span>(age &gt;= <span class="number">24</span>)
+<span class="function">view</span>(age &lt;= <span class="number">24</span>)
+
+<span class="comment">// Logical operators</span>
+<span class="function">view</span>(<span class="boolean">true</span> and <span class="boolean">true</span>)
+<span class="function">view</span>(<span class="boolean">true</span> and <span class="boolean">false</span>)
+<span class="function">view</span>(<span class="boolean">false</span> or <span class="boolean">true</span>)
+<span class="function">view</span>(<span class="boolean">false</span> or <span class="boolean">false</span>)
+<span class="function">view</span>(not <span class="boolean">true</span>)
+<span class="function">view</span>(not <span class="boolean">false</span>)
+
+<span class="comment">// Combining operators</span>
+<span class="function">view</span>(age &gt;= <span class="number">18</span> and age &lt;= <span class="number">30</span>)
+<span class="function">view</span>(age &lt; <span class="number">18</span> or age == <span class="number">24</span>)
+<span class="function">view</span>(not age &gt; <span class="number">18</span>)
+
+<span class="comment">// Testing logical precedence</span>
+<span class="function">view</span>(<span class="boolean">true</span> or <span class="boolean">false</span> and <span class="boolean">false</span>)
+<span class="function">view</span>((<span class="boolean">true</span> or <span class="boolean">false</span>) and <span class="boolean">false</span>)
+<span class="function">view</span>(not <span class="boolean">false</span> and <span class="boolean">true</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- SHORT-CIRCUIT EVALUATION -->
+
+<section class="category" id="curto-circuito">
+
+    <h2>
+        Short-circuit evaluation
+    </h2>
+
+    <p class="category-description">
+        Logical expressions can skip evaluating the second
+        part when the result can already be determined.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                short_circuit.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Testing short-circuit evaluation</span>
+<span class="function">view</span>(<span class="boolean">false</span> and missing == <span class="number">1</span>)
+<span class="function">view</span>(<span class="boolean">true</span> or missing == <span class="number">1</span>)
+
+<span class="comment">// Comment on the same line as an instruction</span>
+<span class="keyword">create</span> comment_test = <span class="number">100</span> <span class="comment">// This comment will be ignored</span>
+
+<span class="function">view</span>(comment_test)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- IF -->
+
+<section class="category" id="if">
+
+    <h2>
+        if / else
+    </h2>
+
+    <p class="category-description">
+        Conditional decisions, logical operators,
+        nested blocks, and different block formats.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                conditions.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Decisions with if</span>
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Adult"</span>)
+}
+
+<span class="comment">// Decisions with if and else</span>
+<span class="keyword">if</span> (age &lt; <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Underage"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Adult"</span>)
+}
+
+<span class="comment">// Decisions with logical operators</span>
+<span class="keyword">create</span> has_permission = <span class="boolean">true</span>
+
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span> and has_permission) {
+    <span class="function">view</span>(<span class="string">"Access granted"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Access denied"</span>)
+}
+
+<span class="comment">// Decisions with not</span>
+<span class="keyword">if</span> (not <span class="boolean">false</span>) {
+    <span class="function">view</span>(<span class="string">"The condition is true"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"The condition is false"</span>)
+}
+
+<span class="comment">// Nested decisions</span>
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span>) {
+    <span class="keyword">if</span> (age &gt;= <span class="number">21</span>) {
+        <span class="function">view</span>(<span class="string">"Age is 21 or older"</span>)
+    } <span class="keyword">else</span> {
+        <span class="function">view</span>(<span class="string">"Age is between 18 and 20"</span>)
+    }
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Underage"</span>)
+}
+
+<span class="comment">// Decision without else</span>
+<span class="keyword">create</span> number = <span class="number">10</span>
+
+<span class="keyword">if</span> (number == <span class="number">10</span>) {
+    <span class="function">view</span>(<span class="string">"The number is 10"</span>)
+}
+
+<span class="comment">// Else on a separate line</span>
+<span class="keyword">if</span> (age == <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Is 18 years old"</span>)
+}
+<span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Is not 18 years old"</span>)
+}</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- ASSIGNMENT -->
+
+<section class="category" id="atribuicao">
+
+    <h2>
+        Variable assignment and updates
+    </h2>
+
+    <p class="category-description">
+        Variables can be assigned new values after they are created.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                assignment.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Variable assignment</span>
+<span class="keyword">create</span> counter = <span class="number">0</span>
+
+<span class="function">view</span>(counter)
+
+counter = counter + <span class="number">1</span>
+<span class="function">view</span>(counter)
+
+counter = counter + <span class="number">1</span>
+<span class="function">view</span>(counter)
+
+<span class="comment">// Changing text</span>
+<span class="keyword">create</span> message = <span class="string">"Hello"</span>
+message = <span class="string">"Hello Hurtip"</span>
+
+<span class="function">view</span>(message)
+
+<span class="comment">// Changing Boolean values</span>
+<span class="keyword">create</span> is_ready = <span class="boolean">false</span>
+is_ready = <span class="boolean">true</span>
+
+<span class="function">view</span>(is_ready)
+
+<span class="comment">// Assignment inside if</span>
+<span class="keyword">if</span> (counter == <span class="number">2</span>) {
+    counter = <span class="number">10</span>
+}
+
+<span class="function">view</span>(counter)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- WHILE -->
+
+<section class="category" id="while">
+
+    <h2>
+        while
+    </h2>
+
+    <p class="category-description">
+        Repetition based on a condition.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                while.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// While loop</span>
+<span class="keyword">create</span> while_counter = <span class="number">1</span>
+
+<span class="keyword">while</span> (while_counter &lt;= <span class="number">5</span>) {
+    <span class="function">view</span>(while_counter)
+    while_counter = while_counter + <span class="number">1</span>
+}
+
+<span class="function">view</span>(<span class="string">"Loop finished"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- BREAK -->
+
+<section class="category" id="break">
+
+    <h2>
+        break
+    </h2>
+
+    <p class="category-description">
+        Early termination of a loop.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                break.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Testing break</span>
+<span class="keyword">create</span> break_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (break_counter &lt; <span class="number">10</span>) {
+    break_counter = break_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (break_counter == <span class="number">5</span>) {
+        <span class="keyword">break</span>
+    }
+
+    <span class="function">view</span>(break_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Break finished"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- CONTINUE -->
+
+<section class="category" id="continue">
+
+    <h2>
+        continue
+    </h2>
+
+    <p class="category-description">
+        Skip the current iteration and continue the loop.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                continue.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Testing continue</span>
+<span class="keyword">create</span> continue_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (continue_counter &lt; <span class="number">5</span>) {
+    continue_counter = continue_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (continue_counter == <span class="number">3</span>) {
+        <span class="keyword">continue</span>
+    }
+
+    <span class="function">view</span>(continue_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Continue finished"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- BREAK + CONTINUE -->
+
+<section class="category">
+
+    <h2>
+        break and continue together
+    </h2>
+
+    <p class="category-description">
+        Both mechanisms can be used
+        within the same loop.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                control_flow.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Testing break and continue together</span>
+<span class="keyword">create</span> control_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (control_counter &lt; <span class="number">10</span>) {
+    control_counter = control_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (control_counter == <span class="number">3</span>) {
+        <span class="keyword">continue</span>
+    }
+
+    <span class="keyword">if</span> (control_counter == <span class="number">7</span>) {
+        <span class="keyword">break</span>
+    }
+
+    <span class="function">view</span>(control_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Control flow finished"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- NESTED LOOPS -->
+
+<section class="category" id="nested">
+
+    <h2>
+        Nested loops
+    </h2>
+
+    <p class="category-description">
+        Loops can contain other loops and control blocks.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                nested_loops.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// Testing nested loops</span>
+<span class="keyword">create</span> outer = <span class="number">0</span>
+
+<span class="keyword">while</span> (outer &lt; <span class="number">3</span>) {
+    outer = outer + <span class="number">1</span>
+
+    <span class="keyword">create</span> inner = <span class="number">0</span>
+
+    <span class="keyword">while</span> (inner &lt; <span class="number">5</span>) {
+        inner = inner + <span class="number">1</span>
+
+        <span class="keyword">if</span> (inner == <span class="number">3</span>) {
+            <span class="keyword">break</span>
+        }
+
+        <span class="function">view</span>(inner)
+    }
+
+    <span class="function">view</span>(outer)
+}
+
+<span class="function">view</span>(<span class="string">"Nested loops finished"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<!-- COMPLETE EXAMPLE -->
+
+<section class="category" id="completo">
+
+    <h2>
+        Complete example
+    </h2>
+
+    <p class="category-description">
+        This example brings together the features shown above
+        in a single Hurtip program.
+    </p>
+
+
+    <div class="code-box">
+
+        <div class="code-header">
+
+            <div class="code-title">
+                <span class="dot"></span>
+                first_program.hurtip
+            </div>
+
+            <span>
+                Hurtip
+            </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+<pre><span class="comment">// My first Hurtip program</span>
+
+<span class="comment">// Creating variables</span>
+<span class="keyword">create</span> language = <span class="string">"Hurtip"</span>
+<span class="keyword">create</span> version = <span class="number">1</span>
+<span class="keyword">create</span> age = <span class="number">24</span>
+<span class="keyword">create</span> is_active = <span class="boolean">true</span>
+<span class="keyword">create</span> is_finished = <span class="boolean">false</span>
+
+<span class="comment">// Displaying values</span>
+<span class="function">view</span>(language)
+<span class="function">view</span>(version)
+<span class="function">view</span>(age)
+<span class="function">view</span>(is_active)
+<span class="function">view</span>(is_finished)
+
+<span class="comment">// Mathematical operations</span>
+<span class="keyword">create</span> sum = <span class="number">10</span> + <span class="number">5</span>
+<span class="keyword">create</span> subtraction = <span class="number">10</span> - <span class="number">5</span>
+<span class="keyword">create</span> multiplication = <span class="number">10</span> * <span class="number">5</span>
+<span class="keyword">create</span> division = <span class="number">10</span> / <span class="number">5</span>
+
+<span class="function">view</span>(sum)
+<span class="function">view</span>(subtraction)
+<span class="function">view</span>(multiplication)
+<span class="function">view</span>(division)
+
+<span class="comment">// Mathematical precedence</span>
+<span class="keyword">create</span> result = <span class="number">10</span> + <span class="number">5</span> * <span class="number">2</span>
+<span class="keyword">create</span> grouped_result = (<span class="number">10</span> + <span class="number">5</span>) * <span class="number">2</span>
+
+<span class="function">view</span>(result)
+<span class="function">view</span>(grouped_result)
+
+<span class="comment">// Unary operators</span>
+<span class="keyword">create</span> negative = -<span class="number">10</span>
+<span class="keyword">create</span> positive = +<span class="number">10</span>
+
+<span class="function">view</span>(negative)
+<span class="function">view</span>(positive)
+
+<span class="comment">// Comparison operators</span>
+<span class="function">view</span>(age == <span class="number">24</span>)
+<span class="function">view</span>(age != <span class="number">18</span>)
+<span class="function">view</span>(age &gt; <span class="number">18</span>)
+<span class="function">view</span>(age &lt; <span class="number">30</span>)
+<span class="function">view</span>(age &gt;= <span class="number">24</span>)
+<span class="function">view</span>(age &lt;= <span class="number">24</span>)
+
+<span class="comment">// Logical operators</span>
+<span class="function">view</span>(<span class="boolean">true</span> and <span class="boolean">true</span>)
+<span class="function">view</span>(<span class="boolean">true</span> and <span class="boolean">false</span>)
+<span class="function">view</span>(<span class="boolean">false</span> or <span class="boolean">true</span>)
+<span class="function">view</span>(<span class="boolean">false</span> or <span class="boolean">false</span>)
+<span class="function">view</span>(not <span class="boolean">true</span>)
+<span class="function">view</span>(not <span class="boolean">false</span>)
+
+<span class="comment">// Combining operators</span>
+<span class="function">view</span>(age &gt;= <span class="number">18</span> and age &lt;= <span class="number">30</span>)
+<span class="function">view</span>(age &lt; <span class="number">18</span> or age == <span class="number">24</span>)
+<span class="function">view</span>(not age &gt; <span class="number">18</span>)
+
+<span class="comment">// Testing logical precedence</span>
+<span class="function">view</span>(<span class="boolean">true</span> or <span class="boolean">false</span> and <span class="boolean">false</span>)
+<span class="function">view</span>((<span class="boolean">true</span> or <span class="boolean">false</span>) and <span class="boolean">false</span>)
+<span class="function">view</span>(not <span class="boolean">false</span> and <span class="boolean">true</span>)
+
+<span class="comment">// Testing short-circuit evaluation</span>
+<span class="function">view</span>(<span class="boolean">false</span> and missing == <span class="number">1</span>)
+<span class="function">view</span>(<span class="boolean">true</span> or missing == <span class="number">1</span>)
+
+<span class="comment">// Comment on the same line as an instruction</span>
+<span class="keyword">create</span> comment_test = <span class="number">100</span> <span class="comment">// This comment will be ignored</span>
+
+<span class="function">view</span>(comment_test)
+
+<span class="comment">// Decisions with if</span>
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Adult"</span>)
+}
+
+<span class="comment">// Decisions with if and else</span>
+<span class="keyword">if</span> (age &lt; <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Underage"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Adult"</span>)
+}
+
+<span class="comment">// Decisions with logical operators</span>
+<span class="keyword">create</span> has_permission = <span class="boolean">true</span>
+
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span> and has_permission) {
+    <span class="function">view</span>(<span class="string">"Access granted"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Access denied"</span>)
+}
+
+<span class="comment">// Decisions with not</span>
+<span class="keyword">if</span> (not <span class="boolean">false</span>) {
+    <span class="function">view</span>(<span class="string">"The condition is true"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"The condition is false"</span>)
+}
+
+<span class="comment">// Nested decisions</span>
+<span class="keyword">if</span> (age &gt;= <span class="number">18</span>) {
+    <span class="keyword">if</span> (age &gt;= <span class="number">21</span>) {
+        <span class="function">view</span>(<span class="string">"Age is 21 or older"</span>)
+    } <span class="keyword">else</span> {
+        <span class="function">view</span>(<span class="string">"Age is between 18 and 20"</span>)
+    }
+} <span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Underage"</span>)
+}
+
+<span class="comment">// Decision without else</span>
+<span class="keyword">create</span> number = <span class="number">10</span>
+
+<span class="keyword">if</span> (number == <span class="number">10</span>) {
+    <span class="function">view</span>(<span class="string">"The number is 10"</span>)
+}
+
+<span class="comment">// Else on a separate line</span>
+<span class="keyword">if</span> (age == <span class="number">18</span>) {
+    <span class="function">view</span>(<span class="string">"Is 18 years old"</span>)
+}
+<span class="keyword">else</span> {
+    <span class="function">view</span>(<span class="string">"Is not 18 years old"</span>)
+}
+
+<span class="comment">// Variable assignment</span>
+<span class="keyword">create</span> counter = <span class="number">0</span>
+
+<span class="function">view</span>(counter)
+
+counter = counter + <span class="number">1</span>
+<span class="function">view</span>(counter)
+
+counter = counter + <span class="number">1</span>
+<span class="function">view</span>(counter)
+
+<span class="comment">// Changing text</span>
+<span class="keyword">create</span> message = <span class="string">"Hello"</span>
+message = <span class="string">"Hello Hurtip"</span>
+
+<span class="function">view</span>(message)
+
+<span class="comment">// Changing Boolean values</span>
+<span class="keyword">create</span> is_ready = <span class="boolean">false</span>
+is_ready = <span class="boolean">true</span>
+
+<span class="function">view</span>(is_ready)
+
+<span class="comment">// Assignment inside if</span>
+<span class="keyword">if</span> (counter == <span class="number">2</span>) {
+    counter = <span class="number">10</span>
+}
+
+<span class="function">view</span>(counter)
+
+<span class="comment">// While loop</span>
+<span class="keyword">create</span> while_counter = <span class="number">1</span>
+
+<span class="keyword">while</span> (while_counter &lt;= <span class="number">5</span>) {
+    <span class="function">view</span>(while_counter)
+    while_counter = while_counter + <span class="number">1</span>
+}
+
+<span class="function">view</span>(<span class="string">"Loop finished"</span>)
+
+<span class="comment">// Testing break</span>
+<span class="keyword">create</span> break_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (break_counter &lt; <span class="number">10</span>) {
+    break_counter = break_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (break_counter == <span class="number">5</span>) {
+        <span class="keyword">break</span>
+    }
+
+    <span class="function">view</span>(break_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Break finished"</span>)
+
+<span class="comment">// Testing continue</span>
+<span class="keyword">create</span> continue_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (continue_counter &lt; <span class="number">5</span>) {
+    continue_counter = continue_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (continue_counter == <span class="number">3</span>) {
+        <span class="keyword">continue</span>
+    }
+
+    <span class="function">view</span>(continue_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Continue finished"</span>)
+
+<span class="comment">// Testing break and continue together</span>
+<span class="keyword">create</span> control_counter = <span class="number">0</span>
+
+<span class="keyword">while</span> (control_counter &lt; <span class="number">10</span>) {
+    control_counter = control_counter + <span class="number">1</span>
+
+    <span class="keyword">if</span> (control_counter == <span class="number">3</span>) {
+        <span class="keyword">continue</span>
+    }
+
+    <span class="keyword">if</span> (control_counter == <span class="number">7</span>) {
+        <span class="keyword">break</span>
+    }
+
+    <span class="function">view</span>(control_counter)
+}
+
+<span class="function">view</span>(<span class="string">"Control flow finished"</span>)
+
+<span class="comment">// Testing nested loops</span>
+<span class="keyword">create</span> outer = <span class="number">0</span>
+
+<span class="keyword">while</span> (outer &lt; <span class="number">3</span>) {
+    outer = outer + <span class="number">1</span>
+
+    <span class="keyword">create</span> inner = <span class="number">0</span>
+
+    <span class="keyword">while</span> (inner &lt; <span class="number">5</span>) {
+        inner = inner + <span class="number">1</span>
+
+        <span class="keyword">if</span> (inner == <span class="number">3</span>) {
+            <span class="keyword">break</span>
+        }
+
+        <span class="function">view</span>(inner)
+    }
+
+    <span class="function">view</span>(outer)
+}
+
+<span class="function">view</span>(<span class="string">"Nested loops finished"</span>)
+
+<span class="comment">// Finishing the program</span>
+<span class="function">view</span>(<span class="string">"Hello Hurtip!"</span>)</pre>
+
+        </div>
+
+    </div>
+
+    <div class="supported">
+        Implemented
+    </div>
+
+</section>
+
+
+
+<div class="bottom">
+
+    <p>
+        These examples demonstrate features that have already been implemented
+        and used in the development of the Hurtip language.
+    </p>
+
+    <a href="roadmap.html" class="button">
+        View full progress →
+    </a>
+
+</div>
+
+
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+<div class="container footer-inner">
+
+    <span>
+        © 2026 Hurtip.
+    </span>
+
+    <span>
+        Language examples.
+    </span>
+
+</div>
+
+</footer>
+
+
+</body>
+</html>

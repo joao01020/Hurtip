@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<meta name="description" content="Meet the people who contribute to Hurtip and help improve the programming language.">
+<title>Contributors — Hurtip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--background:#080b12;--surface:#0e1420;--surface-hover:#121c2b;--border:#1c2738;--text:#f1f5f9;--muted:#8795a9;--accent:#69aaff;--accent-soft:rgba(105,170,255,.1)}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{min-height:100vh;background:var(--background);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}
+.background{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(48,105,180,.13),transparent 48%),radial-gradient(ellipse at 100% 70%,rgba(36,78,130,.06),transparent 40%)}
+.container{width:min(100% - 48px,1080px);margin:0 auto}header{height:76px;border-bottom:1px solid rgba(255,255,255,.05)}.navigation{height:100%;display:flex;align-items:center;justify-content:space-between;gap:15px}.logo{font-size:23px;font-weight:800;letter-spacing:-1.3px}.logo span{color:var(--accent)}.header-actions{display:flex;align-items:center;gap:22px}.nav-link{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;font-weight:500;transition:color .2s}.nav-link:hover{color:var(--text)}.nav-link svg{width:16px;height:16px}
+.language-switch{display:flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:11px;font-weight:700}.language-switch a{padding:5px 7px;border-radius:5px;color:var(--muted)}.language-switch a.active{background:var(--accent);color:#08111d}
+.hero{padding:105px 0 65px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;border:1px solid rgba(105,170,255,.19);border-radius:30px;background:var(--accent-soft);color:#8bbcff;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase}.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+h1{margin-top:25px;font-size:clamp(42px,7vw,68px);font-weight:800;letter-spacing:-4px;line-height:1.1}h1 span{background:linear-gradient(110deg,#fff 20%,#81baff 90%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-description{max-width:570px;margin:22px auto 0;color:var(--muted);font-size:15px;line-height:1.9}
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:15px}.section-heading h2{font-size:16px;font-weight:700;letter-spacing:-.3px}.section-label{color:#66758a;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase}
+.contributors-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.contributor-card{position:relative;display:flex;flex-direction:column;min-height:235px;padding:25px;overflow:hidden;border:1px solid var(--border);border-radius:13px;background:linear-gradient(145deg,#101827,#0c121d);transition:border-color .25s,transform .25s,background .25s}.contributor-card:hover{transform:translateY(-4px);border-color:#344b69;background:var(--surface-hover)}.card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.avatar{width:55px;height:55px;border:2px solid #26374e;border-radius:50%;object-fit:cover;background:#172337}.role{padding:7px 10px;border:1px solid rgba(105,170,255,.17);border-radius:5px;background:var(--accent-soft);color:#8bbcff;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}.contributor-info{margin-top:21px}.contributor-name{font-size:17px;font-weight:700;letter-spacing:-.4px}.username{display:inline-block;margin-top:5px;color:#7298c4;font-size:12px}.contribution{margin-top:13px;color:var(--muted);font-size:12px;line-height:1.8}.profile-link{display:inline-flex;align-items:center;gap:7px;width:fit-content;margin-top:auto;padding-top:19px;color:#a9cfff;font-size:11px;font-weight:600;transition:color .2s}.profile-link:hover{color:#fff}.profile-link svg{width:14px;height:14px}
+.community{margin:70px 0 85px;padding:34px;border:1px solid var(--border);border-radius:13px;background:linear-gradient(120deg,#101a29,#0d1420);text-align:center}.community h2{font-size:20px;font-weight:700;letter-spacing:-.6px}.community p{max-width:520px;margin:13px auto 23px;color:var(--muted);font-size:13px;line-height:1.8}.github-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;border:1px solid #34445a;border-radius:7px;background:#172337;color:#e6edf7;font-size:12px;font-weight:600;transition:.2s}.github-button:hover{border-color:#669ee0;background:#1c304a;transform:translateY(-2px)}.github-button svg{width:16px;height:16px}
+footer{padding:24px 0;border-top:1px solid rgba(255,255,255,.05)}.footer-content{display:flex;align-items:center;justify-content:space-between;gap:20px}.footer-brand{font-size:14px;font-weight:800;letter-spacing:-.5px}.footer-brand span{color:var(--accent)}.copyright{color:#66758a;font-size:11px}.footer-link{color:#8294aa;font-size:11px;transition:color .2s}.footer-link:hover{color:white}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}.hero,.contributors,.community{animation:fadeUp .7s ease both}.contributors{animation-delay:.12s}.community{animation-delay:.2s}
+@media(max-width:650px){.container{width:min(100% - 36px,1080px)}header{height:68px}.header-actions{gap:12px}.hero{padding:75px 0 50px}h1{letter-spacing:-2.5px}.hero-description{font-size:13px}.contributors-grid{grid-template-columns:1fr}.contributor-card{min-height:220px}.community{margin:55px 0 65px;padding:27px 20px}.footer-content{flex-wrap:wrap}.copyright{order:3;width:100%}.nav-link{font-size:0}.nav-link svg{width:18px;height:18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="background"></div>
+<header><div class="container navigation">
+<a href="../../index.html" class="logo">Hurtip<span>.</span></a>
+<div class="header-actions">
+<a href="../../index.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back to Hurtip</a>
+<div class="language-switch" aria-label="Select language"><a href="../../contributors/index.html" >PT</a><a href="index.html" class='active' aria-current='page'>EN</a></div>
+</div></div></header>
+<main class="container">
+<section class="hero"><div class="eyebrow"><span class="eyebrow-dot"></span>The people behind Hurtip</div>
+<h1>Our <span>Contributors.</span></h1><p class="hero-description">Hurtip grows through collaboration, ideas, and shared knowledge. Meet the people who help make the language better, one contribution at a time.</p></section>
+<section class="contributors"><div class="section-heading"><h2>People behind the project</h2><span class="section-label">Hurtip Community</span></div>
+<div class="contributors-grid">
+<article class="contributor-card"><div class="card-top"><img class="avatar" src="https://github.com/joao01020.png" alt="GitHub avatar of João Vitor" loading="lazy"><span class="role">Creator and Lead Developer</span></div>
+<div class="contributor-info"><h3 class="contributor-name">João Vitor</h3><a class="username" href="https://github.com/joao01020/" target="_blank" rel="noopener noreferrer">@joao01020</a><p class="contribution">Creator and lead developer of Hurtip, responsible for the project's vision, conception, and ongoing development.</p></div>
+<a class="profile-link" href="https://github.com/joao01020/" target="_blank" rel="noopener noreferrer">View GitHub profile <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a></article>
+<article class="contributor-card"><div class="card-top"><img class="avatar" src="https://github.com/J9OOOO.png" alt="GitHub avatar of joa_omatematico" loading="lazy"><span class="role">Community Contributor</span></div>
+<div class="contributor-info"><h3 class="contributor-name">joa_omatematico</h3><a class="username" href="https://github.com/J9OOOO" target="_blank" rel="noopener noreferrer">@joa_omatematico</a><p class="contribution">Reported issues and helped identify and investigate problems related to floating-point output precision.</p></div>
+<a class="profile-link" href="https://github.com/J9OOOO" target="_blank" rel="noopener noreferrer">View GitHub profile <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a></article>
+</div></section>
+<section class="community"><h2>Want to contribute to Hurtip?</h2><p>Every contribution matters. Whether you report a bug, submit a pull request, test new features, share ideas, or send suggestions and feedback, you can help improve Hurtip.</p>
+<a class="github-button" href="https://github.com/joao01020/Hurtip" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.65-1.24-1.65-1.02-.7.08-.69.08-.69 1.12.08 1.71 1.15 1.71 1.15 1 1.7 2.61 1.21 3.24.93.1-.72.39-1.21.71-1.49-2.48-.28-5.09-1.24-5.09-5.53 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.15a10.6 10.6 0 0 1 5.56 0c2.12-1.45 3.05-1.15 3.05-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.3-2.61 5.24-5.1 5.52.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>Explore repository</a>
+</section></main>
+<footer><div class="container footer-content"><a href="../../index.html" class="footer-brand">Hurtip<span>.</span></a><span class="copyright">© <span id="year"></span> Hurtip. All rights reserved.</span><a href="https://github.com/joao01020/Hurtip" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a></div></footer>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body></html>
