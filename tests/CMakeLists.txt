@@ -41,6 +41,18 @@ add_hurtip_success_test(
 30]=]
 )
 
+# Precision
+
+add_hurtip_success_test(
+    double_output_precision
+    tests/precision/precision_test.hurtip
+    [=[2.9999989999999999
+2.9999989999999999
+0.33333333333333331]=]
+)
+
+
+
 # Functions
 
 add_hurtip_success_test(
