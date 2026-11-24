@@ -391,171 +391,202 @@ void Interpreter::execute(const ASTNode& statement)
 
 // Module loading
 
-void Interpreter::executeLoad(const LoadStatement& statement)
-{
-    std::filesystem::path modulePath(statement.path);
-
-    if (modulePath.extension() != ".hurtip")
+void Interpreter::executeLoad(const LoadStatement &statement)
     {
-        throw std::runtime_error("Line " + std::to_string(statement.line) +
-                                 ": Modules must use the .hurtip extension");
-    }
+        std::filesystem::path modulePath(statement.path);
 
-    // Resolve paths relative to the file containing the load statement.
-
-    if (modulePath.is_relative())
-    {
-        if (!currentFilePath.empty())
+        if (modulePath.extension() != ".hurtip")
         {
-            modulePath = currentFilePath.parent_path() / modulePath;
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Modules must use the .hurtip extension");
         }
-        else
+
+        // Resolve paths relative to the file containing the load statement.
+
+        if (modulePath.is_relative())
         {
-            modulePath = std::filesystem::current_path() / modulePath;
+            if (!currentFilePath.empty())
+            {
+                modulePath =
+                    currentFilePath.parent_path() / modulePath;
+            }
+            else
+            {
+                modulePath =
+                    std::filesystem::current_path() / modulePath;
+            }
         }
-    }
 
-    modulePath = std::filesystem::absolute(modulePath).lexically_normal();
+        modulePath = std::filesystem::absolute(modulePath)
+                         .lexically_normal();
 
-    std::error_code error;
+        std::error_code error;
 
-    std::filesystem::path canonicalPath = std::filesystem::weakly_canonical(modulePath, error);
+        std::filesystem::path canonicalPath =
+            std::filesystem::weakly_canonical(modulePath, error);
 
-    if (!error)
-    {
-        modulePath = canonicalPath;
-    }
-
-    const std::string moduleKey = modulePath.string();
-
-    const std::string alias =
-        statement.alias.empty() ? modulePath.stem().string() : statement.alias;
-
-    // A module cannot reuse an alias assigned to a native library.
-
-    auto existingImport = importedLibraries.find(alias);
-
-    if (existingImport != importedLibraries.end())
-    {
-        throw std::runtime_error("Line " + std::to_string(statement.line) +
-                                 ": Namespace already imported: " + alias);
-    }
-
-    // A namespace cannot be reused for a different module.
-
-    auto existingNamespace = namespaces.find(alias);
-
-    if (existingNamespace != namespaces.end())
-    {
-        auto existingModule = moduleFunctions.find(moduleKey);
-
-        if (existingModule == moduleFunctions.end() ||
-            existingNamespace->second != existingModule->second)
+        if (!error)
         {
-            throw std::runtime_error("Line " + std::to_string(statement.line) +
-                                     ": Namespace already declared: " + alias);
+            modulePath = canonicalPath;
+        }
+
+        const std::string moduleKey = modulePath.string();
+
+        const std::string alias =
+            statement.alias.empty()
+                ? modulePath.stem().string()
+                : statement.alias;
+
+        // A module cannot reuse an alias assigned to a native library.
+
+        auto existingImport = importedLibraries.find(alias);
+
+        if (existingImport != importedLibraries.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Namespace already imported: " + alias);
+        }
+
+        // A namespace cannot be reused for a different module.
+
+        auto existingNamespace = namespaces.find(alias);
+
+        if (existingNamespace != namespaces.end())
+        {
+            auto existingModule = moduleFunctions.find(moduleKey);
+
+            if (existingModule == moduleFunctions.end() ||
+                existingNamespace->second != existingModule->second)
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(statement.line) +
+                    ": Namespace already declared: " + alias);
+            }
+        }
+
+        // Reuse an already loaded module.
+
+        if (loadedModules.find(moduleKey) != loadedModules.end())
+        {
+            namespaces[alias] = moduleFunctions.at(moduleKey);
+            namespaceModuleKeys[alias] = moduleKey;
+
+            return;
+        }
+
+        // Detect circular dependencies.
+
+        if (loadingModules.find(moduleKey) != loadingModules.end())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Circular module dependency: " + moduleKey);
+        }
+
+        std::ifstream file(modulePath);
+
+        if (!file.is_open())
+        {
+            throw std::runtime_error(
+                "Line " + std::to_string(statement.line) +
+                ": Could not open module: " + moduleKey);
+        }
+
+        std::stringstream buffer;
+
+        buffer << file.rdbuf();
+
+        if (file.bad())
+        {
+            throw std::runtime_error(
+                "Could not read module: " + moduleKey);
+        }
+
+        const std::string source = buffer.str();
+
+        loadingModules.insert(moduleKey);
+
+        const std::filesystem::path previousFilePath =
+            currentFilePath;
+
+        const std::string previousNamespace =
+            currentNamespace;
+
+        const auto previousEnvironment =
+            currentEnvironment;
+
+        // Create the namespace and persistent environment.
+
+        namespaces.emplace(alias, FunctionRegistry{});
+
+        namespaceModuleKeys[alias] = moduleKey;
+
+        moduleEnvironments[moduleKey] =
+            std::make_shared<Environment>(globalEnvironment);
+
+        try
+        {
+            Lexer lexer(source);
+
+            std::vector<Token> tokens = lexer.tokenize();
+
+            Parser parser(tokens);
+
+            auto statements = parser.parse();
+
+            // Keep the module AST locally until execution succeeds.
+
+            auto module = std::make_unique<
+                std::vector<std::unique_ptr<ASTNode>>>(
+                std::move(statements));
+
+            const auto *modulePointer = module.get();
+
+            // Execute the module in its own context.
+
+            currentFilePath = modulePath;
+            currentNamespace = alias;
+            currentEnvironment = moduleEnvironments.at(moduleKey);
+
+            executeStatements(*modulePointer);
+
+            // Save the module's function registry.
+
+            moduleFunctions[moduleKey] = namespaces.at(alias);
+
+            // Keep the successfully executed module AST alive.
+
+            moduleStatements.push_back(std::move(module));
+
+            // Restore the previous execution context.
+
+            currentFilePath = previousFilePath;
+            currentNamespace = previousNamespace;
+            currentEnvironment = previousEnvironment;
+
+            loadingModules.erase(moduleKey);
+            loadedModules.insert(moduleKey);
+        }
+        catch (...)
+        {
+            // Restore the previous execution context.
+
+            currentFilePath = previousFilePath;
+            currentNamespace = previousNamespace;
+            currentEnvironment = previousEnvironment;
+
+            loadingModules.erase(moduleKey);
+
+            moduleFunctions.erase(moduleKey);
+            namespaces.erase(alias);
+            namespaceModuleKeys.erase(alias);
+            moduleEnvironments.erase(moduleKey);
+
+            throw;
         }
     }
-
-    // Reuse an already loaded module.
-
-    if (loadedModules.find(moduleKey) != loadedModules.end())
-    {
-        namespaces[alias] = moduleFunctions.at(moduleKey);
-
-        return;
-    }
-
-    // Detect circular dependencies.
-
-    if (loadingModules.find(moduleKey) != loadingModules.end())
-    {
-        throw std::runtime_error("Line " + std::to_string(statement.line) +
-                                 ": Circular module dependency: " + moduleKey);
-    }
-
-    std::ifstream file(modulePath);
-
-    if (!file.is_open())
-    {
-        throw std::runtime_error("Line " + std::to_string(statement.line) +
-                                 ": Could not open module: " + moduleKey);
-    }
-
-    std::stringstream buffer;
-
-    buffer << file.rdbuf();
-
-    if (file.bad())
-    {
-        throw std::runtime_error("Could not read module: " + moduleKey);
-    }
-
-    const std::string source = buffer.str();
-
-    loadingModules.insert(moduleKey);
-
-    const std::filesystem::path previousFilePath = currentFilePath;
-
-    const std::string previousNamespace = currentNamespace;
-
-    const auto previousEnvironment = currentEnvironment;
-
-    // Create the namespace before executing the module.
-
-    namespaces.emplace(alias, FunctionRegistry{});
-
-    try
-    {
-        Lexer lexer(source);
-
-        std::vector<Token> tokens = lexer.tokenize();
-
-        Parser parser(tokens);
-
-        auto statements = parser.parse();
-
-        // Keep the module AST alive.
-
-        auto module =
-            std::make_unique<std::vector<std::unique_ptr<ASTNode>>>(std::move(statements));
-
-        const auto* modulePointer = module.get();
-
-        moduleStatements.push_back(std::move(module));
-
-        // Execute the module in its own context.
-
-        currentFilePath = modulePath;
-        currentNamespace = alias;
-        currentEnvironment = globalEnvironment;
-
-        executeStatements(*modulePointer);
-
-        // Save the module's function registry.
-
-        moduleFunctions[moduleKey] = namespaces.at(alias);
-
-        currentFilePath = previousFilePath;
-        currentNamespace = previousNamespace;
-        currentEnvironment = previousEnvironment;
-
-        loadingModules.erase(moduleKey);
-        loadedModules.insert(moduleKey);
-    }
-    catch (...)
-    {
-        currentFilePath = previousFilePath;
-        currentNamespace = previousNamespace;
-        currentEnvironment = previousEnvironment;
-
-        loadingModules.erase(moduleKey);
-
-        namespaces.erase(alias);
-
-        throw;
-    }
-}
 
 // Native library importing
 

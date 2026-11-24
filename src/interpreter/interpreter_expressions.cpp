@@ -619,7 +619,28 @@ RuntimeValue Interpreter::executeCall(const CallExpression& expression)
     {
         // Create an isolated environment for this function call.
 
-        currentEnvironment = std::make_shared<Environment>(globalEnvironment);
+        // Resolve the parent environment for this function.
+
+        auto functionEnvironment = globalEnvironment;
+
+        if (!targetNamespace.empty())
+        {
+            auto moduleKey = namespaceModuleKeys.find(targetNamespace);
+
+            if (moduleKey != namespaceModuleKeys.end())
+            {
+                auto moduleEnvironment = moduleEnvironments.find(moduleKey->second);
+
+                if (moduleEnvironment != moduleEnvironments.end())
+                {
+                    functionEnvironment = moduleEnvironment->second;
+                }
+            }
+        }
+
+        // Create an isolated environment for this function call.
+
+        currentEnvironment = std::make_shared<Environment>(functionEnvironment);
 
         currentNamespace = targetNamespace;
 
