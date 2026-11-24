@@ -1,0 +1,4 @@
+load "services/math_service.hurtip" as math
+
+view(math.sum(10, 5))
+view(math.sum(20, 30))

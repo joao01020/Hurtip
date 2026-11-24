@@ -681,6 +681,38 @@ namespace hurtip
             arguments.push_back(evaluate(*argument));
         }
 
+        // Resolve the parent environment for this function.
+
+        std::shared_ptr<Environment> functionEnvironment =
+            globalEnvironment;
+
+        if (!targetNamespace.empty())
+        {
+            auto moduleKeyIterator =
+                namespaceModuleKeys.find(targetNamespace);
+
+            if (moduleKeyIterator == namespaceModuleKeys.end())
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(expression.line) +
+                    ": Module environment not registered for namespace: " +
+                    targetNamespace);
+            }
+
+            auto environmentIterator =
+                moduleEnvironments.find(moduleKeyIterator->second);
+
+            if (environmentIterator == moduleEnvironments.end())
+            {
+                throw std::runtime_error(
+                    "Line " + std::to_string(expression.line) +
+                    ": Module environment not found for namespace: " +
+                    targetNamespace);
+            }
+
+            functionEnvironment = environmentIterator->second;
+        }
+
         // Preserve the current execution context.
 
         auto previousEnvironment = currentEnvironment;
@@ -692,10 +724,11 @@ namespace hurtip
 
         try
         {
-            // Create an isolated environment for this function call.
+            // Create an isolated environment for this function call,
+            // inheriting from the module environment when applicable.
 
             currentEnvironment =
-                std::make_shared<Environment>(globalEnvironment);
+                std::make_shared<Environment>(functionEnvironment);
 
             currentNamespace = targetNamespace;
 

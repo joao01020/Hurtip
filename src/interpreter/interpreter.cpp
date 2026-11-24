@@ -522,6 +522,7 @@ namespace hurtip
         if (loadedModules.find(moduleKey) != loadedModules.end())
         {
             namespaces[alias] = moduleFunctions.at(moduleKey);
+            namespaceModuleKeys[alias] = moduleKey;
 
             return;
         }
@@ -567,9 +568,14 @@ namespace hurtip
         const auto previousEnvironment =
             currentEnvironment;
 
-        // Create the namespace before executing the module.
+        // Create the namespace and persistent environment.
 
         namespaces.emplace(alias, FunctionRegistry{});
+
+        namespaceModuleKeys[alias] = moduleKey;
+
+        moduleEnvironments[moduleKey] =
+            std::make_shared<Environment>(globalEnvironment);
 
         try
         {
@@ -581,7 +587,7 @@ namespace hurtip
 
             auto statements = parser.parse();
 
-            // Keep the module AST alive.
+            // Keep the module AST locally until execution succeeds.
 
             auto module = std::make_unique<
                 std::vector<std::unique_ptr<ASTNode>>>(
@@ -589,19 +595,23 @@ namespace hurtip
 
             const auto *modulePointer = module.get();
 
-            moduleStatements.push_back(std::move(module));
-
             // Execute the module in its own context.
 
             currentFilePath = modulePath;
             currentNamespace = alias;
-            currentEnvironment = globalEnvironment;
+            currentEnvironment = moduleEnvironments.at(moduleKey);
 
             executeStatements(*modulePointer);
 
             // Save the module's function registry.
 
             moduleFunctions[moduleKey] = namespaces.at(alias);
+
+            // Keep the successfully executed module AST alive.
+
+            moduleStatements.push_back(std::move(module));
+
+            // Restore the previous execution context.
 
             currentFilePath = previousFilePath;
             currentNamespace = previousNamespace;
@@ -612,13 +622,18 @@ namespace hurtip
         }
         catch (...)
         {
+            // Restore the previous execution context.
+
             currentFilePath = previousFilePath;
             currentNamespace = previousNamespace;
             currentEnvironment = previousEnvironment;
 
             loadingModules.erase(moduleKey);
 
+            moduleFunctions.erase(moduleKey);
             namespaces.erase(alias);
+            namespaceModuleKeys.erase(alias);
+            moduleEnvironments.erase(moduleKey);
 
             throw;
         }

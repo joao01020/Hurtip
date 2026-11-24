@@ -1,0 +1,6 @@
+create name = "Second"
+
+function getName()
+{
+    return name
+}
