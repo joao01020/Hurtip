@@ -27,6 +27,8 @@ A suíte contempla verificações para:
 - Isolamento de variáveis em blocos.
 - Comportamento de `if` e `else`.
 - Loops, `break` e `continue`.
+- Inicialização, condição e incremento de loops `for`.
+- Incrementos de variáveis com o operador `++`.
 - Funções, parâmetros e recursividade.
 - Sistema de módulos.
 - Isolamento de ambientes entre módulos.

@@ -150,6 +150,24 @@ view(negative)
 view(positive)
 ```
 
+### Operador de incremento
+
+O operador `++` permite incrementar uma variável numérica em uma unidade.
+
+```hurtip
+create counter = 0
+
+counter++
+
+view(counter)
+```
+
+Resultado:
+
+```text
+1
+```
+
 ### Operadores de comparação
 
 | Operador | Significado |
@@ -253,6 +271,22 @@ while (counter < 5) {
 }
 ```
 
+### Loop `for`
+
+A estrutura `for` permite executar um bloco de código com inicialização, condição e incremento definidos em seu cabeçalho.
+
+```hurtip
+for (create i = 0; i < 5; i++) {
+    view(i)
+}
+```
+
+O cabeçalho possui três partes:
+
+- Inicialização: executada antes da primeira iteração.
+- Condição: determina se o loop deve continuar.
+- Incremento: executado ao final de cada iteração.
+
 ### Controle de loops
 
 - `break`: encerra o loop em que está inserido.
@@ -293,7 +327,7 @@ O comportamento de `break` em loops aninhados foi testado para garantir que a in
 | `break` | Implementado |
 | `continue` | Implementado |
 | Loops aninhados | Implementados |
-| `for` | Não implementado |
+| `for` | Implementado |
 
 ## 5. Funções e escopos
 
@@ -783,9 +817,6 @@ Os itens abaixo não devem ser confundidos com funcionalidades já implementadas
 - API pública para bibliotecas de terceiros.
 
 ### Estruturas de controle
-
-- Loop `for`.
-
 ### Objetivos de evolução
 
 A Hurtip também possui objetivos de pesquisa e desenvolvimento relacionados a:

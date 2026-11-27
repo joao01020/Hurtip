@@ -10,7 +10,7 @@ Atualmente, a Hurtip possui um interpretador funcional desenvolvido em C++17, co
 
 ## Recursos
 
-A linguagem já oferece variáveis, expressões, operações matemáticas e lógicas, estruturas de controle, funções, recursividade, escopos, arrays, módulos com ambientes persistentes e importação de bibliotecas nativas.
+A linguagem já oferece variáveis, expressões, operações matemáticas e lógicas, estruturas de controle como `if`, `while` e `for`, operador de incremento `++`, funções, recursividade, escopos, arrays, módulos com ambientes persistentes e importação de bibliotecas nativas.
 
 Consulte [Recursos implementados](docs/features.md) para conhecer as funcionalidades disponíveis, suas limitações e os recursos ainda não implementados.
 

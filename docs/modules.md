@@ -22,6 +22,20 @@ load "modules/math.hurtip" as math
 view(math.sum(10, 20))
 ```
 
+### Utilização de bibliotecas escritas em Hurtip
+
+O mecanismo `load` também permite utilizar bibliotecas desenvolvidas na própria linguagem, desde que estejam disponíveis como arquivos `.hurtip`.
+
+Isso permite que funcionalidades adicionais sejam implementadas e reutilizadas sem necessariamente modificar o interpretador em C++.
+
+Exemplo:
+
+```hurtip
+load "libraries/Objetos.hurtip" as obj
+
+create person = obj.objectCreate(["name", "age"], ["João", 24])
+```
+
 ## Ambientes persistentes
 
 Cada módulo carregado possui um ambiente persistente associado ao seu caminho de identificação.

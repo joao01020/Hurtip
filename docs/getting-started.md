@@ -48,6 +48,16 @@ Execute:
 ./build/hurtip hello.hurtip
 ```
 
+### Utilizando loops e incremento
+
+A Hurtip permite executar repetições utilizando `for` e incrementar variáveis com o operador `++`.
+
+```hurtip
+for (create i = 0; i < 5; i++) {
+    view(i)
+}
+```
+
 ## Executar os testes
 
 Para executar toda a suíte automatizada:

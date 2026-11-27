@@ -108,6 +108,18 @@ create negative = -10
 create positive = +10
 ```
 
+### Operador de incremento
+
+O operador `++` incrementa uma variável numérica em uma unidade.
+
+```hurtip
+create counter = 0
+counter++
+view(counter)
+```
+
+Resultado: `1`
+
 ## Operadores de comparação
 
 | Operador | Significado |
@@ -187,6 +199,16 @@ create counter = 0
 while (counter < 5) {
     view(counter)
     counter = counter + 1
+}
+```
+
+### Loop `for`
+
+O `for` permite executar repetições com inicialização, condição e incremento definidos em seu cabeçalho.
+
+```hurtip
+for (create i = 0; i < 5; i++) {
+    view(i)
 }
 ```
 
@@ -288,7 +310,6 @@ Closures e captura de ambientes léxicos ainda não foram implementados. O siste
 
 ## Recursos ainda não implementados
 
-- Loop `for`.
 - Closures.
 - Captura completa de ambientes léxicos.
 - Métodos avançados para arrays.
