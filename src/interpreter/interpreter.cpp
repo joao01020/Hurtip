@@ -127,7 +127,36 @@ void Interpreter::execute(const ASTNode& statement)
 
         return;
     }
+    // Variable increment
 
+    if (const auto* increment = dynamic_cast<const IncrementStatement*>(&statement))
+    {
+        RuntimeValue value;
+
+        if (!currentEnvironment->get(increment->name, value))
+        {
+            throw std::runtime_error("Line " + std::to_string(increment->line) +
+                                     ": Undefined variable: " + increment->name);
+        }
+
+        const double* number = std::get_if<double>(&value);
+
+        if (!number)
+        {
+            throw std::runtime_error("Line " + std::to_string(increment->line) +
+                                     ": Increment operator requires a number");
+        }
+
+        const double result = *number + 1.0;
+
+        if (!currentEnvironment->assign(increment->name, result))
+        {
+            throw std::runtime_error("Line " + std::to_string(increment->line) +
+                                     ": Undefined variable: " + increment->name);
+        }
+
+        return;
+    }
     // Variable assignment
 
     if (const auto* assignment = dynamic_cast<const AssignmentStatement*>(&statement))
@@ -316,6 +345,66 @@ void Interpreter::execute(const ASTNode& statement)
     if (const auto* continueStatement = dynamic_cast<const ContinueStatement*>(&statement))
     {
         throw ContinueSignal{continueStatement->line};
+    }
+
+    // For statement
+
+    if (const auto* forStatement = dynamic_cast<const ForStatement*>(&statement))
+    {
+        const auto previousEnvironment = currentEnvironment;
+
+        currentEnvironment = std::make_shared<Environment>(previousEnvironment);
+
+        try
+        {
+            // Initialization
+            execute(*forStatement->initializer);
+
+            while (true)
+            {
+                // Condition
+                RuntimeValue condition = evaluate(*forStatement->condition);
+
+                const bool* boolean = std::get_if<bool>(&condition);
+
+                if (!boolean)
+                {
+                    throw std::runtime_error("Line " + std::to_string(forStatement->line) +
+                                             ": For condition must be a boolean");
+                }
+
+                if (!*boolean)
+                {
+                    break;
+                }
+
+                // Loop body
+                try
+                {
+                    execute(*forStatement->body);
+                }
+                catch (const ContinueSignal&)
+                {
+                    // Continue still executes the increment.
+                }
+                catch (const BreakSignal&)
+                {
+                    break;
+                }
+
+                // Increment
+                evaluate(*forStatement->increment);
+            }
+        }
+        catch (...)
+        {
+            currentEnvironment = previousEnvironment;
+            throw;
+        }
+
+        currentEnvironment = previousEnvironment;
+
+        return;
     }
 
     // While statement
