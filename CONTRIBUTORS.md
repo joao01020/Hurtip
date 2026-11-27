@@ -18,6 +18,11 @@ suggestions, and feedback.
   contribution helped identify the limitation and shape the implementation of
   dynamic array resizing in Hurtip.
 
+- **[@J9OOOO](https://github.com/J9OOOO)** — Reported a variable redeclaration
+  issue and suggested adding a native `for` loop to the language. These
+  contributions helped improve variable declaration checks and expand Hurtip's
+  loop capabilities.
+
 ## Acknowledgments
 
 Thank you to everyone who helps make Hurtip better. Every contribution matters,
