@@ -283,6 +283,41 @@ add_hurtip_success_test(
 )
 
 
+# For loops
+
+add_hurtip_success_test(
+    basic_for
+    tests/programs/for/basic_for.hurtip
+    [=[1
+2
+3
+3]=]
+)
+
+add_hurtip_success_test(
+    nested_for
+    tests/programs/for/nested_for.hurtip
+    [=[27]=]
+)
+
+add_hurtip_success_test(
+    break_for
+    tests/programs/for/break_for.hurtip
+    [=[1
+2]=]
+)
+
+add_hurtip_success_test(
+    continue_for
+    tests/programs/for/continue_for.hurtip
+    [=[12]=]
+)
+
+add_hurtip_success_test(
+    break_continue_for
+    tests/programs/for/break_continue_for.hurtip
+    [=[18]=]
+)
 # Arrays
 
 add_hurtip_success_test(
