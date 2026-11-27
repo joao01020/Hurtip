@@ -20,6 +20,7 @@ namespace hurtip
         If,
         Else,
         While,
+        For,
         Break,
         Continue,
 
@@ -43,6 +44,7 @@ namespace hurtip
 
         // Arithmetic operators
         Plus,
+        PlusPlus,
         Minus,
         Star,
         Slash,
@@ -56,6 +58,7 @@ namespace hurtip
         RightBracket,
         Comma,
         Dot,
+        Semicolon,
 
         NewLine,
         EndOfFile

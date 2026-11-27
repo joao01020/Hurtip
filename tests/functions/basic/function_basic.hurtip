@@ -1,0 +1,10 @@
+create name = "Hurtip"
+create age = 24
+
+function greet(person)
+{
+    view("Olá, " + person)
+}
+
+greet(name)
+view(age)

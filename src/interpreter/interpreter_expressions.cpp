@@ -377,6 +377,40 @@ RuntimeValue Interpreter::evaluateBinary(const BinaryExpression& expression)
 
 RuntimeValue Interpreter::evaluateUnary(const UnaryExpression& expression)
 {
+    // Prefix increment
+
+    if (expression.operation == TokenType::PlusPlus)
+    {
+        const auto* identifier =
+            dynamic_cast<const IdentifierExpression*>(expression.operand.get());
+
+        if (!identifier)
+        {
+            throw std::runtime_error("Line " + std::to_string(expression.line) +
+                                     ": Increment operator '++' requires a variable");
+        }
+
+        RuntimeValue operand = evaluate(*expression.operand);
+
+        const double* number = std::get_if<double>(&operand);
+
+        if (!number)
+        {
+            throw std::runtime_error("Line " + std::to_string(expression.line) +
+                                     ": Increment operator requires a number");
+        }
+
+        const double result = *number + 1.0;
+
+        if (!currentEnvironment->assign(identifier->name, result))
+        {
+            throw std::runtime_error("Line " + std::to_string(expression.line) +
+                                     ": Undefined variable: " + identifier->name);
+        }
+
+        return result;
+    }
+
     RuntimeValue operand = evaluate(*expression.operand);
 
     // Logical NOT
