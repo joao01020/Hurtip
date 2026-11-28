@@ -24,6 +24,7 @@ add_executable(hurtip
     src/interpreter/interpreter_expressions.cpp
     src/environment/environment.cpp
     src/libraries/math.cpp
+    src/libraries/string.cpp
     src/libraries/standard_library.cpp
 )
 
