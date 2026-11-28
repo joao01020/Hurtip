@@ -140,6 +140,11 @@ namespace hurtip
             return parseWhileStatement();
         }
 
+        if (check(TokenType::For))
+        {
+            return parseForStatement();
+        }
+
         if (check(TokenType::Break))
         {
             return parseBreakStatement();
@@ -153,6 +158,25 @@ namespace hurtip
         // Parse identifiers as expressions first.
         // This allows both normal expressions and assignments
         // to variables or array elements.
+
+        if (check(TokenType::PlusPlus))
+        {
+            const Token &operation = advance();
+
+            if (!check(TokenType::Identifier))
+            {
+                throw parserError(
+                    currentToken(),
+                    "Expected a variable after '++'");
+            }
+
+            auto statement = std::make_unique<IncrementStatement>();
+
+            statement->line = operation.line;
+            statement->name = advance().lexeme;
+
+            return statement;
+        }
 
         if (check(TokenType::Identifier))
         {
@@ -533,6 +557,75 @@ namespace hurtip
         return statement;
     }
 
+    // For statement
+
+    std::unique_ptr<ForStatement> Parser::parseForStatement()
+    {
+        const Token &forToken = advance();
+
+        auto statement = std::make_unique<ForStatement>();
+        statement->line = forToken.line;
+
+        if (!match(TokenType::LeftParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected '(' after 'for'");
+        }
+
+        if (!check(TokenType::Create))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected 'create' in for initializer");
+        }
+
+        statement->initializer = parseCreateStatement();
+
+        if (!match(TokenType::Semicolon))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected ';' after for initializer");
+        }
+
+        statement->condition = parseExpression();
+
+        if (!match(TokenType::Semicolon))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected ';' after for condition");
+        }
+
+        statement->increment = parseExpression();
+
+        if (!match(TokenType::RightParen))
+        {
+            throw parserError(
+                currentToken(),
+                "Expected ')' after for increment");
+        }
+
+        skipNewLines();
+
+        loopDepth++;
+
+        try
+        {
+            statement->body = parseBlockStatement();
+        }
+        catch (...)
+        {
+            loopDepth--;
+            throw;
+        }
+
+        loopDepth--;
+
+        return statement;
+    }
+
     // Break statement
 
     std::unique_ptr<BreakStatement> Parser::parseBreakStatement()
@@ -794,7 +887,8 @@ namespace hurtip
     std::unique_ptr<Expression> Parser::parseUnaryExpression()
     {
         if (check(TokenType::Minus) ||
-            check(TokenType::Plus))
+            check(TokenType::Plus) ||
+            check(TokenType::PlusPlus))
         {
             const Token &operation = advance();
 
@@ -803,6 +897,14 @@ namespace hurtip
             unary->line = operation.line;
             unary->operation = operation.type;
             unary->operand = parseUnaryExpression();
+
+            if (operation.type == TokenType::PlusPlus &&
+                dynamic_cast<IdentifierExpression *>(unary->operand.get()) == nullptr)
+            {
+                throw parserError(
+                    operation,
+                    "Increment operator requires a variable");
+            }
 
             return unary;
         }

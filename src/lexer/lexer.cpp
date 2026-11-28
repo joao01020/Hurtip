@@ -127,6 +127,10 @@ namespace hurtip
         {
             type = TokenType::While;
         }
+        else if (value == "for")
+        {
+            type = TokenType::For;
+        }
         else if (value == "break")
         {
             type = TokenType::Break;
@@ -354,10 +358,22 @@ namespace hurtip
         case '+':
             advance();
 
-            tokens.push_back({TokenType::Plus,
-                              "+",
-                              tokenLine,
-                              tokenColumn});
+            if (currentChar() == '+')
+            {
+                advance();
+
+                tokens.push_back({TokenType::PlusPlus,
+                                  "++",
+                                  tokenLine,
+                                  tokenColumn});
+            }
+            else
+            {
+                tokens.push_back({TokenType::Plus,
+                                  "+",
+                                  tokenLine,
+                                  tokenColumn});
+            }
             break;
 
         case '-':
@@ -438,6 +454,15 @@ namespace hurtip
 
             tokens.push_back({TokenType::Comma,
                               ",",
+                              tokenLine,
+                              tokenColumn});
+            break;
+
+        case ';':
+            advance();
+
+            tokens.push_back({TokenType::Semicolon,
+                              ";",
                               tokenLine,
                               tokenColumn});
             break;

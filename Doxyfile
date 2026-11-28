@@ -1,0 +1,32 @@
+PROJECT_NAME           = Hurtip
+PROJECT_BRIEF          = Linguagem de programação experimental
+PROJECT_NUMBER         = 0.1.0-alpha.1
+OUTPUT_DIRECTORY       = docs/api
+OUTPUT_LANGUAGE        = Portuguese
+
+INPUT                  = src include
+RECURSIVE               = YES
+FILE_PATTERNS          = *.h *.hpp *.c *.cc *.cpp
+EXCLUDE                = build build-release
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_DOC_ERROR      = YES
+
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+
+HAVE_DOT               = NO
+MARKDOWN_SUPPORT       = YES
+AUTOLINK_SUPPORT       = YES
+
+USE_MDFILE_AS_MAINPAGE = README.md

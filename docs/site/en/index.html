@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b10">
+<meta name="description" content="Hurtip — an experimental programming language developed with a focus on simplicity, clarity, and versatility.">
+<title>Hurtip — Programming Language</title>
+<style>
+:root{--bg:#090b10;--surface:#10141d;--text:#f2f5fa;--muted:#929cad;--accent:#69d5e8;--border:rgba(255,255,255,.09);--max:1120px}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7}a{color:inherit;text-decoration:none}.container{width:min(var(--max),calc(100% - 44px));margin:auto}
+header{position:sticky;top:0;z-index:10;background:rgba(9,11,16,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:23px;font-weight:800;letter-spacing:-1px}.nav-right{display:flex;align-items:center;gap:24px}.nav-links{display:flex;align-items:center;gap:25px;color:var(--muted);font-size:13px}.nav-links a:hover{color:var(--accent)}.nav-button{border:1px solid var(--border);border-radius:8px;padding:9px 15px;color:var(--text)}.language-switch{display:flex;gap:4px;padding:4px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:11px;font-weight:700}.language-switch a{padding:5px 7px;border-radius:5px;color:var(--muted)}.language-switch a.active{background:var(--accent);color:#071116}
+.hero{min-height:720px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:55px;padding:80px 0 90px}.label,.section-label{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px}h1{font-size:clamp(43px,6vw,68px);line-height:1.08;letter-spacing:-3px;margin-bottom:24px}h1 span{color:var(--accent)}.hero-description{max-width:570px;color:var(--muted);font-size:16px;margin-bottom:32px}.actions{display:flex;flex-wrap:wrap;gap:12px}.button{display:inline-flex;align-items:center;justify-content:center;padding:13px 19px;border-radius:8px;font-size:13px;font-weight:700;transition:.2s}.primary{background:var(--accent);color:#071116}.primary:hover{transform:translateY(-2px)}.secondary{border:1px solid var(--border)}.secondary:hover{border-color:var(--accent)}
+.code-window{background:#0e121a;border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.35)}.window-top{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 17px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px}.dots{display:flex;gap:6px}.dots span{width:8px;height:8px;border-radius:50%;background:#596273}.code-content{padding:24px 20px;font:12px/2.35 "SFMono-Regular",Consolas,monospace;overflow-x:auto}.code-content pre{margin:0;white-space:pre;font:inherit}.comment{color:#7f899b}.keyword{color:#c49bff}.string{color:#a7dca3}.function{color:#f4c779}
+.section{padding:95px 0;border-top:1px solid var(--border)}.section-title{font-size:clamp(31px,4vw,43px);line-height:1.2;letter-spacing:-1.8px;margin-bottom:17px}.section-description{max-width:700px;color:var(--muted);margin-bottom:35px}.features,.status{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.feature,.status-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:25px}.feature-symbol{color:var(--accent);font-size:22px;margin-bottom:15px}.feature h3{font-size:16px;margin-bottom:8px}.feature p{color:var(--muted);font-size:13px}.status{margin:30px 0}.status-card strong{display:block;color:var(--accent);font-size:25px}.status-card span{color:var(--muted);font-size:12px}
+.page-links{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.page-link-card{display:flex;flex-direction:column;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:25px;transition:.2s}.page-link-card:hover{border-color:var(--accent);transform:translateY(-2px)}.page-link-card h3{font-size:17px;margin:8px 0}.page-link-card p{color:var(--muted);font-size:13px;margin-bottom:18px}.page-link-action{color:var(--accent);font-size:13px;font-weight:700;margin-top:auto}.cta{text-align:center;padding:65px 25px;border:1px solid var(--border);border-radius:14px;background:radial-gradient(ellipse at top,#182c37,#10141d 65%)}.cta h2{font-size:clamp(30px,4vw,41px);letter-spacing:-1.5px;margin-bottom:12px}.cta p{color:var(--muted);margin-bottom:24px}footer{border-top:1px solid var(--border);padding:28px 0;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:800px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:70px}.features,.status,.page-links{grid-template-columns:1fr}.nav-right{gap:10px}.nav-links{gap:12px}.nav-links a:not(.nav-button){display:none}h1{letter-spacing:-2.4px}}@media(max-width:420px){.container{width:calc(100% - 30px)}.nav-button{padding:7px 9px}}
+</style>
+</head>
+<body>
+<header><nav class="container">
+<a href="index.html" class="brand">Hurtip</a>
+<div class="nav-right"><div class="nav-links">
+<a href="#about">About</a><a href="examples.html">Examples</a><a href="roadmap.html">Progress</a>
+<a href="https://github.com/joao01020/Hurtip" class="nav-button" target="_blank" rel="noopener">GitHub ↗</a>
+</div><div class="language-switch" aria-label="Select language"><a href="../index.html" lang="pt-BR">PT</a><a href="index.html" class="active" aria-current="page">EN</a></div></div>
+</nav></header>
+<main>
+<section class="hero container"><div>
+<div class="label">Independent programming language</div>
+<h1>Simple to read.<br><span>Built to explore.</span></h1>
+<p class="hero-description">Hurtip is an experimental programming language developed with a focus on simplicity, clarity, and versatility.</p>
+<div class="actions"><a href="examples.html" class="button primary">Get started →</a><a href="https://github.com/joao01020/Hurtip" class="button secondary" target="_blank" rel="noopener">Explore the code</a><a href="contributors/index.html" class="button secondary">Meet the contributors ↗</a></div>
+</div>
+<div class="code-window"><div class="window-top"><div class="dots"><span></span><span></span><span></span></div><span>main.hurtip</span><span>Hurtip</span></div>
+<div class="code-content"><pre><span class="comment">// Load an internal module file</span>
+<span class="keyword">load</span> <span class="string">"modules/greeting.hurtip"</span>
+<span class="comment">// Load an external library</span>
+<span class="keyword">import</span> <span class="string">"math"</span>
+
+<span class="comment">// Create a variable</span>
+<span class="keyword">create</span> result = <span class="function">math.sum</span>(10, 20)
+
+<span class="comment">// Display the result</span>
+<span class="function">view</span>(result)
+<span class="function">view</span>(<span class="string">"The module was loaded successfully!"</span>)
+<span class="function">view</span>(<span class="string">"Program finished."</span>)</pre></div></div>
+</section>
+<section class="section" id="about"><div class="container">
+<div class="section-label">01 — About</div><h2 class="section-title">A language under development.</h2>
+<p class="section-description">Hurtip is being developed in C++17 with its own interpreter. The project includes a Lexer, Parser, AST, Interpreter, module system, and initial integration with native libraries.</p>
+<div class="features">
+<article class="feature"><div class="feature-symbol">◇</div><h3>Simplicity</h3><p>A straightforward syntax designed to make code easier to read and write.</p></article>
+<article class="feature"><div class="feature-symbol">↗</div><h3>Versatility</h3><p>Features for variables, expressions, logic, flow control, functions, and modules.</p></article>
+<article class="feature"><div class="feature-symbol">⌘</div><h3>Extensibility</h3><p>An architecture prepared for integration with native libraries developed in C++.</p></article>
+</div></div></section>
+<section class="section"><div class="container">
+<div class="section-label">02 — Development</div><h2 class="section-title">Follow the progress.</h2>
+<p class="section-description">See which features have been implemented, which are under development, and which are part of the language's upcoming goals.</p>
+<h3 class="section-title" style="font-size:23px;margin-top:42px;margin-bottom:20px">Core syntax</h3>
+<div class="features">
+<article class="feature"><div class="feature-symbol"><code>create</code></div><h3>Variable creation</h3><p>The <code>create</code> command creates a variable to store a value and use it in a program.</p></article>
+<article class="feature"><div class="feature-symbol"><code>import</code></div><h3>Library imports</h3><p>The <code>import</code> command imports external libraries to make their functions available in a program.</p></article>
+<article class="feature"><div class="feature-symbol"><code>load</code></div><h3>Module loading</h3><p>The <code>load</code> command loads files and modules that are part of the project itself.</p></article>
+</div>
+<div class="status"><div class="status-card"><strong>40</strong><span>Parser unit checks passed</span></div><div class="status-card"><strong>29</strong><span>tests registered and passed by CTest</span></div><div class="status-card"><strong>C++17</strong><span>Hurtip implementation foundation</span></div></div>
+<a href="roadmap.html" class="button primary">View full progress →</a>
+</div></section>
+<section class="section" id="explore"><div class="container">
+<div class="section-label">03 — Explore the project</div><h2 class="section-title">Explore other areas of Hurtip.</h2>
+<p class="section-description">Learn about the language's goals, find out how to get started, follow updates, or discover how to contribute to the project.</p>
+<div class="page-links">
+<a href="objectives.html" class="page-link-card"><div class="feature-symbol">◎</div><h3>Goals</h3><p>Learn about Hurtip's purpose, development principles, and the areas it aims to reach.</p><span class="page-link-action">Explore the goals →</span></a>
+<a href="getting-started.html" class="page-link-card"><div class="feature-symbol">⌘</div><h3>Installation and getting started</h3><p>Find guidance on accessing the source code, setting up the environment, and exploring the language.</p><span class="page-link-action">Get started →</span></a>
+<a href="updates.html" class="page-link-card"><div class="feature-symbol">↻</div><h3>Updates</h3><p>Follow versions, changes, fixes, and news published during development.</p><span class="page-link-action">View updates →</span></a>
+<a href="contribute.html" class="page-link-card"><div class="feature-symbol">＋</div><h3>Contribute</h3><p>Learn how to follow the repository, report issues, and take part in Hurtip's development.</p><span class="page-link-action">How to contribute →</span></a>
+</div></div></section>
+<section class="section"><div class="container"><div class="cta"><div class="section-label">Hurtip</div><h2>See the language in action.</h2><p>Explore real examples of the features Hurtip already supports.</p><a href="examples.html" class="button primary">View language examples →</a></div></div></section>
+</main>
+<footer><div class="container footer-inner"><span>© 2026 Hurtip.</span><span>Independent programming language.</span></div></footer>
+</body>
+</html>

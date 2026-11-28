@@ -1,0 +1,56 @@
+name: Sugerir funcionalidade
+description: Sugira uma nova funcionalidade ou melhoria para a Hurtip.
+title: "[Sugestão]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por contribuir com a evolução da Hurtip.
+        Descreva sua ideia e explique como ela poderia beneficiar a linguagem.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema ou motivação
+      description: Sua sugestão está relacionada a algum problema ou limitação?
+      placeholder: Descreva o problema que você gostaria de resolver.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução proposta
+      description: Explique a funcionalidade ou melhoria que você gostaria de implementar.
+      placeholder: Descreva sua proposta.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Exemplo de utilização
+      description: Mostre como essa funcionalidade poderia funcionar na Hurtip.
+      render: text
+      placeholder: |
+        create result = ...
+        view(result)
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Você considerou outras abordagens para resolver o problema?
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Informações adicionais
+      description: Adicione outras informações que possam ajudar na avaliação da sugestão.
+    validations:
+      required: false

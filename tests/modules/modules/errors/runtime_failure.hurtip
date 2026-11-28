@@ -1,0 +1,6 @@
+function temporary()
+{
+    return 100
+}
+
+view(undefined_variable)

@@ -1,0 +1,72 @@
+name: Relatar um erro
+description: Informe um erro ou comportamento inesperado na Hurtip.
+title: "[Erro]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por relatar um problema na Hurtip.
+        Forneça informações suficientes para que possamos reproduzir e investigar o erro.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do erro
+      description: Descreva o problema encontrado.
+      placeholder: O que aconteceu?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Etapas para reproduzir
+      description: Informe as etapas ou o código Hurtip necessário para reproduzir o problema.
+      placeholder: |
+        1. Crie um arquivo...
+        2. Execute...
+        3. Observe o erro...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      description: O que deveria acontecer?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento observado
+      description: O que aconteceu em vez do comportamento esperado?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versão da Hurtip
+      description: Qual versão da linguagem você está utilizando?
+      placeholder: "v0.1.0-alpha.1"
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: Sistema operacional
+      placeholder: "Ubuntu 24.04, Windows 11, macOS..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Informações adicionais
+      description: Adicione logs, capturas de tela ou outras informações relevantes.
+    validations:
+      required: false

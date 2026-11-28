@@ -37,6 +37,11 @@ namespace hurtip
         std::unique_ptr<Expression> value;
     };
 
+    struct IncrementStatement : ASTNode
+    {
+        std::string name;
+    };
+
     struct LoadStatement : ASTNode
     {
         std::string path;
@@ -76,6 +81,14 @@ namespace hurtip
     struct WhileStatement : ASTNode
     {
         std::unique_ptr<Expression> condition;
+        std::unique_ptr<BlockStatement> body;
+    };
+
+    struct ForStatement : ASTNode
+    {
+        std::unique_ptr<ASTNode> initializer;
+        std::unique_ptr<Expression> condition;
+        std::unique_ptr<Expression> increment;
         std::unique_ptr<BlockStatement> body;
     };
 

@@ -1,0 +1,5 @@
+load "first.hurtip" as first
+load "second.hurtip" as second
+
+view(first.getName())
+view(second.getName())

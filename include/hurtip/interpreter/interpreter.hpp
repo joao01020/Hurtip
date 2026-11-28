@@ -66,6 +66,15 @@ namespace hurtip
         // Module path -> functions declared by that module
         std::unordered_map<std::string, FunctionRegistry> moduleFunctions;
 
+        // Module path -> persistent variable environment
+        std::unordered_map<
+            std::string,
+            std::shared_ptr<Environment>>
+            moduleEnvironments;
+
+        // Namespace alias -> module path
+        std::unordered_map<std::string, std::string> namespaceModuleKeys;
+
         // Keeps module ASTs alive at stable addresses.
         std::vector<
             std::unique_ptr<std::vector<std::unique_ptr<ASTNode>>>>

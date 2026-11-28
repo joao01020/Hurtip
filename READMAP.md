@@ -1,5 +1,13 @@
 # Estado atual do desenvolvimento — Hurtip
 
+Este documento acompanha a evolução da linguagem Hurtip, registrando os recursos
+implementados, os testes realizados e as funcionalidades que ainda precisam ser
+desenvolvidas.
+
+A marcação de um recurso como implementado representa o estágio atual de
+desenvolvimento e não significa que todas as situações extremas já foram
+validadas.
+
 ## Núcleo da linguagem
 
 - [x] Lexer
@@ -10,6 +18,7 @@
 - [x] Valores e variáveis no runtime
 - [x] Declaração de variáveis com `create`
 - [x] Atribuição e atualização de variáveis
+- [x] Validação de redeclaração de variáveis no mesmo escopo
 - [x] Tipos básicos: strings, números e booleanos
 - [x] Expressões
 - [x] Operadores aritméticos (`+`, `-`, `*`, `/`)
@@ -17,6 +26,13 @@
 - [x] Precedência matemática
 - [x] Agrupamento de expressões com parênteses
 - [x] Comentários de linha (`//`)
+- [x] Reconhecimento de números decimais
+- [x] Representação de valores com `RuntimeValue`
+- [x] Suporte a arrays na representação de valores do runtime
+- [ ] Valor nulo (`null`) e sua semântica
+- [ ] Sistema de tipos mais abrangente
+- [ ] Conversão explícita entre tipos
+- [ ] Verificação e compatibilidade de tipos
 
 ## Operadores e lógica
 
@@ -25,6 +41,13 @@
 - [x] Precedência de operadores lógicos
 - [x] Avaliação de curto-circuito
 - [x] Validação de valores booleanos nas operações lógicas
+- [x] Operador de incremento (`++`)
+- [ ] Operador de decremento (`--`)
+- [ ] Operadores de atribuição composta (`+=`, `-=`, `*=`, `/=`)
+- [ ] Operadores de módulo (`%`)
+- [ ] Operadores de potência
+- [ ] Operadores de incremento e decremento em expressões, com semântica
+      prefixada e pós-fixada
 
 ## Controle de fluxo
 
@@ -33,12 +56,24 @@
 - [x] Blocos de código
 - [x] Abertura de blocos na mesma linha ou na linha seguinte
 - [x] `while`
+- [x] `for`
+- [x] Inicialização de variável no cabeçalho do `for`
+- [x] Avaliação da condição no cabeçalho do `for`
+- [x] Incremento no cabeçalho do `for`
+- [x] Incremento com `++`
 - [x] `break`
 - [x] `continue`
 - [x] Loops aninhados
 - [x] Escopo próprio para blocos de controle
 - [x] Restauração de escopo após `break`, `continue` e `return`
-- [ ] `for`
+- [x] Testes de integração do `for`
+- [x] Testes de loops `for` aninhados
+- [x] Testes de `break` e `continue` em loops `for`
+- [ ] `try` / `catch`
+- [ ] Tratamento de exceções definido pela linguagem
+- [ ] Lançamento de exceções com `throw`
+- [ ] Bloco `finally`
+- [ ] Semântica de propagação e captura de erros
 
 ## Funções e escopos
 
@@ -51,9 +86,40 @@
 - [x] Funções aninhadas
 - [x] Recursividade
 - [x] Isolamento de variáveis locais entre chamadas
+- [x] Busca de variáveis em ambientes ancestrais
+- [x] Atualização de variáveis existentes em ambientes superiores
+- [x] Ambientes locais independentes para chamadas de funções
+- [ ] Shadowing (ocultação de variáveis de escopos externos)
+- [ ] Definição formal das regras de shadowing
 - [ ] Closures
+- [ ] Captura de ambientes léxicos
+- [ ] Funções anônimas
+- [ ] Parâmetros com valores padrão
+- [ ] Verificação de quantidade e tipos de argumentos em funções definidas pelo
+      usuário
 
-### Arrays
+## Operações e manipulação de strings
+
+- [x] Representação de strings no runtime
+- [x] Criação de strings
+- [x] Concatenação básica com o operador `+`
+- [ ] Acesso a caracteres por índice
+- [ ] Propriedade `length`
+- [ ] Comparação de strings
+- [ ] Interpolação de strings
+- [ ] Métodos de manipulação de strings
+- [ ] Conversão entre strings e números
+- [ ] Conversão entre strings e booleanos
+- [ ] Busca de texto dentro de strings
+- [ ] Verificação de prefixos e sufixos
+- [ ] Substituição de trechos de texto
+- [ ] Extração de partes de strings
+- [ ] Divisão de strings em arrays
+- [ ] Remoção de espaços no início e no final
+- [ ] Alteração de maiúsculas e minúsculas
+- [ ] Definição de regras para caracteres especiais e Unicode
+
+## Arrays
 
 - [x] Estrutura inicial de arrays no runtime
 - [x] Criação de arrays
@@ -73,12 +139,38 @@
 - [x] Validação de índices fracionários
 - [x] Validação de índices fora dos limites
 - [x] Validação de objetos que não são arrays
+- [x] Testes automatizados de criação e acesso
+- [x] Testes de arrays com tipos mistos
+- [x] Testes de arrays aninhados
+- [x] Testes de atribuição e modificação
+- [x] Testes da propriedade `length`
+- [x] Testes de índices inválidos
+- [x] Testes de regressão para arrays
 - [ ] Métodos de manipulação (`push`, `pop`, `remove`, `contains`)
 - [ ] Iteração de arrays com `for`
 - [ ] Concatenação de arrays
 - [ ] Comparação estrutural de arrays
+- [ ] Busca de elementos
+- [ ] Ordenação de elementos
 - [ ] Definição formal da semântica de cópia e referência
 - [ ] Estruturas de dados adicionais
+
+## Objetos e estruturas de dados
+
+- [ ] Estrutura de objetos no runtime
+- [ ] Criação de objetos
+- [ ] Propriedades e valores
+- [ ] Acesso a propriedades por notação de ponto
+- [ ] Acesso a propriedades por chaves dinâmicas
+- [ ] Atribuição e modificação de propriedades
+- [ ] Objetos aninhados
+- [ ] Verificação da existência de propriedades
+- [ ] Remoção de propriedades
+- [ ] Métodos associados a objetos
+- [ ] Definição de estruturas de dados personalizadas
+- [ ] Definição de tipos personalizados
+- [ ] Regras de cópia e referência para objetos
+- [ ] Testes de criação, acesso e modificação de objetos
 
 ## Sistema de módulos
 
@@ -86,10 +178,29 @@
 - [x] Alias de módulos com `as`
 - [x] Acesso a funções por namespace
 - [x] Resolução de caminhos relativos ao arquivo que executa `load`
+- [x] Normalização de caminhos
+- [x] Identificação consistente de módulos carregados
 - [x] Cache de módulos carregados
+- [x] Reutilização de módulos já carregados
+- [x] Associação de aliases a módulos registrados
+- [x] Ambientes persistentes por módulo
+- [x] Preservação de estado entre chamadas de funções do módulo
+- [x] Separação dos ambientes de diferentes módulos
+- [x] Acesso ao ambiente global quando necessário
+- [x] Carregamento de dependências aninhadas
 - [x] Detecção de dependências circulares
-- [x] Teste de integração entre módulos
-- [ ] Isolamento completo de variáveis por módulo
+- [x] Tratamento de conflitos entre aliases
+- [x] Restauração do contexto após falhas de carregamento
+- [x] Limpeza de registros de módulos que falharam durante a inicialização
+- [x] Testes de integração entre módulos
+- [x] Testes de dependências aninhadas
+- [x] Testes de dependências circulares
+- [x] Testes de isolamento entre módulos
+- [x] Testes de persistência de estado
+- [x] Testes de reutilização e aliases
+- [x] Testes de recuperação após falhas
+- [ ] Isolamento completo de variáveis por módulo, com semântica formal
+- [ ] Testes abrangentes de conflitos entre aliases de módulos e bibliotecas
 
 ## Sistema de importação de bibliotecas nativas
 
@@ -110,10 +221,31 @@
 - [x] Detecção de bibliotecas inexistentes
 - [x] Detecção de funções inexistentes em bibliotecas
 - [x] Tratamento de erros em funções nativas
-- [ ] Testes automatizados de conflitos entre aliases de módulos e bibliotecas
+- [x] Separação do registro das bibliotecas em relação ao `main.cpp`
+- [x] Função centralizada `registerStandardLibraries()`
+- [ ] Testes automatizados abrangentes de conflitos entre aliases de módulos e
+      bibliotecas
 - [ ] Carregamento dinâmico de bibliotecas externas
 - [ ] API pública para desenvolvimento de bibliotecas por terceiros
 - [ ] Documentação da API de bibliotecas nativas
+
+## Biblioteca padrão
+
+- [x] Estrutura inicial de registro das bibliotecas padrão
+- [x] Biblioteca `math`
+- [x] Função `math.sum()`
+- [ ] Biblioteca de manipulação de strings
+- [ ] Biblioteca de manipulação de arrays
+- [ ] Biblioteca de conversão de tipos
+- [ ] Biblioteca de entrada e saída
+- [ ] Biblioteca de arquivos e diretórios
+- [ ] Biblioteca de datas e horários
+- [ ] Biblioteca de operações com números
+- [ ] Biblioteca de utilidades gerais
+- [ ] Funções para geração de números aleatórios
+- [ ] Padronização das interfaces das bibliotecas
+- [ ] Documentação das funções disponíveis
+- [ ] Testes automatizados das bibliotecas padrão
 
 ## Parser, diagnósticos e confiabilidade
 
@@ -130,9 +262,12 @@
 - [x] Validação de lista de tokens vazia
 - [x] Validação da presença do token `EndOfFile`
 - [x] Reconhecimento de números decimais no Lexer
+- [x] Reconhecimento da palavra-chave `for`
+- [x] Reconhecimento do operador `++`
+- [x] Reconhecimento de ponto e vírgula (`;`)
+- [x] Análise sintática do cabeçalho do `for`
+- [x] Detecção de redeclaração de variáveis no mesmo escopo
 - [ ] Mensagens padronizadas para fim de linha e fim de arquivo
-- [x] Testes de erros léxicos
-- [x] Testes de erros sintáticos
 - [ ] Testes abrangentes de erros em tempo de execução
 - [ ] Tratamento robusto e padronizado de erros
 - [ ] Testes de recuperação do parser
@@ -151,14 +286,13 @@
 - [x] Testes de módulos
 - [x] Testes de sintaxe válida e inválida
 - [x] Integração inicial do CTest no `CMakeLists.txt`
-- [x] Cadastro dos testes no `tests/CMakeLists.txt`
+- [x] Cadastro dos testes em `tests/CMakeLists.txt`
 - [x] Execução automatizada da suíte com CTest
 - [x] Testes automatizados de mensagens de erro
 - [x] Testes unitários do Lexer
 - [x] Testes unitários do Parser
-- [x] 40 verificações unitárias do Parser aprovadas
-- [x] 38 testes registrados no CTest, considerando os 29 anteriores e os 9 novos
-      testes de arrays
+- [x] 13 verificações unitárias do Lexer
+- [x] 40 verificações unitárias do Parser
 - [x] Testes de importação de bibliotecas nativas
 - [x] Testes de importação com alias
 - [x] Testes de bibliotecas e funções inexistentes
@@ -173,16 +307,83 @@
 - [x] Testes de índices fora dos limites
 - [x] Testes de acesso a objetos que não são arrays
 - [x] Testes de regressão para arrays
+- [x] Testes de recuperação após falhas de módulos
+- [x] Testes de dependências circulares
+- [x] Testes de dependências ausentes
+- [x] Testes de dependências aninhadas
+- [x] Testes de isolamento entre módulos
+- [x] Testes de persistência de estado entre chamadas
+- [x] Testes de reutilização de módulos com aliases
+- [x] Testes de falhas durante execução de módulos
+- [x] Testes de integração de loops `for`
+- [x] Testes de loops `for` aninhados
+- [x] Testes de `break` e `continue` em loops `for`
+- [x] Testes de redeclaração de variáveis
+- [x] Teste básico de declaração e chamada de funções
+- [ ] Testes de shadowing
+- [ ] Testes de operações e manipulação de strings
+- [ ] Testes de `try` / `catch`
+- [ ] Testes de criação e manipulação de objetos
+- [ ] Cobertura automatizada completa do runtime
+- [ ] Testes de resistência e fuzz testing
 
-## Biblioteca e ferramentas
+**Observação sobre contagem:** a quantidade de testes registrados no CTest pode
+mudar conforme novos casos são adicionados. Consulte a execução atual do CTest
+para obter o total exato. As 13 verificações do Lexer e as 40 do Parser são
+contagens de verificações unitárias, não necessariamente o número de testes
+registrados no CTest.
 
-- [ ] Biblioteca padrão completa
-- [x] Estrutura inicial de registro centralizado da biblioteca padrão
+O teste básico de declaração e chamada de funções foi adicionado em
+`tests/functions/basic/`, mas ainda não estava registrado no CTest na última
+verificação. Portanto, sua existência não deve ser contabilizada como um novo
+teste executado pela suíte automatizada.
+
+## Documentação e ferramentas
+
+- [x] README principal do projeto
+- [x] Documentação de primeiros passos
+- [x] Referência da linguagem
+- [x] Documentação de arrays
+- [x] Documentação do sistema de módulos
+- [x] Documentação da arquitetura
+- [x] Documentação de testes
+- [x] Documentação da extensão para VS Code
+- [x] Catálogo de recursos implementados e pendentes
+- [x] Documentação inicial de diagnósticos
+- [ ] Documentação completa da API de bibliotecas nativas
+- [ ] Documentação de contribuição e desenvolvimento completa
+- [ ] Documentação completa da biblioteca padrão
 - [x] Estrutura inicial de CLI
 - [ ] CLI / tooling avançado
-- [ ] Sistema de documentação
 - [ ] Gerenciador de pacotes
 - [ ] Ferramentas de depuração
+
+## Extensão para Visual Studio Code
+
+- [x] Reconhecimento da extensão `.hurtip`
+- [x] Identificador da linguagem Hurtip
+- [x] Gramática inicial de sintaxe
+- [x] Destaque de palavras-chave
+- [x] Destaque de strings
+- [x] Destaque de números
+- [x] Destaque de operadores
+- [x] Destaque da função `view()`
+- [x] Fechamento automático de parênteses e aspas
+- [x] Integração do ícone Hurtip ao tema Seti
+- [x] Tema de ícones personalizado Seti + Hurtip
+- [ ] Cobertura completa de syntax highlighting para todos os recursos da
+      linguagem
+- [ ] Destaque de funções definidas pelo usuário
+- [ ] Destaque de parâmetros e variáveis
+- [ ] Destaque de bibliotecas e namespaces
+- [ ] Publicação em marketplace
+- [ ] Diagnósticos integrados ao editor
+- [ ] Autocomplete
+- [ ] Sugestões de palavras-chave e estruturas da linguagem
+- [ ] Sugestões de funções e parâmetros
+- [ ] Informações ao passar o mouse sobre símbolos
+- [ ] Navegação para definições
+- [ ] Formatação automática de código
 
 ## Recursos de baixo nível e hardware
 
@@ -198,106 +399,115 @@
 
 ## Legenda
 
-- `[x]` Implementado e validado conforme o estágio indicado.
+- `[x]` Implementado no estágio atual.
 - `[ ]` Pendente de implementação ou validação.
-
-**Observação:** os itens marcados como implementados representam os recursos que
-já foram desenvolvidos e testados no estágio atual. Isso não significa que todas
-as suas possíveis aplicações e situações extremas já foram validadas.
 
 ## Estado atual
 
-A Hurtip já possui um núcleo funcional desenvolvido em C++17, com Lexer, Parser,
-AST e Interpreter integrados.
+A Hurtip possui um núcleo funcional desenvolvido em C++17, composto por Lexer,
+Parser, AST e Interpreter.
 
-A linguagem oferece variáveis, expressões, operadores, controle de fluxo,
-funções, recursividade, escopos e um sistema inicial de módulos.
+A linguagem oferece declaração e atualização de variáveis, expressões,
+operadores aritméticos e lógicos, estruturas de controle, funções,
+recursividade, escopos e arrays.
 
-O sistema de importação de bibliotecas nativas também foi implementado. Já é
-possível importar bibliotecas pelo nome, utilizar aliases e chamar funções
-nativas através de namespaces. A biblioteca `math` é a primeira implementação
-desse sistema.
+O sistema de variáveis possui validação de redeclaração no mesmo escopo,
+evitando que uma nova declaração sobrescreva silenciosamente uma variável já
+existente naquele ambiente. O comportamento de shadowing, que permite ocultar
+variáveis de escopos externos, ainda precisa ser definido e implementado.
 
-A arquitetura de registro das bibliotecas foi centralizada em
-`standard_library`, evitando que o `main.cpp` precise registrar individualmente
-cada biblioteca.
+O controle de fluxo inclui `if`, `else`, `while` e `for`. O loop `for` permite
+declarar uma variável, definir uma condição e executar um incremento no próprio
+cabeçalho. A linguagem também oferece `break`, `continue` e suporte a loops
+aninhados.
 
-O projeto possui testes unitários do Lexer e Parser e uma suíte automatizada
-integrada ao CTest. São 40 verificações unitárias do Parser e 38 testes
-registrados no CTest, considerando a suíte anterior e os nove novos testes de
-arrays. Na última execução informada, todos os testes passaram.
-
-### Arrays: estágio atual
-
-A Hurtip já possui uma implementação funcional de arrays integrada ao AST,
-Parser e runtime.
-
-É possível criar arrays vazios, numéricos, de strings, booleanos, mistos e
-aninhados. Também é possível acessar elementos por índice, modificar seus
-valores, acessar estruturas aninhadas e exibir arrays completos com `view()`.
-
-A propriedade `length` permite consultar a quantidade de elementos de um array.
-
-Exemplo:
+Um exemplo da sintaxe atualmente implementada:
 
 ```hurtip
-create numbers = [10, 20, 30, 40]
-
-view(numbers)
-view(numbers[0])
-view(numbers.length)
-
-create matrix = [
-    [1, 2],
-    [3, 4]
-]
-
-view(matrix[1][0])
+for(create i = 0; i < 10; ++i) {
+    view(i)
+}
 ```
 
-Também é possível modificar elementos diretamente por índice:
+O sistema de funções permite declarar parâmetros, realizar chamadas, retornar
+valores, utilizar funções aninhadas e executar funções recursivas. Os ambientes
+locais são independentes entre chamadas, com busca de variáveis em ambientes
+ancestrais e atualização de variáveis existentes em ambientes superiores.
+Closures e captura de ambientes léxicos ainda não foram implementadas.
 
-```hurtip
-create numbers = [10, 20, 30]
+As strings já possuem representação no runtime e permitem concatenação básica
+com o operador `+`. Operações mais avançadas, como busca, substituição, extração
+e interpolação de texto, ainda estão pendentes.
 
-numbers[0] = 50
+O sistema de módulos permite carregar arquivos `.hurtip`, utilizar aliases e
+namespaces, resolver dependências aninhadas, detectar dependências circulares e
+manter ambientes persistentes associados aos módulos.
 
-view(numbers)
-```
+Também foram desenvolvidos mecanismos de recuperação após falhas no
+carregamento, incluindo restauração do contexto de execução e limpeza de
+registros temporários de módulos que não conseguiram ser inicializados.
 
-O sistema já possui validações para índices negativos, fracionários, fora dos
-limites e tentativas de acessar elementos em objetos que não são arrays.
+O sistema de importação de bibliotecas nativas permite importar bibliotecas pelo
+nome, utilizar aliases e chamar funções por namespace. A biblioteca `math` é a
+primeira implementação desse sistema, com a função `math.sum()`.
 
-Foram adicionados nove testes automatizados específicos para arrays, cobrindo
-criação, tipos mistos, estruturas aninhadas, atribuição, tamanho e situações de
-erro.
+O registro das bibliotecas padrão é centralizado por meio de
+`registerStandardLibraries()`, mantendo a inicialização das bibliotecas separada
+do `main.cpp`. A biblioteca padrão ainda precisa ser expandida.
 
-O próximo avanço será desenvolver os métodos de manipulação:
+A implementação de arrays permite criar estruturas vazias, numéricas, de
+strings, booleanas, mistas e aninhadas. Também oferece acesso e atribuição por
+índice, acesso encadeado, exibição com `view()` e a propriedade `length`.
 
-- `push()` — adicionar elementos ao final.
-- `pop()` — remover e retornar o último elemento.
-- `remove()` — remover um elemento pelo índice.
-- `contains()` — verificar se determinado valor está presente.
+O sistema possui validações para índices negativos, fracionários, fora dos
+limites e tentativas de acessar índices em valores que não são arrays. Métodos
+de manipulação e iteração de arrays com `for` ainda estão pendentes.
 
-Depois disso, a evolução poderá avançar para concatenação, comparação estrutural
-e iteração com `for`.
+Objetos e estruturas de dados personalizadas ainda não fazem parte dos recursos
+implementados.
+
+A extensão para Visual Studio Code possui reconhecimento de arquivos `.hurtip`,
+gramática inicial, destaque de palavras-chave, strings, números e operadores,
+além de fechamento automático de parênteses e aspas. Recursos mais avançados,
+como autocomplete, diagnósticos integrados e formatação automática, ainda
+precisam ser desenvolvidos.
+
+A suíte de testes contempla verificações unitárias do Lexer e Parser, além de
+testes de integração para arrays, funções, escopos, importações, módulos e
+estruturas de controle. O projeto utiliza CTest para execução automatizada.
+
+Na última execução registrada, 54 testes do CTest passaram. Esse número
+corresponde à execução anterior à inclusão do teste básico de funções, que ainda
+não estava registrado na suíte automatizada. A contagem atual deve ser
+confirmada em uma nova execução.
 
 ## Foco atual do desenvolvimento
 
-O próximo objetivo é fortalecer a confiabilidade do sistema de importação,
-especialmente a prevenção de conflitos entre aliases de módulos e bibliotecas
-nativas.
+Os próximos avanços estão concentrados em:
 
-Na evolução dos arrays, o próximo passo será implementar os métodos de
-manipulação (`push`, `pop`, `remove` e `contains`), mantendo a validação de
-tipos e índices e adicionando testes automatizados para cada operação.
+1. Fortalecer a confiabilidade do sistema de módulos e ampliar os testes de
+   conflitos entre aliases de módulos e bibliotecas.
+2. Implementar shadowing e definir suas regras de escopo.
+3. Desenvolver operações e métodos de manipulação de strings.
+4. Implementar métodos de manipulação de arrays: `push()`, `pop()`, `remove()` e
+   `contains()`.
+5. Implementar a iteração de arrays com `for`.
+6. Projetar e implementar objetos e estruturas de dados.
+7. Desenvolver o tratamento de exceções com `try` / `catch`.
+8. Expandir a biblioteca padrão.
+9. Evoluir os diagnósticos e a recuperação de erros do Parser.
+10. Projetar uma API pública para bibliotecas externas.
+11. Desenvolver closures e captura de ambientes léxicos.
+12. Evoluir a extensão para VS Code, incluindo syntax highlighting mais
+    completo, autocomplete e diagnósticos integrados.
+13. Melhorar as ferramentas de desenvolvimento e depuração.
 
-Em seguida, o desenvolvimento poderá avançar para a implementação de `for`,
-permitindo percorrer arrays e outras estruturas iteráveis.
+Os recursos de baixo nível e o suporte a microcontroladores continuam como
+objetivos de longo prazo. Eles ainda não representam funcionalidades disponíveis
+na implementação atual.
 
-Outros objetivos importantes são a expansão da biblioteca padrão, a API para
-bibliotecas externas e o fortalecimento dos diagnósticos e testes de
-resistência.
+---
 
-Os recursos avançados de baixo nível e suporte a microcontroladores continuam
-fazendo parte da visão de longo prazo da Hurtip.
+**Este documento representa o estágio atual de desenvolvimento da Hurtip e deve
+ser atualizado conforme novas funcionalidades, testes e mudanças na arquitetura
+forem implementados.**
